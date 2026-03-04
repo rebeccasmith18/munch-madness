@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Munch Madness 2026 — Pick'em Snacket</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --orange:       #E87722;
+  --orange-lt:    #FDE8D5;
+  --orange-dk:    #C45A0A;
+  --cream:        #FBF7F2;
+  --dark:         #1A1208;
+  --mid:          #6B4F2A;
+  --chip:         #1B4F8A;
+  --chip-lt:      #D6E8F5;
+  --nonchip:      #1A6B3A;
+  --nonchip-lt:   #D6F0E0;
+  --choc:         #5C2A0A;
+  --choc-lt:      #F5E0D0;
+  --candy:        #6B1A8A;
+  --candy-lt:     #EAD6F5;
+  --line:         #D4B896;
+  --gold:         #C8A000;
+  --gold-lt:      #FFF8E0;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--dark); min-height: 100vh; }
+
+/* ── HEADER ── */
+.hdr {
+  background: var(--dark);
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 4px solid var(--orange);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  gap: 16px;
+}
+.hdr-left { display: flex; align-items: baseline; gap: 12px; flex-shrink: 0; }
+.hdr-title { font-family: 'Bebas Neue', sans-serif; font-size: 34px; color: var(--orange); letter-spacing: 3px; line-height: 1; }
+.hdr-sub { font-family: 'DM Mono', monospace; font-size: 9px; color: #666; letter-spacing: 2px; text-transform: uppercase; }
+.hdr-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.name-wrap { display: flex; align-items: center; gap: 6px; }
+.name-wrap label { font-size: 9px; color: #666; font-family: 'DM Mono', monospace; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+.name-input {
+  background: #251C0E;
+  border: 1px solid #3a3a3a;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  width: 140px;
+  outline: none;
+}
+.name-input:focus { border-color: var(--orange); }
+.btn {
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.btn-ghost { background: transparent; color: #888; border: 1px solid #3a3a3a; }
+.btn-ghost:hover { color: white; border-color: #777; }
+.btn-pdf { background: #B03020; color: white; border: none; }
+.btn-pdf:hover { background: #8A2010; }
+
+/* ── PDF overlay ── */
+.pdf-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+.pdf-overlay.show { display: flex; }
+.pdf-spin { width: 38px; height: 38px; border: 3px solid #333; border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; }
+.pdf-overlay p { color: white; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  padding: 0 28px;
+  background: #0E0A04;
+  border-bottom: 1px solid #222;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 12px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  color: #444;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}
+.tab:hover { color: #aaa; }
+.tab.active { color: white; }
+.tab.active.t-ov      { border-color: var(--orange);  color: var(--orange);  }
+.tab.active.t-chip    { border-color: var(--chip);    color: #7BB8F0;        }
+.tab.active.t-nonchip { border-color: var(--nonchip); color: #6FD497;        }
+.tab.active.t-choc    { border-color: #A07050;        color: #E8B08A;        }
+.tab.active.t-candy   { border-color: var(--candy);   color: #C87AE8;        }
+.dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ════════════════════════════
+   OVERVIEW PAGE
+════════════════════════════ */
+.ov { padding: 28px 36px; max-width: 980px; margin: 0 auto; }
+.ov-hero { text-align: center; padding: 26px 0 22px; }
+.ov-hero h2 { font-family: 'Bebas Neue', sans-serif; font-size: 50px; letter-spacing: 4px; color: var(--orange); line-height: 1; }
+.ov-hero p  { font-size: 14px; color: var(--mid); margin-top: 8px; }
+.ov-dates   { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; color: #888; margin-top: 5px; }
+
+.sched-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin: 20px 0; }
+.sched-card { padding: 10px 12px; background: white; border-radius: 5px; border: 1px solid var(--line); }
+.sched-card.hi   { border-color: var(--orange); border-width: 2px; background: var(--orange-lt); }
+.sched-card.gold { background: linear-gradient(135deg, var(--gold-lt), #FDE8C0); border: 2px solid var(--gold); }
+.sched-name  { font-family: 'Bebas Neue', sans-serif; font-size: 15px; color: var(--orange); letter-spacing: 1px; }
+.sched-card.gold .sched-name { color: #7A5A00; }
+.sched-dates { font-family: 'DM Mono', monospace; font-size: 9px; color: #888; letter-spacing: 1px; margin-top: 2px; }
+.sched-note  { font-size: 9px; color: var(--orange); margin-top: 3px; font-weight: 600; }
+
+.elite-banner {
+  background: linear-gradient(135deg, var(--orange), var(--orange-dk));
+  color: white;
+  padding: 15px 20px;
+  border-radius: 7px;
+  margin: 14px 0;
+}
+.elite-banner h3 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; }
+.elite-banner p  { font-size: 12px; opacity: 0.9; margin-top: 4px; line-height: 1.5; }
+
+.league-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0; }
+.lcard {
+  padding: 14px 16px;
+  border-radius: 7px;
+  border-left: 5px solid;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.lcard:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
+.lcard.chip    { background: var(--chip-lt);    border-color: var(--chip);    }
+.lcard.nonchip { background: var(--nonchip-lt); border-color: var(--nonchip); }
+.lcard.choc    { background: var(--choc-lt);    border-color: var(--choc);    }
+.lcard.candy   { background: var(--candy-lt);   border-color: var(--candy);   }
+.lcard h3 { font-family: 'Bebas Neue', sans-serif; font-size: 19px; letter-spacing: 1px; margin-bottom: 2px; }
+.lcard p  { font-size: 10px; opacity: 0.6; margin-bottom: 8px; }
+.prog-lbl  { font-size: 9px; font-family: 'DM Mono', monospace; letter-spacing: 1px; color: #666; }
+.prog-bar  { height: 3px; background: rgba(0,0,0,0.1); border-radius: 2px; margin-top: 4px; }
+.prog-fill { height: 100%; border-radius: 2px; transition: width 0.3s; opacity: 0.65; background: currentColor; }
+
+/* Finals section on overview */
+.finals-sec { margin: 24px 0 0; }
+.finals-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; border-bottom: 3px solid var(--orange); padding-bottom: 6px; margin-bottom: 5px; }
+.finals-sub { font-size: 10px; color: #888; font-family: 'DM Mono', monospace; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+.finals-layout { display: grid; grid-template-columns: 1fr 28px 1fr 28px 1fr; align-items: center; }
+.fc { display: flex; flex-direction: column; }
+.fc-hdr { text-align: center; font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: #999; padding-bottom: 7px; margin-bottom: 6px; border-bottom: 1px solid var(--line); }
+.fc-hdr.gold { color: var(--gold); }
+.finals-arrow { text-align: center; font-size: 18px; color: #C8B090; padding-top: 22px; }
+.ff-sep { height: 14px; }
+
+/* FF/Champ slot containers */
+.ff-slot {
+  padding: 7px 9px;
+  margin: 3px;
+  border-radius: 4px;
+  border: 1.5px solid var(--line);
+  background: white;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  font-size: 11px;
+}
+.ff-slot.empty { background: #FAFAFA; border-style: dashed; border-color: #ddd; }
+.ff-tag { font-size: 8px; font-family: 'DM Mono', monospace; padding: 1px 5px; border-radius: 2px; white-space: nowrap; flex-shrink: 0; }
+.ff-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ff-name.dim { color: #bbb; font-style: italic; }
+.ff-vs { text-align: center; font-size: 8px; font-family: 'DM Mono', monospace; color: #ccc; padding: 1px 3px; letter-spacing: 1px; }
+
+/* Picker (for FF / champ selection) */
+.picker { border: 1.5px solid var(--line); border-radius: 4px; background: white; margin: 3px; overflow: hidden; }
+.p-opt  { display: flex; align-items: center; gap: 6px; padding: 6px 8px; cursor: pointer; font-size: 11px; transition: background 0.1s; border-bottom: 1px solid #f0f0f0; }
+.p-opt:last-child { border-bottom: none; }
+.p-opt:hover { background: #FFF5EE; }
+.p-opt.sel { background: var(--orange-lt); font-weight: 700; }
+.p-opt .p-seed  { font-family: 'DM Mono', monospace; font-size: 8px; color: #aaa; min-width: 14px; text-align: right; }
+.p-opt .p-check { font-size: 10px; color: var(--orange); margin-left: auto; }
+
+/* Big champ display */
+.big-champ { margin-top: 20px; padding: 18px 22px; border-radius: 9px; background: linear-gradient(135deg, var(--gold-lt), #FDECC0); border: 3px solid var(--gold); text-align: center; }
+.big-champ label { display: block; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #8A6000; margin-bottom: 6px; }
+.big-champ-name { font-family: 'Bebas Neue', sans-serif; font-size: 40px; letter-spacing: 3px; color: #7A5000; min-height: 50px; }
+
+/* ════════════════════════════
+   LEAGUE BRACKET PAGES
+════════════════════════════ */
+.br-page { padding: 20px 18px; overflow-x: auto; }
+
+.league-hdr {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding: 11px 16px;
+  border-radius: 7px;
+  border-left: 5px solid;
+}
+.league-hdr.chip    { background: var(--chip-lt);    border-color: var(--chip);    }
+.league-hdr.nonchip { background: var(--nonchip-lt); border-color: var(--nonchip); }
+.league-hdr.choc    { background: var(--choc-lt);    border-color: var(--choc);    }
+.league-hdr.candy   { background: var(--candy-lt);   border-color: var(--candy);   }
+.league-hdr-emoji { font-size: 24px; }
+.league-hdr h2 { font-family: 'Bebas Neue', sans-serif; font-size: 23px; letter-spacing: 2px; }
+.league-hdr p  { font-size: 10px; font-family: 'DM Mono', monospace; letter-spacing: 1px; opacity: 0.6; text-transform: uppercase; margin-top: 2px; }
+.rst-btn {
+  margin-left: auto;
+  font-size: 11px;
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #777;
+  font-family: 'DM Sans', sans-serif;
+  flex-shrink: 0;
+  transition: border-color 0.12s, color 0.12s;
+}
+.rst-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+/* Bracket columns layout */
+.br-grid { display: flex; min-width: 960px; width: 100%; }
+.br-col  { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.br-col-hdr {
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #999;
+  padding: 0 4px 7px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+  min-height: 35px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2px;
+}
+.br-col-hdr .sub { font-size: 7px; color: #bbb; letter-spacing: 1px; }
+.br-col-hdr.elite { color: var(--orange); }
+.br-col-hdr.elite .sub { color: #D09060; }
+.br-col-hdr.gold  { color: var(--gold); }
+.br-col-hdr.gold .sub  { color: #A08000; }
+
+/* Matchup card */
+.mu-card {
+  background: white;
+  border: 1.5px solid #E2D0BA;
+  border-radius: 6px;
+  margin: 3px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.mu-card.later { border-color: #ddd; box-shadow: none; }
+.mu-num { font-family: 'DM Mono', monospace; font-size: 7px; color: #bbb; letter-spacing: 1px; text-transform: uppercase; padding: 3px 7px 1px; }
+.mu-div { display: flex; align-items: center; gap: 4px; padding: 0 7px; }
+.mu-div-line { flex: 1; height: 1px; background: #eee; }
+.mu-div-vs   { font-size: 7px; font-family: 'DM Mono', monospace; color: #ccc; letter-spacing: 1px; }
+
+/* Slots inside matchup cards */
+.sl {
+  padding: 4px 7px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  font-size: 10.5px;
+  line-height: 1.2;
+  background: transparent;
+  position: relative;
+  cursor: default;
+}
+.sl.click { cursor: pointer; transition: background 0.1s; }
+.sl.click:hover { background: #FFF5EE; }
+.sl.sel { background: var(--orange-lt) !important; font-weight: 700; }
+.sl.sel::after { content: '✓'; position: absolute; right: 7px; font-size: 9px; color: var(--orange); }
+.sl.sel .sl-seed { background: rgba(232,119,34,0.2); color: var(--orange-dk); }
+.sl.empty .sl-name { color: #bbb; font-style: italic; font-size: 10px; }
+.sl-seed {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  color: #aaa;
+  min-width: 18px;
+  flex-shrink: 0;
+  text-align: center;
+  background: #F0ECE6;
+  border-radius: 2px;
+  padding: 1px 3px;
+}
+.sl-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* League champion display box */
+.gold-slot-box {
+  border: 2px solid var(--gold);
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--gold-lt), #FDECC0);
+  margin: 2px 3px;
+  padding: 4px 7px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  font-size: 10.5px;
+}
+.gold-slot-box .sl-seed { background: rgba(200,160,0,0.2); color: #8A6000; }
+.gold-slot-box .sl-name { font-weight: 700; color: #7A5000; }
+.empty-champ-box {
+  border: 2px dashed #ddd;
+  border-radius: 6px;
+  background: #FAFAFA;
+  margin: 2px 3px;
+  padding: 4px 7px;
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+}
+
+.champ-box { margin: 16px 0 2px; padding: 13px 16px; border-radius: 6px; text-align: center; }
+.champ-box label { display: block; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px; opacity: 0.65; }
+.champ-name { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; min-height: 34px; }
+
+/* Next league footer */
+.next-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding: 12px 4px; }
+.next-lbl { font-size: 10px; color: #aaa; font-family: 'DM Mono', monospace; letter-spacing: 1px; text-transform: uppercase; }
+.next-btn {
+  padding: 10px 22px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  transition: background 0.15s, transform 0.12s;
+  letter-spacing: 0.3px;
+}
+.next-btn:hover { transform: translateX(2px); }
+.next-chip    { background: var(--chip);    color: white; }
+.next-chip:hover    { background: #163D6E; }
+.next-nonchip { background: var(--nonchip); color: white; }
+.next-nonchip:hover { background: #145430; }
+.next-choc    { background: var(--choc);    color: white; }
+.next-choc:hover    { background: #3E1A04; }
+.next-candy   { background: var(--candy);   color: white; }
+.next-candy:hover   { background: #4A0A5A; }
+.next-finals  { background: var(--orange);  color: white; }
+.next-finals:hover  { background: var(--orange-dk); }
+
+
+</style>
+</head>
+<body>
+
+
+<!-- PDF loading overlay -->
+<div class="pdf-overlay" id="pdfOverlay">
+  <div class="pdf-spin"></div>
+  <p>GENERATING PDF…</p>
+</div>
+
+<!-- ════ HEADER ════ -->
+<div class="hdr">
+  <div class="hdr-left">
+    <span class="hdr-title">MUNCH MADNESS</span>
+    <span class="hdr-sub">2026 Pick'em Snacket</span>
+  </div>
+  <div class="hdr-right">
+    <div class="name-wrap">
+      <label for="playerName">Your Name</label>
+      <input class="name-input" type="text" id="playerName" placeholder="Enter your name…">
+    </div>
+    <button class="btn btn-ghost" onclick="resetAll()">↺ Reset All</button>
+    <button class="btn btn-ghost" onclick="debugPicks()" style="color:#aaa;">🔍 Debug</button>
+    <button class="btn btn-pdf"   onclick="exportPDF()">⬇ Export PDF</button>
+  </div>
+</div>
+
+<!-- ════ TABS ════ -->
+<div class="tabs" id="tabBar">
+  <div class="tab t-ov active"      onclick="showTab('pg-overview', this)">🏆 Overview &amp; Finals</div>
+  <div class="tab t-chip"           onclick="showTab('pg-l1', this)"><span class="dot" style="background:var(--chip)"></span>Savory — Chips</div>
+  <div class="tab t-nonchip"        onclick="showTab('pg-l2', this)"><span class="dot" style="background:var(--nonchip)"></span>Savory — Non-Chips</div>
+  <div class="tab t-choc"           onclick="showTab('pg-l3', this)"><span class="dot" style="background:var(--choc)"></span>Chocolate</div>
+  <div class="tab t-candy"          onclick="showTab('pg-l4', this)"><span class="dot" style="background:var(--candy)"></span>Candy</div>
+</div>
+
+<!-- ════════════════════════════════════
+     OVERVIEW + FINALS PAGE
+════════════════════════════════════ -->
+<div id="pg-overview" class="page active">
+  <div class="ov">
+
+    <div class="ov-hero">
+      <h2>🏆 MUNCH MADNESS 🏆</h2>
+      <p>The Ultimate Office Snack Tournament · 64 Snacks · 4 Leagues · One Champion</p>
+      <div class="ov-dates">MARCH 9 – APRIL 6, 2026</div>
+    </div>
+
+    <div class="sched-grid">
+      <div class="sched-card">
+        <div class="sched-name">Round of 64</div>
+        <div class="sched-dates">Mar 9–12</div>
+      </div>
+      <div class="sched-card">
+        <div class="sched-name">Round of 32</div>
+        <div class="sched-dates">Mar 13–18</div>
+      </div>
+      <div class="sched-card">
+        <div class="sched-name">Sweet Sixteen</div>
+        <div class="sched-dates">Mar 19–23</div>
+      </div>
+      <div class="sched-card hi">
+        <div class="sched-name">The Elite Ate 🍽️</div>
+        <div class="sched-dates">Mar 23–27</div>
+        <div class="sched-note">Live snacks in NYC &amp; ATL!</div>
+      </div>
+      <div class="sched-card">
+        <div class="sched-name">Final Four</div>
+        <div class="sched-dates">Mar 28–Apr 1</div>
+      </div>
+      <div class="sched-card gold">
+        <div class="sched-name">Championship 🏆</div>
+        <div class="sched-dates">Apr 1 → Apr 6</div>
+      </div>
+    </div>
+
+    <div class="elite-banner">
+      <h3>🍽️ THE ELITE ATE — Live Snack Experience (Mar 23–27)</h3>
+      <p>All 8 Elite Eight snacks will be ordered and available in person in the <strong>New York</strong> and <strong>Atlanta</strong> offices during voting week. Taste before you vote!</p>
+    </div>
+
+    <div class="league-cards">
+      <div class="lcard chip"    onclick="showTab('pg-l1', tabAt(1))">
+        <h3>🥔 Savory — Chips</h3>
+        <p>16 snacks · Click to fill your snacket</p>
+        <div class="prog-lbl" id="pr-chip">0 / 15 picks made</div>
+        <div class="prog-bar" style="color:var(--chip)"><div class="prog-fill" id="pb-chip" style="width:0%"></div></div>
+      </div>
+      <div class="lcard nonchip" onclick="showTab('pg-l2', tabAt(2))">
+        <h3>🥨 Savory — Non-Chips</h3>
+        <p>16 snacks · Click to fill your snacket</p>
+        <div class="prog-lbl" id="pr-nonchip">0 / 15 picks made</div>
+        <div class="prog-bar" style="color:var(--nonchip)"><div class="prog-fill" id="pb-nonchip" style="width:0%"></div></div>
+      </div>
+      <div class="lcard choc"    onclick="showTab('pg-l3', tabAt(3))">
+        <h3>🍫 Chocolate</h3>
+        <p>16 snacks · Click to fill your snacket</p>
+        <div class="prog-lbl" id="pr-choc">0 / 15 picks made</div>
+        <div class="prog-bar" style="color:var(--choc)"><div class="prog-fill" id="pb-choc" style="width:0%"></div></div>
+      </div>
+      <div class="lcard candy"   onclick="showTab('pg-l4', tabAt(4))">
+        <h3>🍬 Candy</h3>
+        <p>16 snacks · Click to fill your snacket</p>
+        <div class="prog-lbl" id="pr-candy">0 / 15 picks made</div>
+        <div class="prog-bar" style="color:var(--candy)"><div class="prog-fill" id="pb-candy" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- FINALS -->
+    <div class="finals-sec">
+      <div class="finals-title">Munch Madness Final Four &amp; Championship</div>
+      <div class="finals-sub">Complete all 4 league snackets first · League champions auto-populate below · Click to pick your winners</div>
+
+      <div class="finals-layout">
+
+        <!-- Final Four matchups -->
+        <div class="fc">
+          <div class="fc-hdr">Final Four · Mar 28 – Apr 1</div>
+          <div id="ffL1"></div>
+          <div class="ff-vs">vs</div>
+          <div id="ffL2"></div>
+          <div class="ff-sep"></div>
+          <div id="ffL3"></div>
+          <div class="ff-vs">vs</div>
+          <div id="ffL4"></div>
+        </div>
+
+        <div class="finals-arrow">→</div>
+
+        <!-- Finalists -->
+        <div class="fc">
+          <div class="fc-hdr">Championship · Apr 1</div>
+          <div style="flex:1;min-height:8px"></div>
+          <div id="ffFin1"></div>
+          <div style="height:18px"></div>
+          <div id="ffFin2"></div>
+          <div style="flex:1;min-height:8px"></div>
+        </div>
+
+        <div class="finals-arrow">→</div>
+
+        <!-- Champion -->
+        <div class="fc">
+          <div class="fc-hdr gold">🏆 Champion · Apr 6</div>
+          <div style="flex:1;min-height:8px"></div>
+          <div id="ffChamp"></div>
+          <div style="flex:1;min-height:8px"></div>
+        </div>
+
+      </div>
+
+      <div class="big-champ">
+        <label>🏆 My Snacket Champion Pick</label>
+        <div class="big-champ-name" id="bigChampName">—</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     LEAGUE 1: SAVORY — CHIPS
+════════════════════════════════════ -->
+<div id="pg-l1" class="page">
+  <div class="br-page">
+    <div class="league-hdr chip">
+      <div class="league-hdr-emoji">🥔</div>
+      <div>
+        <h2 style="color:var(--chip)">League 1: Savory — Chips</h2>
+        <p>Click a snack in each matchup to advance it</p>
+      </div>
+      <button class="rst-btn" onclick="resetLeague('l1')">Reset</button>
+    </div>
+    <div id="br-l1" class="br-grid"></div>
+    <div class="champ-box" style="background:var(--chip-lt);border:2px solid var(--chip)">
+      <label style="color:var(--chip)">League 1 Champion</label>
+      <div class="champ-name" id="cn-l1" style="color:var(--chip)">—</div>
+    </div>
+    <div class="next-bar">
+      <span class="next-lbl">League 1 of 4</span>
+      <button class="next-btn next-nonchip" onclick="showTab('pg-l2', tabAt(2))">Next: Savory — Non-Chips 🥨 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     LEAGUE 2: SAVORY — NON-CHIPS
+════════════════════════════════════ -->
+<div id="pg-l2" class="page">
+  <div class="br-page">
+    <div class="league-hdr nonchip">
+      <div class="league-hdr-emoji">🥨</div>
+      <div>
+        <h2 style="color:var(--nonchip)">League 2: Savory — Non-Chips</h2>
+        <p>Click a snack in each matchup to advance it</p>
+      </div>
+      <button class="rst-btn" onclick="resetLeague('l2')">Reset</button>
+    </div>
+    <div id="br-l2" class="br-grid"></div>
+    <div class="champ-box" style="background:var(--nonchip-lt);border:2px solid var(--nonchip)">
+      <label style="color:var(--nonchip)">League 2 Champion</label>
+      <div class="champ-name" id="cn-l2" style="color:var(--nonchip)">—</div>
+    </div>
+    <div class="next-bar">
+      <span class="next-lbl">League 2 of 4</span>
+      <button class="next-btn next-choc" onclick="showTab('pg-l3', tabAt(3))">Next: Chocolate 🍫 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     LEAGUE 3: CHOCOLATE
+════════════════════════════════════ -->
+<div id="pg-l3" class="page">
+  <div class="br-page">
+    <div class="league-hdr choc">
+      <div class="league-hdr-emoji">🍫</div>
+      <div>
+        <h2 style="color:var(--choc)">League 3: Chocolate</h2>
+        <p>Click a snack in each matchup to advance it</p>
+      </div>
+      <button class="rst-btn" onclick="resetLeague('l3')">Reset</button>
+    </div>
+    <div id="br-l3" class="br-grid"></div>
+    <div class="champ-box" style="background:var(--choc-lt);border:2px solid var(--choc)">
+      <label style="color:var(--choc)">League 3 Champion</label>
+      <div class="champ-name" id="cn-l3" style="color:var(--choc)">—</div>
+    </div>
+    <div class="next-bar">
+      <span class="next-lbl">League 3 of 4</span>
+      <button class="next-btn next-candy" onclick="showTab('pg-l4', tabAt(4))">Next: Candy 🍬 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     LEAGUE 4: CANDY
+════════════════════════════════════ -->
+<div id="pg-l4" class="page">
+  <div class="br-page">
+    <div class="league-hdr candy">
+      <div class="league-hdr-emoji">🍬</div>
+      <div>
+        <h2 style="color:var(--candy)">League 4: Candy</h2>
+        <p>Click a snack in each matchup to advance it</p>
+      </div>
+      <button class="rst-btn" onclick="resetLeague('l4')">Reset</button>
+    </div>
+    <div id="br-l4" class="br-grid"></div>
+    <div class="champ-box" style="background:var(--candy-lt);border:2px solid var(--candy)">
+      <label style="color:var(--candy)">League 4 Champion</label>
+      <div class="champ-name" id="cn-l4" style="color:var(--candy)">—</div>
+    </div>
+    <div class="next-bar">
+      <span class="next-lbl">League 4 of 4 — All leagues complete!</span>
+      <button class="next-btn next-finals" onclick="showTab('pg-overview', tabAt(0))">Go to Finals 🏆 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ─── SNACK DATA ─── */
+const LEAGUES = {
+  l1: {
+    name: 'Savory — Chips', emoji: '🥔', color: '#1B4F8A',
+    snacks: [
+      { seed:  1, name: 'Cool Ranch Doritos'       },
+      { seed:  2, name: 'SunChips'                 },
+      { seed:  3, name: 'Kettle Chips - Jalapeño'  },
+      { seed:  4, name: 'Salt & Vinegar Chips'     },
+      { seed:  5, name: 'Nacho Cheese Doritos'     },
+      { seed:  6, name: 'Kettle Chips - Plain'     },
+      { seed:  7, name: 'Tortilla Chips'           },
+      { seed:  8, name: "Flamin' Hot Cheetos"      },
+      { seed:  9, name: 'Sour Cream & Onion Chips' },
+      { seed: 10, name: 'Cheetos - Plain'          },
+      { seed: 11, name: 'Lays Potato Chips'        },
+      { seed: 12, name: 'Lays BBQ Potato Chips'    },
+      { seed: 13, name: 'Pringles - Plain'         },
+      { seed: 14, name: 'Pita Chips'               },
+      { seed: 15, name: 'Fritos'                   },
+      { seed: 16, name: 'Takis'                    },
+    ]
+  },
+  l2: {
+    name: 'Savory — Non-Chips', emoji: '🥨', color: '#1A6B3A',
+    snacks: [
+      { seed:  1, name: 'Smartfood White Cheddar'   },
+      { seed:  2, name: 'PB-filled Pretzel Bites'   },
+      { seed:  3, name: 'Goldfish'                  },
+      { seed:  4, name: 'Wheat Thins'               },
+      { seed:  5, name: 'Cheez-Its'                 },
+      { seed:  6, name: 'Classic Pretzels'          },
+      { seed:  7, name: 'Beef Jerky'                },
+      { seed:  8, name: "Pirate's Booty"            },
+      { seed:  9, name: 'Choc. Covered Almonds'     },
+      { seed: 10, name: 'Skinny Pop - Sea Salt'     },
+      { seed: 11, name: 'Ritz Crackers'             },
+      { seed: 12, name: 'Kettlecorn'               },
+      { seed: 13, name: 'Salted Roasted Peanuts'    },
+      { seed: 14, name: 'String Cheese'             },
+      { seed: 15, name: 'Triscuits'                 },
+      { seed: 16, name: 'Wasabi Peas'               },
+    ]
+  },
+  l3: {
+    name: 'Chocolate', emoji: '🍫', color: '#5C2A0A',
+    snacks: [
+      { seed:  1, name: 'Peanut M&Ms'               },
+      { seed:  2, name: "TJ's Dark Choc PB Cups"    },
+      { seed:  3, name: 'Snickers'                  },
+      { seed:  4, name: 'Dark Chocolate'            },
+      { seed:  5, name: 'Heath Bar'                 },
+      { seed:  6, name: 'Twix'                      },
+      { seed:  7, name: 'Butterfinger'              },
+      { seed:  8, name: "Reese's Cups"              },
+      { seed:  9, name: 'Kit Kat'                   },
+      { seed: 10, name: 'Oreos'                     },
+      { seed: 11, name: "Hershey's Cookies & Cream" },
+      { seed: 12, name: '100 Grand'                 },
+      { seed: 13, name: 'Peppermint Patty'          },
+      { seed: 14, name: 'Milky Way'                 },
+      { seed: 15, name: 'Three Musketeers'          },
+      { seed: 16, name: 'M&Ms'                      },
+    ]
+  },
+  l4: {
+    name: 'Candy', emoji: '🍬', color: '#6B1A8A',
+    snacks: [
+      { seed:  1, name: 'Sour Patch Kids'      },
+      { seed:  2, name: 'Swedish Fish'         },
+      { seed:  3, name: 'Hi-Chew'              },
+      { seed:  4, name: 'Sour Worms'           },
+      { seed:  5, name: 'Peach Rings'          },
+      { seed:  6, name: 'Nerds'                },
+      { seed:  7, name: 'Starbursts'           },
+      { seed:  8, name: 'Skittles'             },
+      { seed:  9, name: 'Airheads'             },
+      { seed: 10, name: 'Fruit Leather'        },
+      { seed: 11, name: 'Haribo Gummy Bears'   },
+      { seed: 12, name: 'Fruit Snacks'         },
+      { seed: 13, name: 'Twizzlers'            },
+      { seed: 14, name: 'Fruit Roll-Up'        },
+      { seed: 15, name: 'Laffy Taffy'          },
+      { seed: 16, name: 'Jelly Beans'          },
+    ]
+  }
+};
+
+const ROUND_NAMES  = ['Round of 64', 'Round of 32', 'Sweet Sixteen', 'The Elite Ate 🍽️'];
+const ROUND_DATES  = ['Mar 9–12',    'Mar 13–18',   'Mar 19–23',     'Mar 23–27'];
+
+/* picks[lid][round][matchupIndex] = snack object or undefined */
+const picks = {
+  l1: { 0:{}, 1:{}, 2:{}, 3:{} },
+  l2: { 0:{}, 1:{}, 2:{}, 3:{} },
+  l3: { 0:{}, 1:{}, 2:{}, 3:{} },
+  l4: { 0:{}, 1:{}, 2:{}, 3:{} },
+};
+
+/* ffPick[0] = winner of l1 vs l2,  ffPick[1] = winner of l3 vs l4 */
+const ffPick = { 0: null, 1: null };
+let champPick = null;
+
+/* ─── BRACKET LOGIC ─── */
+function r64(snacks) {
+  return [
+    [snacks[0], snacks[15]], [snacks[1], snacks[14]],
+    [snacks[2], snacks[13]], [snacks[3], snacks[12]],
+    [snacks[4], snacks[11]], [snacks[5], snacks[10]],
+    [snacks[6], snacks[9]],  [snacks[7], snacks[8]],
+  ];
+}
+
+function matchupsForRound(lid, round) {
+  if (round === 0) return r64(LEAGUES[lid].snacks);
+  const prev = picks[lid][round - 1];
+  const count = [8, 4, 2, 1][round - 1];
+  const out = [];
+  for (let i = 0; i < count; i += 2) out.push([prev[i] || null, prev[i + 1] || null]);
+  return out;
+}
+
+function clearDownstream(lid, round, mi) {
+  if (round >= 3) return;
+  const next = Math.floor(mi / 2);
+  delete picks[lid][round + 1][next];
+  clearDownstream(lid, round + 1, next);
+}
+
+/* ─── RENDER LEAGUE BRACKET ─── */
+function renderLeague(lid) {
+  const container = document.getElementById('br-' + lid);
+  container.innerHTML = '';
+
+  /* 4 round columns */
+  for (let r = 0; r < 4; r++) {
+    const col = document.createElement('div');
+    col.className = 'br-col';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'br-col-hdr' + (r === 3 ? ' elite' : '');
+    hdr.innerHTML = `${ROUND_NAMES[r]}<span class="sub">${ROUND_DATES[r]}</span>`;
+    col.appendChild(hdr);
+
+    const matchups = matchupsForRound(lid, r);
+    matchups.forEach((pair, mi) => {
+      /* vertical spacer so later rounds center against R64 */
+      if (r > 0) { const sp = document.createElement('div'); sp.style.flex = '1'; col.appendChild(sp); }
+
+      const card = document.createElement('div');
+      card.className = 'mu-card' + (r > 0 ? ' later' : '');
+
+      /* Matchup number label in R64 */
+      if (r === 0) {
+        const lbl = document.createElement('div');
+        lbl.className = 'mu-num';
+        lbl.textContent = 'Matchup ' + (mi + 1);
+        card.appendChild(lbl);
+      }
+
+      card.appendChild(makeSlot(lid, r, mi, pair[0]));
+
+      const divider = document.createElement('div');
+      divider.className = 'mu-div';
+      divider.innerHTML = '<div class="mu-div-line"></div><div class="mu-div-vs">vs</div><div class="mu-div-line"></div>';
+      card.appendChild(divider);
+
+      card.appendChild(makeSlot(lid, r, mi, pair[1]));
+      col.appendChild(card);
+
+      if (r > 0) { const sp = document.createElement('div'); sp.style.flex = '1'; col.appendChild(sp); }
+      if (r === 0 && mi < matchups.length - 1) { const gap = document.createElement('div'); gap.style.height = '6px'; col.appendChild(gap); }
+    });
+
+    container.appendChild(col);
+  }
+
+  /* League champion column */
+  const champCol = document.createElement('div');
+  champCol.className = 'br-col';
+
+  const champHdr = document.createElement('div');
+  champHdr.className = 'br-col-hdr gold';
+  champHdr.innerHTML = 'League Champ<span class="sub">→ Final Four</span>';
+  champCol.appendChild(champHdr);
+
+  const champFlex1 = document.createElement('div'); champFlex1.style.flex = '1'; champCol.appendChild(champFlex1);
+
+  const winner = picks[lid][3][0] || null;
+  if (winner) {
+    const box = document.createElement('div');
+    box.className = 'gold-slot-box';
+    box.innerHTML = `<span class="sl-seed">${winner.seed}</span><span class="sl-name">${winner.name} 🏆</span>`;
+    champCol.appendChild(box);
+  } else {
+    const box = document.createElement('div');
+    box.className = 'empty-champ-box';
+    box.innerHTML = '<span class="sl-name" style="color:#bbb;font-style:italic;font-size:10px;">Champion TBD</span>';
+    champCol.appendChild(box);
+  }
+
+  const champFlex2 = document.createElement('div'); champFlex2.style.flex = '1'; champCol.appendChild(champFlex2);
+  container.appendChild(champCol);
+
+  /* Update champion name display */
+  const cn = document.getElementById('cn-' + lid);
+  if (cn) cn.textContent = winner ? winner.name : '—';
+
+  validateFFPicks();
+  renderFinals();
+  updateProgress();
+}
+
+function makeSlot(lid, round, mi, snack) {
+  const el = document.createElement('div');
+  el.className = 'sl';
+
+  if (snack) {
+    el.classList.add('click');
+    const w = picks[lid][round][mi];
+    if (w && w.seed === snack.seed && w.name === snack.name) el.classList.add('sel');
+    el.innerHTML = `<span class="sl-seed">${snack.seed}</span><span class="sl-name">${snack.name}</span>`;
+    el.addEventListener('click', () => {
+      picks[lid][round][mi] = snack;
+      clearDownstream(lid, round, mi);
+      renderLeague(lid);
+    });
+  } else {
+    el.classList.add('empty');
+    el.innerHTML = '<span class="sl-seed" style="visibility:hidden">0</span><span class="sl-name">Awaiting winner…</span>';
+  }
+  return el;
+}
+
+/* ─── FINAL FOUR + CHAMPIONSHIP ─── */
+const TAG_CFG = {
+  l1: { label: 'Chips',      bg: 'var(--chip-lt)',    color: 'var(--chip)'    },
+  l2: { label: 'Non-Chips',  bg: 'var(--nonchip-lt)', color: 'var(--nonchip)' },
+  l3: { label: 'Chocolate',  bg: 'var(--choc-lt)',    color: 'var(--choc)'    },
+  l4: { label: 'Candy',      bg: 'var(--candy-lt)',   color: 'var(--candy)'   },
+};
+
+function champ(lid) { return picks[lid][3][0] || null; }
+
+function validateFFPicks() {
+  const c1 = champ('l1'), c2 = champ('l2');
+  const c3 = champ('l3'), c4 = champ('l4');
+
+  if (ffPick[0] && ![c1, c2].some(c => c && c.name === ffPick[0].name)) {
+    ffPick[0] = null; champPick = null;
+  }
+  if (ffPick[1] && ![c3, c4].some(c => c && c.name === ffPick[1].name)) {
+    ffPick[1] = null; champPick = null;
+  }
+  if (champPick && ![ffPick[0], ffPick[1]].some(f => f && f.name === champPick.name)) {
+    champPick = null;
+  }
+}
+
+function renderFinals() {
+  /* League champ slots */
+  renderLeagueSlot('ffL1', 'l1', champ('l1'));
+  renderLeagueSlot('ffL2', 'l2', champ('l2'));
+  renderLeagueSlot('ffL3', 'l3', champ('l3'));
+  renderLeagueSlot('ffL4', 'l4', champ('l4'));
+
+  /* Finalist pickers */
+  renderFFPicker('ffFin1', [champ('l1'), champ('l2')], 0);
+  renderFFPicker('ffFin2', [champ('l3'), champ('l4')], 1);
+
+  /* Championship picker */
+  renderChampPicker('ffChamp', [ffPick[0], ffPick[1]].filter(Boolean));
+
+  /* Big champ display */
+  const el = document.getElementById('bigChampName');
+  if (el) el.textContent = champPick ? champPick.name + ' 🏆' : '—';
+}
+
+function renderLeagueSlot(elId, lid, snack) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const cfg = TAG_CFG[lid];
+  el.innerHTML = '';
+  const slot = document.createElement('div');
+  slot.className = 'ff-slot' + (snack ? '' : ' empty');
+  if (snack) {
+    slot.innerHTML = `<span class="ff-tag" style="background:${cfg.bg};color:${cfg.color}">${cfg.label}</span><span class="ff-name">${snack.name}</span>`;
+  } else {
+    slot.innerHTML = `<span class="ff-tag" style="background:${cfg.bg};color:${cfg.color}">${cfg.label}</span><span class="ff-name dim">Champ TBD</span>`;
+  }
+  el.appendChild(slot);
+}
+
+function renderFFPicker(elId, options, matchupIdx) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.innerHTML = '';
+
+  const valid = options.filter(Boolean);
+  if (valid.length < 2) {
+    const slot = document.createElement('div');
+    slot.className = 'ff-slot empty';
+    slot.innerHTML = `<span class="ff-name dim">${valid.length === 1 ? 'Pick opponent first' : 'Finalist TBD'}</span>`;
+    el.appendChild(slot);
+    return;
+  }
+
+  const wrap = document.createElement('div');
+  wrap.className = 'picker';
+  valid.forEach(snack => {
+    const row = document.createElement('div');
+    const isSel = ffPick[matchupIdx] && ffPick[matchupIdx].name === snack.name;
+    row.className = 'p-opt' + (isSel ? ' sel' : '');
+    row.innerHTML = `<span class="p-seed">${snack.seed}</span><span style="flex:1">${snack.name}</span>${isSel ? '<span class="p-check">✓</span>' : ''}`;
+    row.addEventListener('click', () => {
+      ffPick[matchupIdx] = snack;
+      if (champPick && ![ffPick[0], ffPick[1]].some(f => f && f.name === champPick.name)) champPick = null;
+      renderFinals();
+    });
+    wrap.appendChild(row);
+  });
+  el.appendChild(wrap);
+}
+
+function renderChampPicker(elId, options) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.innerHTML = '';
+
+  const valid = options.filter(Boolean);
+  if (valid.length < 2) {
+    const slot = document.createElement('div');
+    slot.className = 'ff-slot empty';
+    slot.innerHTML = `<span class="ff-name dim">${valid.length === 1 ? 'Pick other finalist' : 'Finalists TBD'}</span>`;
+    el.appendChild(slot);
+    return;
+  }
+
+  const wrap = document.createElement('div');
+  wrap.className = 'picker';
+  valid.forEach(snack => {
+    const row = document.createElement('div');
+    const isSel = champPick && champPick.name === snack.name;
+    row.className = 'p-opt' + (isSel ? ' sel' : '');
+    row.innerHTML = `<span class="p-seed">${snack.seed}</span><span style="flex:1">🏆 ${snack.name}</span>${isSel ? '<span class="p-check">✓</span>' : ''}`;
+    row.addEventListener('click', () => { champPick = snack; renderFinals(); });
+    wrap.appendChild(row);
+  });
+  el.appendChild(wrap);
+}
+
+/* ─── PROGRESS BARS ─── */
+function countPicks(lid) {
+  let t = 0;
+  for (let r = 0; r < 4; r++) t += Object.keys(picks[lid][r]).length;
+  return t;
+}
+
+const PROG_MAP = { l1: 'chip', l2: 'nonchip', l3: 'choc', l4: 'candy' };
+
+function updateProgress() {
+  Object.entries(PROG_MAP).forEach(([lid, key]) => {
+    const c = countPicks(lid);
+    const lbl = document.getElementById('pr-' + key);
+    const bar = document.getElementById('pb-' + key);
+    if (lbl) lbl.textContent = `${c} / 15 picks made`;
+    if (bar) bar.style.width = Math.round(c / 15 * 100) + '%';
+  });
+}
+
+/* ─── TABS ─── */
+function tabAt(i) { return document.querySelectorAll('.tab')[i]; }
+
+function showTab(pageId, tabEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  if (tabEl) tabEl.classList.add('active');
+  updateProgress();
+}
+
+/* ─── RESET ─── */
+function resetLeague(lid) {
+  picks[lid] = { 0:{}, 1:{}, 2:{}, 3:{} };
+  if (['l1','l2'].includes(lid)) ffPick[0] = null;
+  if (['l3','l4'].includes(lid)) ffPick[1] = null;
+  champPick = null;
+  renderLeague(lid);
+}
+
+function resetAll() {
+  if (!confirm('Reset all picks? This cannot be undone.')) return;
+  ['l1','l2','l3','l4'].forEach(lid => { picks[lid] = { 0:{}, 1:{}, 2:{}, 3:{} }; });
+  ffPick[0] = null; ffPick[1] = null; champPick = null;
+  document.getElementById('playerName').value = '';
+  ['l1','l2','l3','l4'].forEach(renderLeague);
+}
+
+/* ─── DEBUG ─── */
+function debugPicks() {
+  let out = '=== PICKS STATE ===\n\n';
+  ['l1','l2','l3','l4'].forEach(lid => {
+    out += `League ${lid}:\n`;
+    for (let r = 0; r < 4; r++) {
+      const rnd = picks[lid][r];
+      const keys = Object.keys(rnd);
+      if (keys.length === 0) {
+        out += `  Round ${r}: (empty)\n`;
+      } else {
+        keys.forEach(k => {
+          const s = rnd[k];
+          out += `  Round ${r}[${k}]: seed=${s.seed} name="${s.name}"\n`;
+        });
+      }
+    }
+    out += '\n';
+  });
+  out += `ffPick[0]: ${ffPick[0] ? ffPick[0].name : 'null'}\n`;
+  out += `ffPick[1]: ${ffPick[1] ? ffPick[1].name : 'null'}\n`;
+  out += `champPick: ${champPick ? champPick.name : 'null'}\n`;
+  alert(out);
+}
+
+/* ─── PDF EXPORT ─── */
+function exportPDF() {
+  const overlay  = document.getElementById('pdfOverlay');
+  overlay.classList.add('show');
+
+  const name     = document.getElementById('playerName').value.trim();
+  const filename = name
+    ? `Munch_Madness_${name.replace(/\s+/g, '_')}.pdf`
+    : 'Munch_Madness_Snacket_2026.pdf';
+
+  const LC = {
+    l1: { color:'#1B4F8A', bg:'#D6E8F5', emoji:'🥔' },
+    l2: { color:'#1A6B3A', bg:'#D6F0E0', emoji:'🥨' },
+    l3: { color:'#5C2A0A', bg:'#F5E0D0', emoji:'🍫' },
+    l4: { color:'#6B1A8A', bg:'#EAD6F5', emoji:'🍬' },
+  };
+
+  /* Slot row HTML */
+  function slotH(snack, isWin, accent) {
+    if (!snack) return `<div style="height:20px;line-height:20px;padding:0 5px;color:#ccc;font-style:italic;font-size:8px;border:1px dashed #e0e0e0;border-radius:3px;margin:1px 0;background:#fafafa;">TBD</div>`;
+    const bg  = isWin ? accent + '18' : '#ffffff';
+    const bdr = isWin ? `2px solid ${accent}` : '1px solid #e0d8d0';
+    const fw  = isWin ? '700' : '400';
+    return `<div style="height:20px;display:flex;align-items:center;gap:4px;padding:0 4px;background:${bg};border:${bdr};border-radius:3px;margin:1px 0;overflow:hidden;">
+      <span style="font-size:7px;font-family:monospace;color:#999;background:#f0ece6;border-radius:2px;padding:0 3px;min-width:16px;text-align:center;flex-shrink:0;">${snack.seed}</span>
+      <span style="font-size:8.5px;font-weight:${fw};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">${snack.name}</span>
+      ${isWin ? `<span style="font-size:8px;color:${accent};flex-shrink:0;">✓</span>` : ''}
+    </div>`;
+  }
+
+  /* Matchup block HTML */
+  function muH(snackA, snackB, winner, accent, num) {
+    const wA = winner && snackA && winner.name === snackA.name;
+    const wB = winner && snackB && winner.name === snackB.name;
+    return `<div style="border:1.5px solid #e8ddd0;border-radius:4px;padding:3px;background:white;margin:2px 0;">
+      ${num != null ? `<div style="font-size:6.5px;font-family:monospace;color:#bbb;letter-spacing:1px;text-transform:uppercase;padding:0 2px 2px;"># ${num}</div>` : ''}
+      ${slotH(snackA, wA, accent)}
+      <div style="text-align:center;font-size:6.5px;font-family:monospace;color:#ccc;padding:0;letter-spacing:1px;">vs</div>
+      ${slotH(snackB, wB, accent)}
+    </div>`;
+  }
+
+  /* One league bracket as a rowspan table */
+  function leagueHTML(lid) {
+    const L    = LEAGUES[lid];
+    const lc   = LC[lid];
+
+    /* Build matchup pairs directly from picks and LEAGUES data.
+       Avoids relying on matchupsForRound closure which can misread
+       picks state at PDF generation time.
+
+       R64 pairs come from seedings (fixed).
+       R32 pairs: winners of adjacent R64 matchups face each other.
+       S16 pairs: winners of adjacent R32 matchups face each other.
+       E8  pair:  winners of the two S16 matchups face each other.       */
+    const sn   = LEAGUES[lid].snacks;
+    const p    = picks[lid];  // direct reference: p[round][matchupIdx]
+
+    // R64: 8 fixed matchups from seedings
+    const r64pairs = [
+      [sn[0], sn[15]], [sn[1], sn[14]], [sn[2], sn[13]], [sn[3], sn[12]],
+      [sn[4], sn[11]], [sn[5], sn[10]], [sn[6], sn[9]],  [sn[7], sn[8]],
+    ];
+    // R32: 4 matchups — winner of r64[0] vs winner of r64[1], etc.
+    const r32pairs = [
+      [p[0][0]||null, p[0][1]||null],
+      [p[0][2]||null, p[0][3]||null],
+      [p[0][4]||null, p[0][5]||null],
+      [p[0][6]||null, p[0][7]||null],
+    ];
+    // S16: 2 matchups — winner of r32[0] vs winner of r32[1], etc.
+    const s16pairs = [
+      [p[1][0]||null, p[1][1]||null],
+      [p[1][2]||null, p[1][3]||null],
+    ];
+    // E8: 1 matchup — winner of s16[0] vs winner of s16[1]
+    const e8pair = [p[2][0]||null, p[2][1]||null];
+
+    const w = p[3][0] || null;
+
+    const HDRS = [
+      { label:'Round of 64',   date:'Mar 9–12',   col:'#888'    },
+      { label:'Round of 32',   date:'Mar 13–18',  col:'#888'    },
+      { label:'Sweet Sixteen', date:'Mar 19–23',  col:'#888'    },
+      { label:'The Elite Ate', date:'Mar 23–27',  col:'#E87722' },
+      { label:'League Champ',  date:'→ Finals',   col:'#C8A000' },
+    ];
+
+    const hdrRow = HDRS.map(h =>
+      `<th style="padding:3px 3px 6px;text-align:center;font-family:monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;color:${h.col};border-bottom:2px solid #f0ece6;font-weight:600;white-space:nowrap;">
+        ${h.label}<br><span style="font-size:6px;color:#bbb;font-weight:400;">${h.date}</span>
+      </th>`
+    ).join('');
+
+    /* Build 8 rows. Each row always has a R64 cell.
+       R32  cells appear at rows 0,2,4,6  (rowspan 2, one per R32 matchup)
+       S16  cells appear at rows 0,4      (rowspan 4, one per S16 matchup)
+       E8   cell  appears at row  0       (rowspan 8, one E8 matchup)
+       Champ cell appears at row  0       (rowspan 8) */
+    let rows = '';
+    for (let row = 0; row < 8; row++) {
+      let cells = '';
+
+      // R64 — every row, participants from fixed seedings
+      const [a64, b64] = r64pairs[row];
+      cells += `<td style="padding:2px 3px;vertical-align:middle;border-right:1px solid #f0e8dc;">${muH(a64, b64, p[0][row]||null, lc.color, row + 1)}</td>`;
+
+      // R32 — rows 0,2,4,6 → matchup index row/2
+      if (row % 2 === 0) {
+        const idx32 = row / 2;
+        const [a32, b32] = r32pairs[idx32];
+        cells += `<td rowspan="2" style="padding:2px 3px;vertical-align:middle;border-right:1px solid #f0e8dc;">${muH(a32, b32, p[1][idx32]||null, lc.color, null)}</td>`;
+      }
+
+      // S16 — rows 0,4 → matchup index row/4
+      if (row % 4 === 0) {
+        const idx16 = row / 4;
+        const [a16, b16] = s16pairs[idx16];
+        cells += `<td rowspan="4" style="padding:2px 3px;vertical-align:middle;border-right:1px solid #f0e8dc;">${muH(a16, b16, p[2][idx16]||null, lc.color, null)}</td>`;
+      }
+
+      // Elite Ate — row 0 only, rowspan 8
+      if (row === 0) {
+        const [ae, be] = e8pair;
+        cells += `<td rowspan="8" style="padding:2px 3px;vertical-align:middle;border-right:1px solid #f0e8dc;">${muH(ae, be, p[3][0]||null, lc.color, null)}</td>`;
+      }
+
+      // League Champ — row 0 only, rowspan 8
+      if (row === 0) {
+        const champCell = w
+          ? `<div style="border:2px solid #C8A000;border-radius:5px;background:linear-gradient(135deg,#FFF8E0,#FDECC0);padding:8px 5px;text-align:center;">
+              <div style="font-size:6.5px;font-family:monospace;color:#8A6000;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">League Champ</div>
+              <div style="font-size:8px;font-family:monospace;background:rgba(200,160,0,0.2);color:#7A5000;border-radius:2px;padding:1px 4px;display:inline-block;margin-bottom:3px;">Seed ${w.seed}</div>
+              <div style="font-size:9.5px;font-weight:700;color:#7A5000;line-height:1.2;">${w.name}</div>
+              <div style="font-size:12px;margin-top:3px;">🏆</div>
+            </div>`
+          : `<div style="border:2px dashed #ddd;border-radius:5px;background:#fafafa;padding:8px 5px;text-align:center;">
+              <div style="font-size:6.5px;font-family:monospace;color:#bbb;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">League Champ</div>
+              <div style="font-size:9px;color:#ccc;font-style:italic;">TBD</div>
+            </div>`;
+        cells += `<td rowspan="8" style="padding:2px 3px;vertical-align:middle;">${champCell}</td>`;
+      }
+
+      rows += `<tr style="background:${row % 2 === 0 ? '#FAFAFA' : 'white'}">${cells}</tr>`;
+    }
+
+    const champBadge = w
+      ? `<div style="margin-left:auto;padding:3px 9px;background:linear-gradient(135deg,#FFF8E0,#FDECC0);border:1.5px solid #C8A000;border-radius:3px;font-size:8.5px;font-weight:700;color:#7A5A00;">🏆 ${w.name}</div>`
+      : '';
+
+    return `
+      <div style="border:2px solid ${lc.color};border-radius:7px;overflow:hidden;margin-bottom:8px;">
+        <div style="background:${lc.bg};border-bottom:2px solid ${lc.color};padding:6px 11px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:17px;">${lc.emoji}</span>
+          <div>
+            <div style="font-weight:900;font-size:13px;color:${lc.color};">${L.name}</div>
+            <div style="font-size:7px;color:#666;letter-spacing:1px;text-transform:uppercase;font-family:monospace;">League Snacket · 16 Snacks</div>
+          </div>
+          ${champBadge}
+        </div>
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;background:white;">
+          <thead><tr>${hdrRow}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  }
+
+  /* Finals section HTML */
+  function finalsHTML() {
+    const c1 = picks.l1[3][0], c2 = picks.l2[3][0];
+    const c3 = picks.l3[3][0], c4 = picks.l4[3][0];
+    const fin1 = ffPick[0], fin2 = ffPick[1];
+
+    function ffSlotH(snack, tag, tc, tbg, advancing) {
+      if (!snack) return `<div style="border:1.5px dashed #ddd;border-radius:4px;padding:5px 8px;background:#fafafa;font-size:9px;color:#bbb;font-style:italic;margin:2px 0;display:flex;align-items:center;gap:5px;"><span style="font-size:7.5px;padding:1px 4px;border-radius:2px;background:${tbg};color:${tc};font-family:monospace;">${tag}</span> Champ TBD</div>`;
+      const hi = advancing ? `border-color:${tc};background:${tbg};font-weight:700;` : 'background:white;';
+      return `<div style="border:1.5px solid #ddd;border-radius:4px;padding:5px 8px;${hi}display:flex;align-items:center;gap:6px;margin:2px 0;">
+        <span style="font-size:7.5px;padding:1px 4px;border-radius:2px;background:${tbg};color:${tc};font-family:monospace;white-space:nowrap;">${tag}</span>
+        <span style="font-size:10px;font-weight:${advancing?'700':'400'};flex:1;">${snack.name}</span>
+        ${advancing ? `<span style="font-size:9px;color:${tc};">→</span>` : ''}
+      </div>`;
+    }
+
+    function finalistH(snack, isChamp) {
+      if (!snack) return `<div style="border:1.5px dashed #ddd;border-radius:4px;padding:8px 10px;background:#fafafa;font-size:9px;color:#bbb;font-style:italic;text-align:center;margin:2px 0;">Finalist TBD</div>`;
+      const style = isChamp
+        ? 'border:2px solid #C8A000;background:linear-gradient(135deg,#FFF8E0,#FDECC0);'
+        : 'border:1.5px solid #E87722;background:#FDE8D5;';
+      return `<div style="${style}border-radius:4px;padding:8px 10px;display:flex;align-items:center;gap:6px;margin:2px 0;">
+        <span style="font-size:8px;font-family:monospace;background:rgba(0,0,0,0.08);padding:1px 5px;border-radius:2px;color:#555;">${snack.seed}</span>
+        <span style="font-size:11px;font-weight:700;flex:1;">${snack.name}</span>
+        ${isChamp ? '<span style="font-size:12px;">🏆</span>' : ''}
+      </div>`;
+    }
+
+    const champBox = champPick
+      ? `<div style="border:3px solid #C8A000;border-radius:8px;padding:14px 10px;background:linear-gradient(135deg,#FFF8E0,#FDECC0);text-align:center;">
+          <div style="font-family:monospace;font-size:7.5px;letter-spacing:2px;text-transform:uppercase;color:#8A6000;margin-bottom:5px;">🏆 MUNCH MADNESS CHAMPION</div>
+          <div style="font-size:8px;font-family:monospace;background:rgba(200,160,0,0.25);color:#7A5000;border-radius:2px;padding:2px 8px;display:inline-block;margin-bottom:4px;">Seed #${champPick.seed}</div>
+          <div style="font-size:18px;font-weight:900;color:#6A4000;">${champPick.name}</div>
+          <div style="font-size:22px;margin-top:4px;">🏆</div>
+          <div style="font-size:7px;font-family:monospace;color:#A08000;margin-top:4px;letter-spacing:1px;">ANNOUNCED APRIL 6, 2026</div>
+        </div>`
+      : `<div style="border:3px dashed #ddd;border-radius:8px;padding:14px 10px;background:#fafafa;text-align:center;">
+          <div style="font-family:monospace;font-size:7.5px;letter-spacing:2px;text-transform:uppercase;color:#ccc;margin-bottom:6px;">🏆 MUNCH MADNESS CHAMPION</div>
+          <div style="font-size:11px;color:#ccc;font-style:italic;">Champion TBD</div>
+          <div style="font-size:7px;font-family:monospace;color:#ddd;margin-top:5px;letter-spacing:1px;">ANNOUNCED APRIL 6, 2026</div>
+        </div>`;
+
+    return `
+      <div style="border:2px solid #E87722;border-radius:8px;overflow:hidden;">
+        <div style="background:#E87722;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-size:14px;font-weight:900;color:white;letter-spacing:1px;">MUNCH MADNESS — FINAL FOUR &amp; CHAMPIONSHIP</div>
+          <div style="font-size:8px;color:rgba(255,255,255,0.8);font-family:monospace;letter-spacing:1px;">MAR 28 – APR 6, 2026</div>
+        </div>
+        <div style="background:white;padding:11px;">
+          <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+            <thead>
+              <tr>
+                <th style="width:35%;padding:3px 5px 7px;text-align:center;font-family:monospace;font-size:7.5px;letter-spacing:1.5px;text-transform:uppercase;color:#999;border-bottom:1px solid #eee;font-weight:600;">Final Four · Mar 28 – Apr 1</th>
+                <th style="width:4%;"></th>
+                <th style="width:30%;padding:3px 5px 7px;text-align:center;font-family:monospace;font-size:7.5px;letter-spacing:1.5px;text-transform:uppercase;color:#999;border-bottom:1px solid #eee;font-weight:600;">Championship · Apr 1</th>
+                <th style="width:4%;"></th>
+                <th style="width:27%;padding:3px 5px 7px;text-align:center;font-family:monospace;font-size:7.5px;letter-spacing:1.5px;text-transform:uppercase;color:#C8A000;border-bottom:1px solid #eee;font-weight:600;">🏆 Champion · Announced Apr 6</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding:5px;vertical-align:top;">
+                  <div style="border:1.5px solid #e8ddd0;border-radius:5px;padding:6px;margin-bottom:7px;">
+                    <div style="font-family:monospace;font-size:6.5px;color:#aaa;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Matchup 1 — Savory</div>
+                    ${ffSlotH(c1,'Chips','#1B4F8A','#D6E8F5', fin1&&c1&&fin1.name===c1.name)}
+                    <div style="text-align:center;font-size:7px;font-family:monospace;color:#ccc;padding:2px 0;letter-spacing:1px;">vs</div>
+                    ${ffSlotH(c2,'Non-Chips','#1A6B3A','#D6F0E0', fin1&&c2&&fin1.name===c2.name)}
+                  </div>
+                  <div style="border:1.5px solid #e8ddd0;border-radius:5px;padding:6px;">
+                    <div style="font-family:monospace;font-size:6.5px;color:#aaa;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Matchup 2 — Sweet</div>
+                    ${ffSlotH(c3,'Chocolate','#5C2A0A','#F5E0D0', fin2&&c3&&fin2.name===c3.name)}
+                    <div style="text-align:center;font-size:7px;font-family:monospace;color:#ccc;padding:2px 0;letter-spacing:1px;">vs</div>
+                    ${ffSlotH(c4,'Candy','#6B1A8A','#EAD6F5', fin2&&c4&&fin2.name===c4.name)}
+                  </div>
+                </td>
+                <td style="text-align:center;font-size:20px;color:#D4B896;vertical-align:middle;">→</td>
+                <td style="padding:5px;vertical-align:middle;">
+                  ${finalistH(fin1, champPick&&fin1&&champPick.name===fin1.name)}
+                  <div style="text-align:center;font-size:9px;font-family:monospace;color:#ccc;padding:9px 0;letter-spacing:1px;">vs</div>
+                  ${finalistH(fin2, champPick&&fin2&&champPick.name===fin2.name)}
+                </td>
+                <td style="text-align:center;font-size:20px;color:#D4B896;vertical-align:middle;">→</td>
+                <td style="padding:5px;vertical-align:middle;">${champBox}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+
+  /* Assemble the full PDF document */
+  const doc = document.createElement('div');
+  doc.style.cssText = 'font-family:Arial,Helvetica,sans-serif;background:white;color:#1A1208;';
+
+  doc.innerHTML = `<div style="background:#E87722;padding:12px 20px;margin-bottom:11px;text-align:center;">
+    <div style="font-size:27px;color:white;font-weight:900;letter-spacing:3px;line-height:1;">🏆 MUNCH MADNESS 2026 🏆</div>
+    <div style="color:rgba(255,255,255,0.85);font-size:12px;margin-top:4px;">Pick'em Snacket${name ? ' · ' + name : ''}</div>
+    <div style="color:rgba(255,255,255,0.6);font-size:9px;margin-top:2px;letter-spacing:2px;">MARCH 9 – APRIL 6, 2026</div>
+  </div>`;
+
+  ['l1','l2','l3','l4'].forEach((lid, i) => {
+    if (i % 2 === 0) {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:table;width:100%;margin-bottom:9px;';
+      row.id = '_pdfrow_' + (i / 2);
+      doc.appendChild(row);
+    }
+    const row = doc.querySelector('#_pdfrow_' + Math.floor(i / 2));
+    const cell = document.createElement('div');
+    cell.style.cssText = `display:table-cell;width:50%;vertical-align:top;${i % 2 === 0 ? 'padding-right:5px;' : 'padding-left:5px;'}`;
+    cell.innerHTML = leagueHTML(lid);
+    row.appendChild(cell);
+  });
+
+  const ffWrap = document.createElement('div');
+  ffWrap.innerHTML = finalsHTML();
+  doc.appendChild(ffWrap);
+
+  const opt = {
+    margin:      [7, 7, 7, 7],
+    filename,
+    image:       { type: 'jpeg', quality: 0.97 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
+    jsPDF:       { unit: 'mm', format: 'a3', orientation: 'landscape' },
+    pagebreak:   { mode: 'avoid-all' },
+  };
+
+  html2pdf().set(opt).from(doc).save()
+    .then(()  => overlay.classList.remove('show'))
+    .catch(() => { overlay.classList.remove('show'); alert('PDF generation failed. Please try again.'); });
+}
+
+
+
+/* ─── INIT ─── */
+['l1','l2','l3','l4'].forEach(renderLeague);
+renderFinals();
+updateProgress();
+</script>
+</body>
+</html>
