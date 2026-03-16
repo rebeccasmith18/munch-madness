@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Munch Madness 2026 — Leaderboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange: #E87722;
+  --orange-lt: #FDE8D5;
+  --orange-dk: #C45A0A;
+  --cream: #FBF7F2;
+  --dark: #1A1208;
+  --mid: #6B4F2A;
+  --chip: #1B4F8A;
+  --chip-lt: #D6E8F5;
+  --nonchip: #1A6B3A;
+  --nonchip-lt: #D6F0E0;
+  --choc: #5C2A0A;
+  --choc-lt: #F5E0D0;
+  --candy: #6B1A8A;
+  --candy-lt: #EAD6F5;
+  --line: #D4B896;
+  --gold: #C8A000;
+  --gold-lt: #FFF8E0;
+  --silver: #888;
+  --bronze: #A0522D;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--dark); min-height: 100vh; }
+
+/* HEADER */
+.hdr {
+  background: var(--dark);
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 4px solid var(--orange);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  gap: 16px;
+}
+.hdr-left { display: flex; align-items: baseline; gap: 12px; flex-shrink: 0; }
+.hdr-title { font-family: 'Bebas Neue', sans-serif; font-size: 34px; color: var(--orange); letter-spacing: 3px; line-height: 1; }
+.hdr-sub { font-family: 'DM Mono', monospace; font-size: 9px; color: #666; letter-spacing: 2px; text-transform: uppercase; }
+
+/* TABS */
+.tabs {
+  display: flex;
+  padding: 0 28px;
+  background: #0E0A04;
+  border-bottom: 1px solid #222;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 12px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  color: #444;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}
+.tab:hover { color: #aaa; }
+.tab.active { color: white; border-color: var(--orange); color: var(--orange); }
+
+/* PAGES */
+.page { display: none; }
+.page.active { display: block; }
+
+/* MAIN LAYOUT */
+.content { padding: 28px 36px; max-width: 1100px; margin: 0 auto; }
+
+/* SECTION HEADER */
+.section-head { margin-bottom: 20px; }
+.section-head h2 { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--orange); letter-spacing: 3px; line-height: 1; }
+.section-head p { font-size: 13px; color: var(--mid); margin-top: 5px; }
+
+/* SCORING KEY */
+.scoring-key {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 16px;
+  margin-bottom: 22px;
+  align-items: center;
+}
+.scoring-key-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #999; margin-right: 4px; }
+.key-item { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid); background: var(--cream); padding: 3px 8px; border-radius: 3px; }
+
+/* ADMIN PANEL */
+.admin-panel {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 28px;
+}
+.admin-panel h3 { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--dark); margin-bottom: 14px; }
+.admin-rounds { display: flex; flex-direction: column; gap: 14px; }
+.admin-round { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.admin-round-header {
+  background: var(--cream);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+.admin-round-header:hover { background: var(--orange-lt); }
+.admin-round-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; color: var(--dark); }
+.admin-round-status { font-size: 11px; color: var(--mid); }
+.admin-round-body { display: none; padding: 14px; background: white; }
+.admin-round-body.open { display: block; }
+.matchups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.matchup-entry { border: 1px solid var(--line); border-radius: 5px; padding: 8px 10px; }
+.matchup-label { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 1px; text-transform: uppercase; color: #999; margin-bottom: 6px; }
+.matchup-options { display: flex; flex-direction: column; gap: 4px; }
+.matchup-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1.5px solid #ddd;
+  font-size: 12px;
+  transition: all 0.1s;
+}
+.matchup-option:hover { border-color: var(--orange); background: var(--orange-lt); }
+.matchup-option.winner { border-color: var(--orange); background: var(--orange-lt); font-weight: 700; }
+.matchup-option.winner::after { content: '✓'; margin-left: auto; color: var(--orange); font-weight: 900; }
+.seed-badge { font-family: 'DM Mono', monospace; font-size: 8px; background: #f0e8de; padding: 1px 4px; border-radius: 2px; color: #888; min-width: 20px; text-align: center; }
+.btn-update {
+  margin-top: 14px;
+  padding: 8px 20px;
+  background: var(--orange);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-update:hover { background: var(--orange-dk); }
+
+/* LEADERBOARD TABLE */
+.lb-table-wrap { overflow-x: auto; }
+.lb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.lb-table th {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #888;
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 2px solid var(--line);
+  white-space: nowrap;
+}
+.lb-table th.right { text-align: right; }
+.lb-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0e8de;
+  vertical-align: middle;
+}
+.lb-table tr:last-child td { border-bottom: none; }
+.lb-table tr:hover td { background: #fdf5ee; }
+.lb-table tr.me td { background: var(--orange-lt); }
+
+.rank-cell { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--mid); text-align: center; width: 48px; }
+.rank-1 { color: var(--gold); }
+.rank-2 { color: var(--silver); }
+.rank-3 { color: var(--bronze); }
+
+.name-cell { font-weight: 700; font-size: 14px; }
+.pick-cell { font-size: 11px; color: var(--mid); font-style: italic; }
+
+.score-cell { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--dark); text-align: right; }
+.score-possible { font-family: 'DM Mono', monospace; font-size: 9px; color: #aaa; text-align: right; }
+.max-pts { display: block; }
+
+.round-scores { display: flex; gap: 4px; flex-wrap: wrap; }
+.r-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: #f0e8de;
+  color: #888;
+  min-width: 28px;
+  text-align: center;
+}
+.r-badge.has-score { background: var(--orange-lt); color: var(--orange-dk); font-weight: 600; }
+.r-badge.perfect { background: var(--gold-lt); color: #7A5A00; font-weight: 900; }
+.r-badge.bonus { background: #EAD6F5; color: #6B1A8A; }
+
+/* INDIVIDUAL VIEW */
+.participant-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.p-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.p-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+.p-card-head {
+  background: var(--dark);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.p-card-name { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: white; letter-spacing: 1px; }
+.p-card-score { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--orange); }
+.p-card-body { padding: 12px 14px; }
+.p-card-champ { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.p-card-champ-label { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 1px; text-transform: uppercase; color: #aaa; }
+.p-card-champ-pick { font-size: 12px; font-weight: 700; color: var(--dark); }
+.p-league-picks { display: flex; flex-direction: column; gap: 5px; }
+.p-league-row { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+.p-league-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  min-width: 60px;
+  text-align: center;
+  font-weight: 600;
+}
+.tag-chips { background: var(--chip-lt); color: var(--chip); }
+.tag-nonchip { background: var(--nonchip-lt); color: var(--nonchip); }
+.tag-choc { background: var(--choc-lt); color: var(--choc); }
+.tag-candy { background: var(--candy-lt); color: var(--candy); }
+.p-league-snack { color: var(--dark); font-weight: 500; }
+.p-league-check { color: #bbb; font-size: 10px; margin-left: auto; }
+.p-league-check.correct { color: var(--nonchip); font-weight: 700; }
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: white;
+  border-radius: 10px;
+  max-width: 700px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.modal-head {
+  background: var(--dark);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10px 10px 0 0;
+  position: sticky;
+  top: 0;
+}
+.modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--orange); letter-spacing: 2px; }
+.modal-close { background: none; border: none; color: #888; font-size: 20px; cursor: pointer; padding: 4px 8px; }
+.modal-close:hover { color: white; }
+.modal-body { padding: 20px; }
+.modal-score-row { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.modal-total { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: var(--orange); line-height: 1; }
+.modal-total-label { font-family: 'DM Mono', monospace; font-size: 9px; color: #aaa; letter-spacing: 1px; text-transform: uppercase; }
+.modal-league { margin-bottom: 16px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.modal-league-head {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+.modal-league-body { background: white; }
+.modal-pick-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-bottom: 1px solid #f5ede5;
+  font-size: 12px;
+}
+.modal-pick-row:last-child { border-bottom: none; }
+.modal-round-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  padding: 1px 5px;
+  border-radius: 2px;
+  min-width: 55px;
+  text-align: center;
+  background: #f0e8de;
+  color: #888;
+}
+.modal-pick-name { flex: 1; font-weight: 500; }
+.modal-pick-pts { font-family: 'DM Mono', monospace; font-size: 10px; margin-left: auto; }
+.pts-correct { color: var(--nonchip); font-weight: 700; }
+.pts-wrong { color: #ccc; text-decoration: line-through; }
+.pts-pending { color: #bbb; }
+
+/* STANDINGS CHART */
+.standings-viz { background: white; border: 1px solid var(--line); border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+.standings-viz h3 { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--dark); margin-bottom: 14px; }
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.bar-name { font-size: 12px; font-weight: 600; width: 130px; flex-shrink: 0; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-wrap { flex: 1; background: #f5ede5; border-radius: 3px; height: 22px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--orange); border-radius: 3px; transition: width 0.6s ease; display: flex; align-items: center; padding-left: 8px; min-width: 2px; }
+.bar-fill-pts { font-family: 'DM Mono', monospace; font-size: 9px; color: white; font-weight: 600; }
+.bar-pts { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid); width: 32px; flex-shrink: 0; }
+
+/* Notice banner */
+.notice {
+  background: var(--gold-lt);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  padding: 10px 16px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: #7A5A00;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── BRACKET STYLES ── */
+.bracket-section { margin-bottom: 32px; }
+.bracket-section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 6px 6px 0 0;
+}
+.bracket-scroll { overflow-x: auto; padding-bottom: 8px; }
+.bracket-grid {
+  display: flex;
+  gap: 0;
+  min-width: 900px;
+  align-items: stretch;
+}
+.bracket-round-col {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 160px;
+}
+.bracket-round-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #999;
+  text-align: center;
+  padding: 6px 4px;
+  border-bottom: 1px solid #eee;
+  background: white;
+}
+.bracket-slots {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 4px 0;
+  position: relative;
+}
+.bracket-matchup {
+  display: flex;
+  flex-direction: column;
+  margin: 0 6px;
+  position: relative;
+}
+/* connector handled by SVG */
+.bracket-seed {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 7px;
+  font-size: 10px;
+  border: 1px solid #e8ddd0;
+  background: white;
+  position: relative;
+  transition: all 0.1s;
+  min-height: 24px;
+}
+.bracket-seed:first-child { border-radius: 3px 3px 0 0; border-bottom: 1px dashed #eee; }
+.bracket-seed:last-child  { border-radius: 0 0 3px 3px; }
+.bracket-seed.winner {
+  background: #f0faf4;
+  border-color: #1A6B3A;
+  font-weight: 700;
+  color: #1A1208;
+}
+.bracket-seed.winner:first-child { border-bottom-color: #1A6B3A; }
+.bracket-seed.loser  { opacity: 0.45; text-decoration: line-through; color: #999; }
+.bracket-seed.tbd    { background: #fafafa; color: #bbb; font-style: italic; }
+.bracket-seed.upset-winner {
+  background: #FDF0E4;
+  border-color: var(--orange);
+  font-weight: 700;
+}
+.bracket-seed.upset-winner:first-child { border-bottom-color: var(--orange); }
+.seed-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  color: #aaa;
+  min-width: 14px;
+  text-align: right;
+}
+.upset-pip {
+  font-size: 7px;
+  color: var(--orange);
+  font-weight: 900;
+  margin-left: auto;
+}
+.bracket-connector-col {
+  width: 20px;
+  position: relative;
+  flex-shrink: 0;
+}
+.bracket-connector-col svg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  overflow: visible;
+}
+
+/* Final Four bracket */
+.ff-bracket {
+  background: white;
+  border: 2px solid var(--orange);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.ff-bracket-head {
+  background: var(--orange);
+  padding: 8px 16px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  color: white;
+  letter-spacing: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="hdr-title">MUNCH MADNESS</div>
+    <div class="hdr-sub">2026 · 33 Participants</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPage('results', this)">📊 Round Results</div>
+  <div class="tab" onclick="showPage('lb', this)">🏆 Leaderboard</div>
+  <div class="tab" onclick="showPage('brackets', this)">📋 All Brackets</div>
+</div>
+
+<!-- LEADERBOARD PAGE -->
+<div id="page-lb" class="page">
+  <div class="content">
+    <div class="section-head">
+      <h2>STANDINGS</h2>
+      <p>Scores update as you enter round results in the "Enter Results" tab.</p>
+    </div>
+
+    <div class="scoring-key">
+      <span class="scoring-key-label">Scoring:</span>
+      <span class="key-item">R64 = 1pt</span>
+      <span class="key-item">R32 = 2pts</span>
+      <span class="key-item">Sweet 16 = 4pts</span>
+      <span class="key-item">Elite Ate = 8pts</span>
+      <span class="key-item">Final Four = 4pts</span>
+      <span class="key-item">Champion = 16pts 🏆</span>
+    </div>
+
+    <div id="standings-chart" class="standings-viz">
+      <h3>SCORE OVERVIEW</h3>
+      <div id="chart-bars"></div>
+    </div>
+
+    <div class="lb-table-wrap">
+      <table class="lb-table">
+        <thead>
+          <tr>
+            <th style="width:48px">#</th>
+            <th>PARTICIPANT</th>
+            <th>CHAMPION PICK</th>
+            <th class="right">SCORE</th>
+            <th>ROUND BREAKDOWN</th>
+          </tr>
+        </thead>
+        <tbody id="lb-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ALL BRACKETS PAGE -->
+<div id="page-brackets" class="page">
+  <div class="content">
+    <div class="section-head">
+      <h2>ALL BRACKETS</h2>
+      <p>Click any card to see full pick details and scoring.</p>
+    </div>
+    <div id="participant-cards" class="participant-cards"></div>
+  </div>
+</div>
+
+<!-- RESULTS PAGE -->
+<div id="page-results" class="page active">
+  <div class="content">
+    <div class="section-head">
+      <h2>ROUND RESULTS</h2>
+      <p>Results are updated after each round completes. Upsets highlighted in orange.</p>
+    </div>
+    <div id="results-content"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modal-name"></div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// BRACKET DATA — All 33 participants
+// Structure: each participant has picks per league per round
+// Rounds: r64 (8 picks), r32 (4 picks), s16 (2 picks), e8 (1 pick), leagueChamp, ff (finalist), champ
+// ═══════════════════════════════════════════════════════
+
+// SNACKS reference with seeds
+const SNACKS = {
+  chips: [
+    {s:1,n:'Cool Ranch Doritos'},{s:2,n:'SunChips'},{s:3,n:'Kettle Chips - Jalapeño'},
+    {s:4,n:'Salt & Vinegar Chips'},{s:5,n:'Nacho Cheese Doritos'},{s:6,n:'Kettle Chips - Plain'},
+    {s:7,n:'Tortilla Chips'},{s:8,n:"Flamin' Hot Cheetos"},{s:9,n:'Sour Cream & Onion Chips'},
+    {s:10,n:'Cheetos - Plain'},{s:11,n:'Lays Potato Chips'},{s:12,n:'Lays BBQ Potato Chips'},
+    {s:13,n:'Pringles - Plain'},{s:14,n:'Pita Chips'},{s:15,n:'Fritos'},{s:16,n:'Takis'}
+  ],
+  nonchip: [
+    {s:1,n:'Smartfood White Cheddar'},{s:2,n:'PB-filled Pretzel Bites'},{s:3,n:'Goldfish'},
+    {s:4,n:'Wheat Thins'},{s:5,n:'Cheez-Its'},{s:6,n:'Classic Pretzels'},
+    {s:7,n:'Beef Jerky'},{s:8,n:"Pirate's Booty"},{s:9,n:'Choc. Covered Almonds'},
+    {s:10,n:'Skinny Pop - Sea Salt'},{s:11,n:'Ritz Crackers'},{s:12,n:'Kettlecorn'},
+    {s:13,n:'Salted Roasted Peanuts'},{s:14,n:'String Cheese'},{s:15,n:'Triscuits'},{s:16,n:'Wasabi Peas'}
+  ],
+  choc: [
+    {s:1,n:'Peanut M&Ms'},{s:2,n:"TJ's Dark Choc PB Cups"},{s:3,n:'Snickers'},
+    {s:4,n:'Dark Chocolate'},{s:5,n:'Heath Bar'},{s:6,n:'Twix'},
+    {s:7,n:'Butterfinger'},{s:8,n:"Reese's Cups"},{s:9,n:'Kit Kat'},
+    {s:10,n:'Oreos'},{s:11,n:"Hershey's Cookies & Cream"},{s:12,n:'100 Grand'},
+    {s:13,n:'Peppermint Patty'},{s:14,n:'Milky Way'},{s:15,n:'Three Musketeers'},{s:16,n:'M&Ms'}
+  ],
+  candy: [
+    {s:1,n:'Sour Patch Kids'},{s:2,n:'Swedish Fish'},{s:3,n:'Hi-Chew'},
+    {s:4,n:'Sour Worms'},{s:5,n:'Peach Rings'},{s:6,n:'Nerds'},
+    {s:7,n:'Starbursts'},{s:8,n:'Skittles'},{s:9,n:'Airheads'},
+    {s:10,n:'Fruit Leather'},{s:11,n:'Haribo Gummy Bears'},{s:12,n:'Fruit Snacks'},
+    {s:13,n:'Twizzlers'},{s:14,n:'Fruit Roll-Up'},{s:15,n:'Laffy Taffy'},{s:16,n:'Jelly Beans'}
+  ]
+};
+
+// Helper to get snack by seed+league
+function sn(league, seed) {
+  return SNACKS[league].find(x => x.s === seed);
+}
+
+// ─── PARTICIPANT DATA ───
+// picks[league][round] = array of snack objects (winners picked)
+// Rounds: r64(8), r32(4), s16(2), e8(1), lc(1=league champ), ff(1=finalist), champ(1)
+// ff picks: which league champ they picked to advance to championship match
+// finalff: which finalist they picked as overall champ
+
+const PARTICIPANTS = [
+  {
+    name: 'Mike Yurkovic',
+    picks: {
+      chips: { r64:[1,15,3,4,5,11,10,9], r32:[1,4,5,10], s16:[1,5], e8:[5], lc:5 },
+      nonchip: { r64:[1,2,3,13,5,6,7,9], r32:[1,3,5,9], s16:[1,5], e8:[5], lc:5 },
+      choc: { r64:[16,2,3,4,12,6,10,9], r32:[16,3,12,6], s16:[16,6], e8:[6], lc:6 },
+      candy: { r64:[1,2,14,13,5,6,7,8], r32:[1,14,5,7], s16:[1,6], e8:[8], lc:8 }
+    },
+    ff: { savory: 'nonchip', sweet: 'candy' },
+    finalist: ['nonchip','candy'],
+    champ: {league:'nonchip', seed:5}
+  },
+  {
+    name: 'Nathan Benz',
+    picks: {
+      chips: { r64:[1,2,3,13,5,6,10,9], r32:[1,13,5,10], s16:[1,10], e8:[1], lc:1 },
+      nonchip: { r64:[1,2,3,13,5,6,7,9], r32:[2,3,5,7], s16:[3,5], e8:[1], lc:1 },
+      choc: { r64:[1,2,3,4,5,6,10,8], r32:[2,3,10,8], s16:[2,10], e8:[8], lc:8 },
+      candy: { r64:[1,2,14,13,12,6,7,8], r32:[1,14,12,7], s16:[1,12], e8:[8], lc:1 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['chips','choc'],
+    champ: {league:'choc', seed:8}
+  },
+  {
+    name: 'Allie',
+    picks: {
+      chips: { r64:[16,15,3,4,5,6,10,9], r32:[15,3,5,10], s16:[3,5], e8:[5], lc:5 },
+      nonchip: { r64:[1,2,3,4,5,10,10,9], r32:[2,3,5,10], s16:[2,5], e8:[5], lc:5 },
+      choc: { r64:[16,2,3,4,5,6,7,9], r32:[2,4,6,9], s16:[2,9], e8:[2], lc:2 },
+      candy: { r64:[1,2,14,13,12,6,7,9], r32:[1,14,6,7], s16:[1,6], e8:[7], lc:7 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'choc', seed:2}
+  },
+  {
+    name: 'Allison Halpren',
+    picks: {
+      chips: { r64:[1,15,3,4,12,6,10,9], r32:[1,3,12,10], s16:[1,12], e8:[12], lc:12 },
+      nonchip: { r64:[1,2,3,4,5,6,10,8], r32:[1,4,10,8], s16:[1,10], e8:[1], lc:1 },
+      choc: { r64:[1,2,3,13,5,6,7,8], r32:[2,3,6,8], s16:[3,6], e8:[3], lc:3 },
+      candy: { r64:[16,2,3,13,5,6,7,9], r32:[2,3,5,7], s16:[3,5], e8:[5], lc:5 }
+    },
+    ff: { savory: 'chips', sweet: 'candy' },
+    finalist: ['chips','candy'],
+    champ: {league:'candy', seed:5}
+  },
+  {
+    name: 'Becca',
+    picks: {
+      chips: { r64:[1,2,3,4,12,6,10,9], r32:[1,3,12,10], s16:[1,4], e8:[4], lc:4 },
+      nonchip: { r64:[1,15,14,4,12,6,7,8], r32:[1,14,12,8], s16:[1,12], e8:[1], lc:1 },
+      choc: { r64:[1,2,3,13,12,6,10,8], r32:[1,3,12,10], s16:[1,3], e8:[1], lc:1 },
+      candy: { r64:[1,2,14,13,12,11,7,8], r32:[1,14,11,7], s16:[1,11], e8:[11], lc:11 }
+    },
+    ff: { savory: 'nonchip', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'nonchip', seed:1}
+  },
+  {
+    name: 'Brian Sweatman',
+    picks: {
+      chips: { r64:[1,15,3,4,5,6,7,9], r32:[1,3,5,7], s16:[1,5], e8:[1], lc:1 },
+      nonchip: { r64:[1,2,14,13,5,11,7,8], r32:[2,14,11,7], s16:[2,11], e8:[7], lc:7 },
+      choc: { r64:[1,2,3,13,12,6,7,8], r32:[2,3,12,8], s16:[2,12], e8:[8], lc:8 },
+      candy: { r64:[16,15,3,4,5,11,7,8], r32:[16,4,5,7], s16:[16,7], e8:[7], lc:7 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['chips','choc'],
+    champ: {league:'chips', seed:1}
+  },
+  {
+    name: 'Carrie Scott',
+    picks: {
+      chips: { r64:[1,2,3,4,5,11,10,8], r32:[1,3,5,8], s16:[1,5], e8:[5], lc:5 },
+      nonchip: { r64:[1,2,3,4,5,11,7,9], r32:[2,3,5,9], s16:[2,5], e8:[5], lc:5 },
+      choc: { r64:[16,2,14,13,12,6,10,8], r32:[2,14,12,8], s16:[2,8], e8:[8], lc:8 },
+      candy: { r64:[1,2,14,4,5,11,7,8], r32:[1,14,5,7], s16:[1,4], e8:[5], lc:5 }
+    },
+    ff: { savory: 'nonchip', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'nonchip', seed:5}
+  },
+  {
+    name: 'Dane',
+    picks: {
+      chips: { r64:[1,2,3,13,5,6,10,8], r32:[1,3,5,10], s16:[1,5], e8:[5], lc:5 },
+      nonchip: { r64:[1,2,3,13,5,6,10,9], r32:[1,3,5,9], s16:[3,5], e8:[3], lc:3 },
+      choc: { r64:[16,2,3,4,5,6,10,8], r32:[2,3,6,10], s16:[2,10], e8:[10], lc:10 },
+      candy: { r64:[1,2,14,4,5,6,7,8], r32:[1,14,5,7], s16:[1,4], e8:[7], lc:7 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['chips','choc'],
+    champ: {league:'chips', seed:5}
+  },
+  {
+    name: 'Dean Zeffer',
+    picks: {
+      chips: { r64:[1,15,14,13,12,6,10,9], r32:[15,13,12,10], s16:[15,12], e8:[12], lc:12 },
+      nonchip: { r64:[1,2,3,13,5,11,10,9], r32:[2,3,11,9], s16:[2,9], e8:[2], lc:2 },
+      choc: { r64:[1,2,3,4,5,6,10,8], r32:[1,3,5,10], s16:[1,10], e8:[1], lc:1 },
+      candy: { r64:[1,2,14,4,11,6,7,8], r32:[2,4,11,7], s16:[2,4], e8:[11], lc:11 }
+    },
+    ff: { savory: 'nonchip', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'nonchip', seed:2}
+  },
+  {
+    name: 'Eric Buzby',
+    picks: {
+      chips: { r64:[1,15,3,4,5,11,7,9], r32:[15,3,11,7], s16:[3,11], e8:[3], lc:3 },
+      nonchip: { r64:[1,2,3,13,5,6,10,8], r32:[2,3,6,8], s16:[2,6], e8:[2], lc:2 },
+      choc: { r64:[1,2,3,4,5,6,7,8], r32:[2,4,6,8], s16:[2,6], e8:[2], lc:2 },
+      candy: { r64:[1,2,14,4,12,11,7,8], r32:[1,14,12,7], s16:[1,12], e8:[8], lc:1 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['chips','choc'],
+    champ: {league:'chips', seed:3}
+  },
+  {
+    name: 'Garrick Lee',
+    picks: {
+      chips: { r64:[1,2,3,13,12,11,10,8], r32:[1,3,12,8], s16:[1,12], e8:[8], lc:8 },
+      nonchip: { r64:[1,2,3,13,5,11,10,8], r32:[2,3,11,8], s16:[2,11], e8:[2], lc:2 },
+      choc: { r64:[1,2,3,4,12,11,10,9], r32:[2,4,11,10], s16:[2,11], e8:[2], lc:2 },
+      candy: { r64:[1,2,3,4,12,11,7,8], r32:[1,3,11,7], s16:[3,11], e8:[11], lc:11 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['chips','choc'],
+    champ: {league:'choc', seed:2}
+  },
+  {
+    name: 'Greg Collins',
+    picks: {
+      chips: { r64:[1,2,3,4,5,6,7,8], r32:[2,3,6,7], s16:[2,6], e8:[2], lc:2 },
+      nonchip: { r64:[1,2,14,13,12,11,10,9], r32:[2,14,11,10], s16:[2,14], e8:[2], lc:2 },
+      choc: { r64:[1,2,3,4,5,6,7,8], r32:[1,4,5,8], s16:[1,6], e8:[4], lc:4 },
+      candy: { r64:[1,15,3,4,12,11,7,9], r32:[1,3,12,7], s16:[1,12], e8:[1], lc:1 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'choc', seed:4}
+  },
+  {
+    name: 'Greg Sgrosso',
+    picks: {
+      chips: { r64:[16,2,14,4,5,6,7,8], r32:[16,14,5,7], s16:[16,5], e8:[6], lc:6 },
+      nonchip: { r64:[1,2,14,13,5,11,10,9], r32:[2,14,11,10], s16:[2,14], e8:[2], lc:2 },
+      choc: { r64:[1,2,3,4,5,6,10,8], r32:[2,4,6,8], s16:[2,6], e8:[8], lc:8 },
+      candy: { r64:[1,2,14,4,5,6,7,8], r32:[1,14,5,7], s16:[1,4], e8:[8], lc:8 }  // Note: from image Candy picks unclear, using best read
+    },
+    ff: { savory: 'nonchip', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'choc', seed:8}
+  },
+  {
+    name: 'Harsha',
+    picks: {
+      chips: { r64:[16,2,3,13,5,11,10,8], r32:[2,13,5,10], s16:[2,5], e8:[2], lc:2 },
+      nonchip: { r64:[1,2,3,13,5,11,10,8], r32:[1,3,5,8], s16:[1,5], e8:[1], lc:1 },
+      choc: { r64:[1,2,3,4,5,6,10,8], r32:[2,3,6,8], s16:[3,8], e8:[8], lc:8 },
+      candy: { r64:[1,2,3,4,12,11,7,8], r32:[1,3,12,7], s16:[1,3], e8:[1], lc:1 }
+    },
+    ff: { savory: 'nonchip', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'nonchip', seed:1}
+  },
+  {
+    name: 'Jared',
+    picks: {
+      chips: { r64:[1,15,14,13,12,11,10,9], r32:[15,13,12,10], s16:[15,12], e8:[12], lc:12 },
+      nonchip: { r64:[1,2,3,13,5,11,10,9], r32:[2,13,11,9], s16:[2,11], e8:[2], lc:2 },
+      choc: { r64:[1,2,14,4,5,11,10,8], r32:[1,14,11,8], s16:[1,11], e8:[8], lc:8 },
+      candy: { r64:[1,2,14,13,12,6,7,8], r32:[2,14,12,7], s16:[2,12], e8:[2], lc:2 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'choc', seed:8}
+  },
+  {
+    name: 'Julia Weber',
+    picks: {
+      chips: { r64:[1,15,3,13,12,6,7,8], r32:[1,3,12,7], s16:[1,12], e8:[1], lc:1 },
+      nonchip: { r64:[1,2,3,13,5,6,7,9], r32:[2,3,6,7], s16:[2,6], e8:[7], lc:7 },
+      choc: { r64:[1,2,3,4,5,6,10,8], r32:[1,4,5,8], s16:[1,6], e8:[1], lc:1 },
+      candy: { r64:[1,15,3,4,12,6,7,9], r32:[1,3,12,7], s16:[1,6], e8:[7], lc:7 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['chips','choc'],
+    champ: {league:'nonchip', seed:7}
+  },
+  {
+    name: 'Massey',
+    picks: {
+      chips: { r64:[1,2,3,13,12,6,7,8], r32:[1,3,12,7], s16:[1,12], e8:[1], lc:1 },
+      nonchip: { r64:[16,2,3,4,5,6,10,9], r32:[2,3,5,10], s16:[2,5], e8:[2], lc:2 },
+      choc: { r64:[1,2,3,13,5,6,10,9], r32:[1,3,5,10], s16:[1,6], e8:[1], lc:1 },
+      candy: { r64:[1,2,14,4,5,11,7,8], r32:[2,4,11,7], s16:[2,4], e8:[4], lc:4 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['chips','choc'],
+    champ: {league:'choc', seed:1}
+  },
+  {
+    name: 'Matt Karounos',
+    picks: {
+      chips: { r64:[1,2,3,13,5,6,7,9], r32:[2,13,5,7], s16:[2,5], e8:[2], lc:2 },
+      nonchip: { r64:[1,2,3,4,5,11,10,9], r32:[2,3,5,10], s16:[3,5], e8:[3], lc:3 },
+      choc: { r64:[1,2,3,4,5,6,10,8], r32:[1,4,5,9], s16:[1,5], e8:[1], lc:1 },
+      candy: { r64:[1,2,13,13,12,6,7,8], r32:[2,13,12,7], s16:[2,13], e8:[2], lc:2 }
+    },
+    ff: { savory: 'nonchip', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'choc', seed:1}
+  },
+  {
+    name: 'Matthew Vlacich',
+    picks: {
+      chips: { r64:[1,2,14,13,5,6,7,9], r32:[1,14,5,7], s16:[1,6], e8:[1], lc:1 },
+      nonchip: { r64:[1,2,3,4,5,6,10,9], r32:[2,3,5,10], s16:[3,5], e8:[3], lc:3 },
+      choc: { r64:[16,2,3,13,5,6,7,9], r32:[2,3,6,10], s16:[2,6], e8:[10], lc:10 },
+      candy: { r64:[1,2,14,4,12,11,7,8], r32:[1,14,12,7], s16:[1,14], e8:[12], lc:12 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['chips','choc'],
+    champ: {league:'choc', seed:10}
+  },
+  {
+    name: 'Melissa C',
+    picks: {
+      chips: { r64:[1,15,3,4,5,11,7,9], r32:[1,4,5,7], s16:[1,5], e8:[5], lc:5 },
+      nonchip: { r64:[1,15,3,4,5,6,10,9], r32:[1,3,5,10], s16:[1,5], e8:[1], lc:3 },
+      choc: { r64:[16,2,3,4,5,11,10,8], r32:[2,3,11,8], s16:[2,11], e8:[8], lc:2 },
+      candy: { r64:[1,2,3,4,12,11,7,8], r32:[1,3,12,7], s16:[1,4], e8:[1], lc:1 }
+    },
+    ff: { savory: 'nonchip', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'nonchip', seed:3}
+  },
+
+  // ── BATCH 2: 13 new participants ──
+
+  {
+    // Nathan J (Nathaniel Jacobson)
+    // Chips: CRD wins R64, Fritos upsets, Pringles advances; LC = Pringles-Plain (seed 13)
+    // Choc: M&Ms upsets, Snickers, 100 Grand, Twix; Reese's Cups LC (8)
+    // NonChip: Wasabi Peas upsets, PB Pretzels, String Cheese, Skinny Pop; LC = PB Pretzel Bites (2)
+    // Candy: SPK, SwedishFish, FruitRollUp, SourWorms, FruitSnacks, HariboGB, Starbursts, Skittles; LC = Skittles (8)
+    // FF: Chips wins savory; Candy wins sweet; Champ = Skittles
+    name: 'Nathan J',
+    picks: {
+      chips: { r64:[1,15,3,13,12,6,10,9], r32:[1,13,12,10], s16:[13,12], e8:[13], lc:13 },
+      nonchip: { r64:[16,2,14,4,12,6,10,9], r32:[16,14,12,10], s16:[2,12], e8:[2], lc:2 },
+      choc: { r64:[16,2,3,4,12,6,10,8], r32:[16,3,12,8], s16:[16,8], e8:[8], lc:8 },
+      candy: { r64:[1,2,14,4,12,11,7,8], r32:[2,14,11,7], s16:[2,11], e8:[8], lc:8 }
+    },
+    ff: { savory: 'chips', sweet: 'candy' },
+    finalist: ['chips','candy'],
+    champ: {league:'candy', seed:8}
+  },
+  {
+    // Nicole Sayad
+    // Chips: CRD, SunChips, Kettle Jalap, Pringles, NachoCheese, LaysPotato, Cheetos Plain, FlaminHot; s16: SunChips vs NachoCheese→FlaminHot; E8: FlaminHot; LC=8
+    // NonChip: SWC, PB, Goldfish, SaltedRP, Cheez-its, ClassicPret, BeefJerky, Pirate; s16: Goldfish/Cheezits; E8: Cheezits; LC=5
+    // Choc: PeanutMMs, 3Musketeers, MilkyWay, DarkChoc, 100Grand, Twix, Oreos, Reese's; s16: PeanutMMs/Reese's; E8: Reese's; LC=8
+    // Candy: SPK,SwedFish,FruitRollUp,SourWorms,FruitSnacks,HariboGB,Starbursts,Skittles; s16:SPK/Starbursts→Starbursts;E8: SPK(wins); LC=1
+    // FF: NonChip wins savory; Choc wins sweet; Champ=Cheezits
+    name: 'Nicole Sayad',
+    picks: {
+      chips: { r64:[1,2,3,13,5,11,10,8], r32:[2,3,5,10], s16:[2,5], e8:[8], lc:8 },
+      nonchip: { r64:[1,2,3,13,5,6,7,8], r32:[1,3,5,7], s16:[3,5], e8:[5], lc:5 },
+      choc: { r64:[1,15,14,4,12,6,10,8], r32:[1,14,12,10], s16:[1,14], e8:[8], lc:8 },
+      candy: { r64:[1,2,14,4,12,11,7,8], r32:[1,14,11,7], s16:[1,11], e8:[1], lc:1 }
+    },
+    ff: { savory: 'nonchip', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'nonchip', seed:5}
+  },
+  {
+    // Noah — Chips LC = Tortilla Chips (7); NonChip LC = Goldfish (3); Choc LC = Peanut M&Ms (1); Candy LC = Swedish Fish (2)
+    // FF: Chips wins savory; Choc wins sweet; Champ = Peanut M&Ms
+    name: 'Noah',
+    picks: {
+      chips: { r64:[1,2,3,4,12,6,7,8], r32:[2,3,12,7], s16:[2,7], e8:[7], lc:7 },
+      nonchip: { r64:[16,2,3,4,5,6,10,9], r32:[2,3,5,10], s16:[3,5], e8:[3], lc:3 },
+      choc: { r64:[1,2,3,4,5,6,10,8], r32:[1,4,5,8], s16:[1,5], e8:[1], lc:1 },
+      candy: { r64:[1,2,14,4,5,6,7,9], r32:[2,14,5,7], s16:[2,5], e8:[2], lc:2 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'choc', seed:1}
+  },
+  {
+    // Ocean — Chips LC = Tortilla Chips (7); NonChip LC = Beef Jerky (7); Choc LC = Dark Chocolate (4); Candy LC = Sour Patch Kids (1)
+    // FF: NonChip wins savory; Choc wins sweet; Champ = Beef Jerky
+    name: 'Ocean',
+    picks: {
+      chips: { r64:[16,15,3,13,12,11,7,8], r32:[16,3,12,7], s16:[15,7], e8:[7], lc:7 },
+      nonchip: { r64:[16,2,3,13,5,11,7,9], r32:[16,3,11,7], s16:[3,7], e8:[7], lc:7 },
+      choc: { r64:[1,2,3,4,5,6,10,8], r32:[2,4,5,8], s16:[4,8], e8:[4], lc:4 },
+      candy: { r64:[1,2,14,4,5,6,7,8], r32:[1,14,5,7], s16:[1,4], e8:[1], lc:1 }
+    },
+    ff: { savory: 'nonchip', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'nonchip', seed:7}
+  },
+  {
+    // Pamela — Chips LC = Nacho Cheese Doritos (5); NonChip LC = PB Pretzel Bites (2); Choc LC = Reese's Cups (8); Candy LC = Starbursts (7)
+    // FF: NonChip wins savory; Choc wins sweet; Champ = PB Pretzel Bites
+    name: 'Pamela',
+    picks: {
+      chips: { r64:[1,2,3,4,5,6,7,9], r32:[2,4,5,7], s16:[2,5], e8:[5], lc:5 },
+      nonchip: { r64:[16,2,14,4,5,6,7,9], r32:[2,14,5,7], s16:[2,5], e8:[2], lc:2 },
+      choc: { r64:[16,2,14,13,5,6,10,8], r32:[2,14,5,8], s16:[2,8], e8:[8], lc:8 },
+      candy: { r64:[1,2,3,4,5,11,7,8], r32:[1,3,5,7], s16:[1,4], e8:[7], lc:7 }
+    },
+    ff: { savory: 'nonchip', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'nonchip', seed:2}
+  },
+  {
+    // Pierre — Chips: CRD,SunChips,PitaChips,S&V,NachoCheese,LaysPotato,Tortilla,FlaminHot; s16:SunChips/NachoCheese; e8:NachoCheese; LC=5
+    // NonChip: WasabiPeas,PB,Goldfish→SaltedRP→Cheezits; LC=5
+    // Choc: M&Ms,3Musk,Snickers,PeppermintP,HeathBar,Twix,Oreos,Reese's; s16:M&Ms/Reese's→Snickers; e8:Snickers; LC=3
+    // Candy: SPK,SwedFish,FruitRollUp,Twizzlers,FruitSnacks,HariboGB,Starbursts,Skittles; s16:SPK/FruitSnacks; e8:SPK; LC=1
+    // FF: Chips wins savory; Choc wins sweet; Champ = Snickers
+    name: 'Pierre',
+    picks: {
+      chips: { r64:[1,2,14,4,5,11,7,8], r32:[2,14,5,7], s16:[2,5], e8:[5], lc:5 },
+      nonchip: { r64:[16,2,3,13,5,6,7,9], r32:[2,13,5,7], s16:[13,5], e8:[5], lc:5 },
+      choc: { r64:[16,15,3,13,5,6,10,8], r32:[16,3,5,8], s16:[16,3], e8:[3], lc:3 },
+      candy: { r64:[1,2,14,13,12,11,7,8], r32:[1,14,12,7], s16:[1,12], e8:[1], lc:1 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['chips','choc'],
+    champ: {league:'choc', seed:3}
+  },
+  {
+    // Rachel Killian — Chips: CRD,Fritos,KettleJal,S&V,NachoCheese,LaysPotato,NachoCheese,CheetosPlain; LC=Cheetos-Plain(10)
+    // NonChip: SWC,PBPretzel,Goldfish,SaltedRP,Cheezits,ClassicPret,BeefJerky,ChocCovAlm; LC=Skinny Pop Sea Salt(10)
+    // Choc: PeanutMMs,TJsDark,PeppermintPatty,HeathBar,Twix,Butterfinger,Reese's; LC=Heath Bar(5)
+    // Candy: SPK,SwedFish,FruitRollUp,SourWorms,FruitSnacks,HariboGB,Starbursts,Airheads; LC=Airheads(9)
+    // FF: Chips wins savory; Choc wins sweet; Champ=Heath Bar
+    name: 'Rachel Killian',
+    picks: {
+      chips: { r64:[1,15,3,4,5,11,10,8], r32:[1,3,5,10], s16:[1,5], e8:[10], lc:10 },
+      nonchip: { r64:[1,2,3,13,5,6,7,9], r32:[1,3,5,10], s16:[1,10], e8:[10], lc:10 },
+      choc: { r64:[1,2,13,13,5,6,7,8], r32:[1,13,5,7], s16:[1,5], e8:[5], lc:5 },
+      candy: { r64:[1,2,14,4,12,11,7,9], r32:[1,14,11,7], s16:[1,4], e8:[9], lc:9 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['chips','choc'],
+    champ: {league:'choc', seed:5}
+  },
+  {
+    // Rebecca Johnson — Chips: CRD,Fritos,KettleJal,S&V,NachoCheese,KettlePlain,Tortilla,SourCream; LC=Nacho Cheese(5)
+    // NonChip: SWC,SWC wins R32,Goldfish,Cheezits,Ritz,BeefJerky; LC=Smartfood(1)
+    // Choc: PeanutMMs,Snickers,HeathBar,Reese's; LC=Peanut M&Ms(1)
+    // Candy: SwedFish,SwedFish,FruitRollUp,SourWorms,FruitSnacks,HariboGB,Starbursts,Skittles; LC=Swedish Fish(2)
+    // FF: Chips wins savory; Choc wins sweet; Champ=Peanut M&Ms
+    name: 'Rebecca Johnson',
+    picks: {
+      chips: { r64:[1,15,3,4,5,6,7,9], r32:[1,3,5,7], s16:[1,5], e8:[5], lc:5 },
+      nonchip: { r64:[1,2,3,4,5,11,7,9], r32:[1,3,5,7], s16:[1,5], e8:[1], lc:1 },
+      choc: { r64:[1,2,3,4,5,6,10,8], r32:[1,3,5,8], s16:[1,5], e8:[1], lc:1 },
+      candy: { r64:[1,2,14,4,12,11,7,8], r32:[2,14,12,7], s16:[2,12], e8:[2], lc:2 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['chips','choc'],
+    champ: {league:'choc', seed:1}
+  },
+  {
+    // Sean MacQuarrie — Chips: CRD,Fritos,KettleJal,S&V,NachoCheese,LaysPotato,CheetosPlain,FlaminHot; s16:CRD/KettleJal; E8:FlaminHot; LC=8
+    // NonChip: WasabiPeas,PBPretzel,StringCheese,SaltedRP,Cheezits,RitzCrackers,BeefJerky,ChocCovAlm; s16:PBPretzel/RitzCrackers; E8:Ritz; LC=11
+    // Choc: PeanutMMs,TJsDark,Snickers,DarkChoc,HeathBar,Twix,Oreos,KitKat; s16:TJsDark/KitKat; E8:KitKat; LC=2→kitkat=9
+    // Candy: SPK,Laffy Taffy,HiChew,SourWorms,FruitSnacks,HariboGB,Starbursts,Skittles; s16:SPK/HiChew→HiChew/Starbursts; E8:Starbursts→HiChew wins; LC=3
+    // FF: Chips wins savory; Choc wins sweet; Champ=FlaminHot
+    name: 'Sean MacQuarrie',
+    picks: {
+      chips: { r64:[1,15,3,4,5,11,10,8], r32:[1,3,11,10], s16:[1,3], e8:[8], lc:8 },
+      nonchip: { r64:[16,2,14,13,5,11,7,9], r32:[16,14,11,7], s16:[2,11], e8:[11], lc:11 },
+      choc: { r64:[1,2,3,4,5,6,10,9], r32:[2,3,5,9], s16:[2,5], e8:[9], lc:2 },
+      candy: { r64:[1,15,3,4,12,11,7,8], r32:[1,3,12,7], s16:[3,7], e8:[3], lc:3 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['chips','choc'],
+    champ: {league:'chips', seed:8}
+  },
+  {
+    // Suporna — Chips: Takis upsets, SunChips, KettleJal, S&V, LaysBBQ, KettlePlain, CheetosPlain, FlaminHot; s16:Takis/LaysBBQ; E8:FlaminHot; LC=8
+    // NonChip: SWC,PBPretzel,StringCheese,Wheat,ClassicPret,ClassicPret,BeefJerky,Pirate; s16:PBPretzel/StringCheese→StringCheese; E8:StringCheese; LC=14
+    // Choc: PeanutMMs,TJsDark,DarkChoc,HeathBar→HersheysCookies,Oreos,KitKat; s16:TJsDark/Oreos; E8:TJsDark→Oreos; LC=2
+    // Candy: SPK,Laffy Taffy,HiChew,SourWorms,FruitSnacks,Nerds,FruitLeather,Skittles; E8:FruitSnacks wins; LC=12
+    // FF: Chips wins savory; Choc wins sweet; Champ=TJs Dark Choc PB Cups
+    name: 'Suporna',
+    picks: {
+      chips: { r64:[16,2,3,4,12,6,10,8], r32:[16,3,12,10], s16:[16,12], e8:[8], lc:8 },
+      nonchip: { r64:[1,2,14,4,5,6,7,8], r32:[2,14,6,8], s16:[2,14], e8:[14], lc:14 },
+      choc: { r64:[1,2,3,4,5,11,10,9], r32:[2,4,11,10], s16:[2,11], e8:[2], lc:2 },
+      candy: { r64:[1,15,3,4,12,6,10,8], r32:[1,3,12,10], s16:[1,3], e8:[12], lc:12 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['chips','choc'],
+    champ: {league:'choc', seed:2}
+  },
+  {
+    // Tyler Copeland — Chips: CRD,SunChips,KettleJal,S&V,LaysBBQ,KettlePlain,CheetosPlain,FlaminHot; s16:CRD/KettleJal; E8:KettleJal; LC=3
+    // NonChip: SWC,PBPretzel,StringCheese,SaltedRP,Cheezits,ClassicPret,BeefJerky,ChocCovAlm; s16:SWC/Cheezits; E8:SWC; LC=1
+    // Choc: PeanutMMs,TJsDark,Snickers,DarkChoc,HeathBar,Twix,Oreos,KitKat; s16:PeanutMMs/Oreos; E8:Oreos; LC=10
+    // Candy: SPK,SwedFish,HiChew,SourWorms,FruitSnacks,HariboGB,Starbursts,Skittles; s16:SPK/HariboGB; E8:SPK; LC=1
+    // FF: NonChip wins savory; Choc wins sweet; Champ=Oreos
+    name: 'Tyler Copeland',
+    picks: {
+      chips: { r64:[1,2,3,4,12,6,10,8], r32:[1,3,12,10], s16:[1,3], e8:[3], lc:3 },
+      nonchip: { r64:[1,2,14,13,5,6,7,9], r32:[1,14,5,7], s16:[1,5], e8:[1], lc:1 },
+      choc: { r64:[1,2,3,4,5,6,10,9], r32:[1,3,5,10], s16:[1,10], e8:[10], lc:10 },
+      candy: { r64:[1,2,3,4,12,11,7,8], r32:[1,3,11,7], s16:[1,11], e8:[1], lc:1 }
+    },
+    ff: { savory: 'nonchip', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'choc', seed:10}
+  },
+  {
+    // Xin Zhang (with Claude) — Chips: CRD,SunChips,KettleJal,S&V,LaysBBQ,LaysPotato,Tortilla,SourCream; s16:CRD/NachoCheese→CRD; E8:CRD; LC=1
+    // NonChip: SWC,PBPretzel,Goldfish,SaltedRP,Cheezits,ClassicPret,BeefJerky,Pirate; s16:Goldfish/Cheezits; E8:Cheezits; LC=5
+    // Choc: PeanutMMs,Snickers,DarkChoc,100Grand,Twix,Oreos,Reese's; s16:PeanutMMs/Oreos; E8:Oreos; LC=10
+    // Candy: SPK,SwedFish,HiChew,SourWorms,PeachRings,Nerds,Starbursts,Skittles; s16:SPK/Nerds→Skittles; E8:Skittles; LC=8
+    // FF: NonChip wins savory; Choc wins sweet; Champ=Oreos
+    name: 'Xin Zhang',
+    picks: {
+      chips: { r64:[1,2,3,4,12,11,7,9], r32:[1,3,12,7], s16:[1,12], e8:[1], lc:1 },
+      nonchip: { r64:[1,2,3,13,5,6,7,9], r32:[1,3,5,7], s16:[3,5], e8:[5], lc:5 },
+      choc: { r64:[1,2,3,4,12,6,10,8], r32:[1,3,6,10], s16:[1,10], e8:[10], lc:10 },
+      candy: { r64:[1,2,3,4,5,6,7,8], r32:[1,3,6,7], s16:[1,6], e8:[8], lc:8 }
+    },
+    ff: { savory: 'nonchip', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'choc', seed:10}
+  },
+  {
+    // Ben C — Chips: CRD,SunChips,KettleJal,S&V,LaysBBQ,LaysPotato,CheetosPlain,FlaminHot; s16:CRD/S&V; E8:FlaminHot; LC=8
+    // NonChip: SWC,PBPretzel,Goldfish,SaltedRP,Cheezits,ClassicPret,BeefJerky,Pirate; s16:SWC/Cheezits; E8:Pirate; LC=8
+    // Choc: PeanutMMs,TJsDark,DarkChoc,100Grand,Twix,Oreos,Reese's; s16:TJsDark/Reese's; E8:TJsDark; LC=2
+    // Candy: SPK,SwedFish,HiChew,SourWorms,FruitSnacks,HariboGB,FruitLeather,Skittles; s16:SwedFish/HiChew; E8:HiChew; LC=3
+    // FF: Chips wins savory; Choc wins sweet; Champ=TJs Dark Choc PB Cups
+    name: 'Ben C',
+    picks: {
+      chips: { r64:[1,2,3,4,12,11,10,8], r32:[1,3,12,11], s16:[1,4], e8:[8], lc:8 },
+      nonchip: { r64:[1,2,3,13,5,6,7,8], r32:[1,3,5,8], s16:[1,5], e8:[8], lc:8 },
+      choc: { r64:[1,2,3,4,12,6,10,8], r32:[2,4,12,8], s16:[2,8], e8:[2], lc:2 },
+      candy: { r64:[1,2,3,4,12,11,10,8], r32:[2,3,12,10], s16:[2,3], e8:[3], lc:3 }
+    },
+    ff: { savory: 'chips', sweet: 'choc' },
+    finalist: ['chips','choc'],
+    champ: {league:'choc', seed:2}
+  }
+];
+
+// ─── TOURNAMENT STRUCTURE ───
+// Define all matchups for each round across all 4 leagues
+// Results: stored as winningSeed per matchup
+
+const ROUNDS = [
+  {
+    id: 'r64', label: 'Round of 64', dates: 'Mar 9–12', pts: 1,
+    matchups: [
+      // Chips (8 matchups: 1v16, 2v15, 3v14, 4v13, 5v12, 6v11, 7v10, 8v9)
+      {id:'c_r64_1', league:'chips', a:1, b:16},
+      {id:'c_r64_2', league:'chips', a:2, b:15},
+      {id:'c_r64_3', league:'chips', a:3, b:14},
+      {id:'c_r64_4', league:'chips', a:4, b:13},
+      {id:'c_r64_5', league:'chips', a:5, b:12},
+      {id:'c_r64_6', league:'chips', a:6, b:11},
+      {id:'c_r64_7', league:'chips', a:7, b:10},
+      {id:'c_r64_8', league:'chips', a:8, b:9},
+      // Non-Chips
+      {id:'n_r64_1', league:'nonchip', a:1, b:16},
+      {id:'n_r64_2', league:'nonchip', a:2, b:15},
+      {id:'n_r64_3', league:'nonchip', a:3, b:14},
+      {id:'n_r64_4', league:'nonchip', a:4, b:13},
+      {id:'n_r64_5', league:'nonchip', a:5, b:12},
+      {id:'n_r64_6', league:'nonchip', a:6, b:11},
+      {id:'n_r64_7', league:'nonchip', a:7, b:10},
+      {id:'n_r64_8', league:'nonchip', a:8, b:9},
+      // Chocolate
+      {id:'ch_r64_1', league:'choc', a:1, b:16},
+      {id:'ch_r64_2', league:'choc', a:2, b:15},
+      {id:'ch_r64_3', league:'choc', a:3, b:14},
+      {id:'ch_r64_4', league:'choc', a:4, b:13},
+      {id:'ch_r64_5', league:'choc', a:5, b:12},
+      {id:'ch_r64_6', league:'choc', a:6, b:11},
+      {id:'ch_r64_7', league:'choc', a:7, b:10},
+      {id:'ch_r64_8', league:'choc', a:8, b:9},
+      // Candy
+      {id:'ca_r64_1', league:'candy', a:1, b:16},
+      {id:'ca_r64_2', league:'candy', a:2, b:15},
+      {id:'ca_r64_3', league:'candy', a:3, b:14},
+      {id:'ca_r64_4', league:'candy', a:4, b:13},
+      {id:'ca_r64_5', league:'candy', a:5, b:12},
+      {id:'ca_r64_6', league:'candy', a:6, b:11},
+      {id:'ca_r64_7', league:'candy', a:7, b:10},
+      {id:'ca_r64_8', league:'candy', a:8, b:9},
+    ]
+  },
+  {
+    id: 'r32', label: 'Round of 32', dates: 'Mar 13–18', pts: 2,
+    matchups: [
+      // Chips: winners of (1v16)v(2v15), (3v14)v(4v13), (5v12)v(6v11), (7v10)v(8v9)
+      {id:'c_r32_1', league:'chips', slot:0},
+      {id:'c_r32_2', league:'chips', slot:1},
+      {id:'c_r32_3', league:'chips', slot:2},
+      {id:'c_r32_4', league:'chips', slot:3},
+      {id:'n_r32_1', league:'nonchip', slot:0},
+      {id:'n_r32_2', league:'nonchip', slot:1},
+      {id:'n_r32_3', league:'nonchip', slot:2},
+      {id:'n_r32_4', league:'nonchip', slot:3},
+      {id:'ch_r32_1', league:'choc', slot:0},
+      {id:'ch_r32_2', league:'choc', slot:1},
+      {id:'ch_r32_3', league:'choc', slot:2},
+      {id:'ch_r32_4', league:'choc', slot:3},
+      {id:'ca_r32_1', league:'candy', slot:0},
+      {id:'ca_r32_2', league:'candy', slot:1},
+      {id:'ca_r32_3', league:'candy', slot:2},
+      {id:'ca_r32_4', league:'candy', slot:3},
+    ]
+  },
+  {
+    id: 's16', label: 'Sweet Sixteen', dates: 'Mar 19–23', pts: 4,
+    matchups: [
+      {id:'c_s16_1', league:'chips', slot:0}, {id:'c_s16_2', league:'chips', slot:1},
+      {id:'n_s16_1', league:'nonchip', slot:0}, {id:'n_s16_2', league:'nonchip', slot:1},
+      {id:'ch_s16_1', league:'choc', slot:0}, {id:'ch_s16_2', league:'choc', slot:1},
+      {id:'ca_s16_1', league:'candy', slot:0}, {id:'ca_s16_2', league:'candy', slot:1},
+    ]
+  },
+  {
+    id: 'e8', label: 'Elite Ate', dates: 'Mar 23–27', pts: 8,
+    matchups: [
+      {id:'c_e8_1', league:'chips', slot:0},
+      {id:'n_e8_1', league:'nonchip', slot:0},
+      {id:'ch_e8_1', league:'choc', slot:0},
+      {id:'ca_e8_1', league:'candy', slot:0},
+    ]
+  },
+  {
+    id: 'ff', label: 'Final Four', dates: 'Mar 28–Apr 1', pts: 4,
+    matchups: [
+      {id:'ff_savory', desc:'Chips vs Non-Chips'},
+      {id:'ff_sweet', desc:'Chocolate vs Candy'},
+    ]
+  },
+  {
+    id: 'champ', label: 'Championship', dates: 'Apr 1–6', pts: 16,
+    matchups: [
+      {id:'champ_1', desc:'Overall Championship'},
+    ]
+  }
+];
+
+// ─── STATE ───
+// ─── ACTUAL RESULTS (hardcoded as rounds complete) ───
+const results = {
+  // ROUND OF 64
+  // Chips: 1vCRD, 2vSunChips, 3vKettleJal, 4vS&V, 5vNachoCheese, 6vKettlePlain, 7v10→Cheetos, 8v9→SourCream
+  c_r64_1:1, c_r64_2:2, c_r64_3:3, c_r64_4:4, c_r64_5:5, c_r64_6:6, c_r64_7:10, c_r64_8:9,
+  // Non-Chips: 1vSWC, 2vPBPretzel, 3vGoldfish, 4v13→SaltedRP, 5vCheezIts, 6v11→Ritz, 7vBeefJerky, 8vPirate
+  n_r64_1:1, n_r64_2:2, n_r64_3:3, n_r64_4:13, n_r64_5:5, n_r64_6:11, n_r64_7:7, n_r64_8:8,
+  // Chocolate: 1vPeanutMMs, 2vTJsDark, 3vSnickers, 4vDarkChoc, 5v12→100Grand, 6vTwix, 7v10→Oreos, 8vReeses
+  ch_r64_1:1, ch_r64_2:2, ch_r64_3:3, ch_r64_4:4, ch_r64_5:12, ch_r64_6:6, ch_r64_7:10, ch_r64_8:8,
+  // Candy: 1vSPK, 2vSwedFish, 3v14→FruitRollUp, 4vSourWorms, 5v12→FruitSnacks, 6v11→HariboGB, 7vStarbursts, 8vSkittles
+  ca_r64_1:1, ca_r64_2:2, ca_r64_3:14, ca_r64_4:4, ca_r64_5:12, ca_r64_6:11, ca_r64_7:7, ca_r64_8:8
+};
+
+// Future rounds will be added here as they complete
+// e.g. c_r32_1:1, c_r32_2:4, etc.
+// We'll track: for ff_savory: winner = 'chips' or 'nonchip'; for ff_sweet: 'choc' or 'candy'
+// For champ_1: winner = 'chips'|'nonchip'|'choc'|'candy' (the league of the winning finalist)
+
+function getSeedName(league, seed) {
+  const s = SNACKS[league].find(x => x.s === seed);
+  return s ? s.n : '?';
+}
+
+function leagueColor(league) {
+  if (league === 'chips') return {bg: '#D6E8F5', color: '#1B4F8A', label:'🥔 Chips'};
+  if (league === 'nonchip') return {bg: '#D6F0E0', color: '#1A6B3A', label:'🥨 Non-Chips'};
+  if (league === 'choc') return {bg: '#F5E0D0', color: '#5C2A0A', label:'🍫 Chocolate'};
+  if (league === 'candy') return {bg: '#EAD6F5', color: '#6B1A8A', label:'🍬 Candy'};
+}
+
+// ─── SCORING LOGIC ───
+function getR64WinnerSeed(league, slot) {
+  return results[['c','n','ch','ca'][['chips','nonchip','choc','candy'].indexOf(league)] + '_r64_' + (slot+1)];
+}
+
+function getR32WinnerSeed(league, slot) {
+  return results[['c','n','ch','ca'][['chips','nonchip','choc','candy'].indexOf(league)] + '_r32_' + (slot+1)];
+}
+
+function getS16WinnerSeed(league, slot) {
+  return results[['c','n','ch','ca'][['chips','nonchip','choc','candy'].indexOf(league)] + '_s16_' + (slot+1)];
+}
+
+function getE8WinnerSeed(league) {
+  return results[['c','n','ch','ca'][['chips','nonchip','choc','candy'].indexOf(league)] + '_e8_1'];
+}
+
+function getFFWinner(matchup) {
+  return results['ff_' + matchup]; // 'savory' or 'sweet' -> league key
+}
+
+function getChampWinnerLeague() {
+  return results['champ_1'];
+}
+
+function calculateScore(p) {
+  let score = 0;
+  let breakdown = {r64:0, r32:0, s16:0, e8:0, ff:0, champ:0};
+
+  const leagues = ['chips','nonchip','choc','candy'];
+  const prefixes = ['c','n','ch','ca'];
+
+  leagues.forEach((league, li) => {
+    const px = prefixes[li];
+    const picks = p.picks[league];
+
+    // R64: 8 matchups
+    for (let m = 1; m <= 8; m++) {
+      const rid = `${px}_r64_${m}`;
+      const winner = results[rid];
+      if (winner && picks.r64[m-1] === winner) { score += 1; breakdown.r64 += 1; }
+    }
+
+    // R32: 4 matchups
+    for (let m = 1; m <= 4; m++) {
+      const rid = `${px}_r32_${m}`;
+      const winner = results[rid];
+      if (winner && picks.r32[m-1] === winner) { score += 2; breakdown.r32 += 2; }
+    }
+
+    // S16: 2 matchups
+    for (let m = 1; m <= 2; m++) {
+      const rid = `${px}_s16_${m}`;
+      const winner = results[rid];
+      if (winner && picks.s16[m-1] === winner) { score += 4; breakdown.s16 += 4; }
+    }
+
+    // E8: 1 matchup
+    const e8id = `${px}_e8_1`;
+    const e8winner = results[e8id];
+    if (e8winner && picks.e8[0] === e8winner) { score += 8; breakdown.e8 += 8; }
+  });
+
+  // Final Four
+  const ffSavoryWinner = results['ff_savory']; // league key
+  const ffSweetWinner = results['ff_sweet'];
+  if (ffSavoryWinner && p.ff.savory === ffSavoryWinner) { score += 4; breakdown.ff += 4; }
+  if (ffSweetWinner && p.ff.sweet === ffSweetWinner) { score += 4; breakdown.ff += 4; }
+
+  // Championship
+  const champWinner = results['champ_1']; // league key of winner
+  if (champWinner && p.champ.league === champWinner) {
+    // Also need to verify correct seed
+    const winnerSeed = getE8WinnerSeed(champWinner);
+    if (winnerSeed && winnerSeed === p.champ.seed) {
+      score += 16; breakdown.champ += 16;
+    }
+  }
+
+  return {score, breakdown};
+}
+
+// Max possible points remaining
+function maxPossible(p) {
+  // Simple: just return base max if nothing is entered
+  return 128 + 8 + 16; // 128 from league rounds + 8 from ff + 16 from champ
+}
+
+// ─── RENDER LEADERBOARD ───
+function renderLeaderboard() {
+  const scored = PARTICIPANTS.map(p => {
+    const {score, breakdown} = calculateScore(p);
+    return {...p, score, breakdown};
+  }).sort((a,b) => b.score - a.score);
+
+  // Chart
+  const maxScore = Math.max(...scored.map(s => s.score), 1);
+  const maxPts = 152; // theoretical max
+  document.getElementById('chart-bars').innerHTML = scored.map(p => {
+    const pct = maxPts > 0 ? (p.score / maxPts * 100) : 0;
+    return `<div class="bar-row">
+      <div class="bar-name">${p.name}</div>
+      <div class="bar-wrap">
+        <div class="bar-fill" style="width:${pct}%">
+          ${p.score > 8 ? `<span class="bar-fill-pts">${p.score}</span>` : ''}
+        </div>
+      </div>
+      <div class="bar-pts">${p.score}</div>
+    </div>`;
+  }).join('');
+
+  // Table
+  let rank = 0, prevScore = -1, tiedCount = 0;
+  document.getElementById('lb-tbody').innerHTML = scored.map((p, i) => {
+    if (p.score !== prevScore) { rank = i + 1; tiedCount = 0; }
+    prevScore = p.score;
+    const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
+    const champName = getSeedName(p.champ.league, p.champ.seed);
+    const lc = leagueColor(p.champ.league);
+
+    const bd = p.breakdown;
+    const badges = [
+      {label:'R64', val:bd.r64, max:32},
+      {label:'R32', val:bd.r32, max:32},
+      {label:'S16', val:bd.s16, max:32},
+      {label:'E8',  val:bd.e8,  max:32},
+      {label:'FF',  val:bd.ff,  max:8},
+      {label:'🏆',  val:bd.champ, max:16, bonus:true},
+    ].map(b => {
+      const cls = b.val === 0 ? 'r-badge' : (b.bonus ? 'r-badge bonus' : 'r-badge has-score');
+      return `<span class="${cls}">${b.label} ${b.val}</span>`;
+    }).join('');
+
+    return `<tr onclick="openModal(${PARTICIPANTS.indexOf(p)})" style="cursor:pointer">
+      <td class="rank-cell ${rankClass}">${rank}</td>
+      <td class="name-cell">${p.name}</td>
+      <td class="pick-cell">
+        <span style="font-size:8px;background:${lc.bg};color:${lc.color};padding:1px 5px;border-radius:2px;font-family:monospace;font-weight:600;margin-right:5px;">${lc.label}</span>
+        ${champName}
+      </td>
+      <td class="score-cell">${p.score}</td>
+      <td><div class="round-scores">${badges}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── RENDER BRACKET CARDS ───
+function renderBracketCards() {
+  const leagues = ['chips','nonchip','choc','candy'];
+  document.getElementById('participant-cards').innerHTML = PARTICIPANTS.map((p, idx) => {
+    const {score} = calculateScore(p);
+    const champName = getSeedName(p.champ.league, p.champ.seed);
+    const lc = leagueColor(p.champ.league);
+
+    const leagueRows = leagues.map(league => {
+      const lci = leagueColor(league);
+      const lcSeed = p.picks[league].lc;
+      const snackName = getSeedName(league, lcSeed);
+      const actualWinner = getE8WinnerSeed(league);
+      const correct = actualWinner ? (actualWinner === lcSeed) : null;
+      const checkCls = correct === null ? 'p-league-check' : (correct ? 'p-league-check correct' : 'p-league-check');
+      const checkTxt = correct === null ? '?' : (correct ? '✓' : '✗');
+      return `<div class="p-league-row">
+        <span class="p-league-tag tag-${league === 'nonchip' ? 'nonchip' : (league === 'choc' ? 'choc' : (league === 'candy' ? 'candy' : 'chips'))}">${lci.label.split(' ').slice(1).join(' ')}</span>
+        <span class="p-league-snack">${snackName}</span>
+        <span class="${checkCls}">${checkTxt}</span>
+      </div>`;
+    }).join('');
+
+    return `<div class="p-card" onclick="openModal(${idx})">
+      <div class="p-card-head">
+        <div class="p-card-name">${p.name}</div>
+        <div class="p-card-score">${score} pts</div>
+      </div>
+      <div class="p-card-body">
+        <div class="p-card-champ">
+          <span class="p-card-champ-label">🏆 Champion Pick:</span>
+          <span class="p-card-champ-pick" style="color:${lc.color}">${champName}</span>
+        </div>
+        <div class="p-league-picks">${leagueRows}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── MODAL ───
+function openModal(idx) {
+  const p = PARTICIPANTS[idx];
+  const {score, breakdown} = calculateScore(p);
+  document.getElementById('modal-name').textContent = p.name;
+
+  const leagues = ['chips','nonchip','choc','candy'];
+  const prefixes = ['c','n','ch','ca'];
+  const roundNames = {r64:'R64', r32:'R32', s16:'S16', e8:'E8'};
+  const roundPts = {r64:1, r32:2, s16:4, e8:8};
+
+  let html = `<div class="modal-score-row">
+    <div>
+      <div class="modal-total">${score}</div>
+      <div class="modal-total-label">total points</div>
+    </div>
+    <div class="round-scores" style="flex-wrap:wrap;gap:6px">
+      <span class="r-badge ${breakdown.r64>0?'has-score':''}">R64: ${breakdown.r64}</span>
+      <span class="r-badge ${breakdown.r32>0?'has-score':''}">R32: ${breakdown.r32}</span>
+      <span class="r-badge ${breakdown.s16>0?'has-score':''}">S16: ${breakdown.s16}</span>
+      <span class="r-badge ${breakdown.e8>0?'has-score':''}">E8: ${breakdown.e8}</span>
+      <span class="r-badge ${breakdown.ff>0?'has-score':''}">FF: ${breakdown.ff}</span>
+      <span class="r-badge ${breakdown.champ>0?'bonus':''}">Champ: ${breakdown.champ}</span>
+    </div>
+  </div>`;
+
+  leagues.forEach((league, li) => {
+    const lc = leagueColor(league);
+    const px = prefixes[li];
+    const picks = p.picks[league];
+
+    let rows = '';
+    const addRow = (roundId, roundLabel, pickSeed, pts) => {
+      const winner = results[roundId];
+      const pickName = getSeedName(league, pickSeed);
+      let status = 'pending';
+      let ptsHtml = `<span class="modal-pick-pts pts-pending">+${pts}</span>`;
+      if (winner !== undefined) {
+        if (winner === pickSeed) {
+          status = 'correct';
+          ptsHtml = `<span class="modal-pick-pts pts-correct">+${pts}</span>`;
+        } else {
+          status = 'wrong';
+          ptsHtml = `<span class="modal-pick-pts pts-wrong">+${pts}</span>`;
+        }
+      }
+      rows += `<div class="modal-pick-row">
+        <span class="modal-round-tag">${roundLabel}</span>
+        <span class="modal-pick-name">#${pickSeed} ${pickName}</span>
+        ${ptsHtml}
+      </div>`;
+    };
+
+    for (let m = 1; m <= 8; m++) addRow(`${px}_r64_${m}`, 'R64', picks.r64[m-1], 1);
+    for (let m = 1; m <= 4; m++) addRow(`${px}_r32_${m}`, 'R32', picks.r32[m-1], 2);
+    for (let m = 1; m <= 2; m++) addRow(`${px}_s16_${m}`, 'S16', picks.s16[m-1], 4);
+    addRow(`${px}_e8_1`, 'E8', picks.e8[0], 8);
+
+    html += `<div class="modal-league">
+      <div class="modal-league-head" style="background:${lc.bg};color:${lc.color}">
+        <span>${lc.label} — League Champ: #${picks.lc} ${getSeedName(league, picks.lc)}</span>
+      </div>
+      <div class="modal-league-body">${rows}</div>
+    </div>`;
+  });
+
+  // FF picks
+  const ffSavory = results['ff_savory'];
+  const ffSweet = results['ff_sweet'];
+  const champWinner = results['champ_1'];
+  const champSeedWinner = champWinner ? getE8WinnerSeed(champWinner) : null;
+
+  const ffSavoryCorrect = ffSavory ? (p.ff.savory === ffSavory) : null;
+  const ffSweetCorrect = ffSweet ? (p.ff.sweet === ffSweet) : null;
+  const champCorrect = champWinner ? (p.champ.league === champWinner && p.champ.seed === champSeedWinner) : null;
+
+  html += `<div class="modal-league">
+    <div class="modal-league-head" style="background:#FDE8D5;color:#C45A0A">🏆 Final Four & Championship</div>
+    <div class="modal-league-body">
+      <div class="modal-pick-row">
+        <span class="modal-round-tag">FF Savory</span>
+        <span class="modal-pick-name">${leagueColor(p.ff.savory).label} wins</span>
+        ${ffSavoryCorrect === null ? '<span class="modal-pick-pts pts-pending">+4</span>' : (ffSavoryCorrect ? '<span class="modal-pick-pts pts-correct">+4</span>' : '<span class="modal-pick-pts pts-wrong">+4</span>')}
+      </div>
+      <div class="modal-pick-row">
+        <span class="modal-round-tag">FF Sweet</span>
+        <span class="modal-pick-name">${leagueColor(p.ff.sweet).label} wins</span>
+        ${ffSweetCorrect === null ? '<span class="modal-pick-pts pts-pending">+4</span>' : (ffSweetCorrect ? '<span class="modal-pick-pts pts-correct">+4</span>' : '<span class="modal-pick-pts pts-wrong">+4</span>')}
+      </div>
+      <div class="modal-pick-row">
+        <span class="modal-round-tag">Champion</span>
+        <span class="modal-pick-name">#${p.champ.seed} ${getSeedName(p.champ.league, p.champ.seed)}</span>
+        ${champCorrect === null ? '<span class="modal-pick-pts pts-pending">+16</span>' : (champCorrect ? '<span class="modal-pick-pts pts-correct">+16</span>' : '<span class="modal-pick-pts pts-wrong">+16</span>')}
+      </div>
+    </div>
+  </div>`;
+
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+}
+function closeModalDirect() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ─── ADMIN PANEL ───
+function buildAdminPanel() {
+  const leagues = ['chips','nonchip','choc','candy'];
+  const prefixes = ['c','n','ch','ca'];
+  let html = '';
+
+  ROUNDS.forEach(round => {
+    const completedCount = round.matchups.filter(m => results[m.id] !== undefined).length;
+    const isLocked = lockedRounds[round.id];
+    const lockBtn = isLocked
+      ? `<button onclick="event.stopPropagation();unlockRound('${round.id}')" style="font-size:10px;padding:3px 10px;border-radius:3px;border:1px solid #888;background:transparent;color:#888;cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:1px;">🔓 UNLOCK</button>`
+      : (completedCount === round.matchups.length
+        ? `<button onclick="event.stopPropagation();lockRound('${round.id}')" style="font-size:10px;padding:3px 10px;border-radius:3px;border:1px solid var(--nonchip);background:var(--nonchip-lt);color:var(--nonchip);cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:1px;font-weight:700;">🔒 LOCK ROUND</button>`
+        : '');
+    const lockedBadge = isLocked ? `<span style="font-size:9px;background:#1A6B3A;color:white;padding:2px 7px;border-radius:3px;font-family:'DM Mono',monospace;letter-spacing:1px;font-weight:700;">🔒 LOCKED</span>` : '';
+    html += `<div class="admin-round" style="${isLocked ? 'opacity:0.75;' : ''}">
+      <div class="admin-round-header" onclick="toggleRound('${round.id}')">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="admin-round-title">${round.label} — ${round.dates} (${round.pts} pt${round.pts>1?'s':''}/pick)</div>
+          ${lockedBadge}
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="admin-round-status">${completedCount}/${round.matchups.length} entered</div>
+          ${lockBtn}
+        </div>
+      </div>
+      <div class="admin-round-body" id="body-${round.id}">`;
+
+    if (round.id === 'r64' || round.id === 'r32' || round.id === 's16' || round.id === 'e8') {
+      html += '<div class="matchups-grid">';
+      round.matchups.forEach(m => {
+        const lc = leagueColor(m.league);
+        let optA_seed, optB_seed, optA_name, optB_name;
+
+        if (round.id === 'r64') {
+          optA_seed = m.a; optB_seed = m.b;
+          optA_name = getSeedName(m.league, m.a);
+          optB_name = getSeedName(m.league, m.b);
+        } else {
+          // For later rounds, show the seeds that reached this point based on entered results
+          // We'll show them as "Slot winner" if not resolved
+          optA_seed = null; optB_seed = null;
+          const px = prefixes[leagues.indexOf(m.league)];
+          if (round.id === 'r32') {
+            optA_seed = results[`${px}_r64_${m.slot*2+1}`];
+            optB_seed = results[`${px}_r64_${m.slot*2+2}`];
+          } else if (round.id === 's16') {
+            optA_seed = results[`${px}_r32_${m.slot*2+1}`];
+            optB_seed = results[`${px}_r32_${m.slot*2+2}`];
+          } else if (round.id === 'e8') {
+            optA_seed = results[`${px}_s16_${m.slot*2+1}`];
+            optB_seed = results[`${px}_s16_${m.slot*2+2}`];
+          }
+          optA_name = optA_seed ? getSeedName(m.league, optA_seed) : 'TBD';
+          optB_name = optB_seed ? getSeedName(m.league, optB_seed) : 'TBD';
+        }
+
+        const winnerSeed = results[m.id];
+        const lockedStyle = isLocked ? 'pointer-events:none;' : '';
+        html += `<div class="matchup-entry" style="${isLocked ? 'opacity:0.8;' : ''}">
+          <div class="matchup-label" style="color:${lc.color}">${lc.label}</div>
+          <div class="matchup-options">
+            <div class="matchup-option ${winnerSeed === optA_seed && optA_seed !== undefined ? 'winner' : ''}" onclick="setWinner('${m.id}', ${optA_seed})" style="${lockedStyle}">
+              <span class="seed-badge">#${optA_seed || '?'}</span> ${optA_name}
+            </div>
+            <div class="matchup-option ${winnerSeed === optB_seed && optB_seed !== undefined ? 'winner' : ''}" onclick="setWinner('${m.id}', ${optB_seed})" style="${lockedStyle}">
+              <span class="seed-badge">#${optB_seed || '?'}</span> ${optB_name}
+            </div>
+          </div>
+        </div>`;
+      });
+      html += '</div>';
+
+    } else if (round.id === 'ff') {
+      // Final Four
+      html += '<div class="matchups-grid">';
+      const savoryChips = getE8WinnerSeed('chips');
+      const savoryNon = getE8WinnerSeed('nonchip');
+      const sweetChoc = getE8WinnerSeed('choc');
+      const sweetCandy = getE8WinnerSeed('candy');
+      const savoryWinner = results['ff_savory'];
+      const sweetWinner = results['ff_sweet'];
+
+      const ffLockedStyle = isLocked ? 'pointer-events:none;' : '';
+      html += `<div class="matchup-entry" style="${isLocked ? 'opacity:0.8;' : ''}">
+        <div class="matchup-label">Savory Matchup (Chips vs Non-Chips)</div>
+        <div class="matchup-options">
+          <div class="matchup-option ${savoryWinner === 'chips' ? 'winner' : ''}" onclick="setFFWinner('ff_savory','chips')" style="${ffLockedStyle}">
+            <span class="seed-badge" style="background:#D6E8F5;color:#1B4F8A">Chips</span>
+            ${savoryChips ? '#'+savoryChips+' '+getSeedName('chips', savoryChips) : 'Chips League Champ'}
+          </div>
+          <div class="matchup-option ${savoryWinner === 'nonchip' ? 'winner' : ''}" onclick="setFFWinner('ff_savory','nonchip')">
+            <span class="seed-badge" style="background:#D6F0E0;color:#1A6B3A">Non-Chips</span>
+            ${savoryNon ? '#'+savoryNon+' '+getSeedName('nonchip', savoryNon) : 'Non-Chips League Champ'}
+          </div>
+        </div>
+      </div>
+      <div class="matchup-entry">
+        <div class="matchup-label">Sweet Matchup (Chocolate vs Candy)</div>
+        <div class="matchup-options">
+          <div class="matchup-option ${sweetWinner === 'choc' ? 'winner' : ''}" onclick="setFFWinner('ff_sweet','choc')">
+            <span class="seed-badge" style="background:#F5E0D0;color:#5C2A0A">Choc</span>
+            ${sweetChoc ? '#'+sweetChoc+' '+getSeedName('choc', sweetChoc) : 'Chocolate League Champ'}
+          </div>
+          <div class="matchup-option ${sweetWinner === 'candy' ? 'winner' : ''}" onclick="setFFWinner('ff_sweet','candy')">
+            <span class="seed-badge" style="background:#EAD6F5;color:#6B1A8A">Candy</span>
+            ${sweetCandy ? '#'+sweetCandy+' '+getSeedName('candy', sweetCandy) : 'Candy League Champ'}
+          </div>
+        </div>
+      </div>`;
+      html += '</div>';
+
+    } else if (round.id === 'champ') {
+      html += '<div class="matchups-grid">';
+      const finalist1League = results['ff_savory'];
+      const finalist2League = results['ff_sweet'];
+      const f1Seed = finalist1League ? getE8WinnerSeed(finalist1League) : null;
+      const f2Seed = finalist2League ? getE8WinnerSeed(finalist2League) : null;
+      const champWinner = results['champ_1'];
+
+      html += `<div class="matchup-entry">
+        <div class="matchup-label">🏆 Championship Match</div>
+        <div class="matchup-options">
+          <div class="matchup-option ${champWinner === finalist1League ? 'winner' : ''}" onclick="setFFWinner('champ_1','${finalist1League || 'tbd1'}')">
+            ${finalist1League ? `<span class="seed-badge">#${f1Seed||'?'}</span> ${f1Seed ? getSeedName(finalist1League, f1Seed) : '?'} (${leagueColor(finalist1League||'chips').label})` : 'Savory Finalist TBD'}
+          </div>
+          <div class="matchup-option ${champWinner === finalist2League ? 'winner' : ''}" onclick="setFFWinner('champ_1','${finalist2League || 'tbd2'}')">
+            ${finalist2League ? `<span class="seed-badge">#${f2Seed||'?'}</span> ${f2Seed ? getSeedName(finalist2League, f2Seed) : '?'} (${leagueColor(finalist2League||'candy').label})` : 'Sweet Finalist TBD'}
+          </div>
+        </div>
+      </div>`;
+      html += '</div>';
+    }
+
+    html += '</div></div>';
+  });
+
+  document.getElementById('admin-rounds').innerHTML = html;
+}
+
+function toggleRound(id) {
+  const body = document.getElementById('body-' + id);
+  body.classList.toggle('open');
+}
+
+
+// ─── RESULTS TAB ───
+const ROUND_DEFS = [
+  { id:'r64', label:'Round of 64', dates:'Mar 9–12', pts:1,
+    matchups:[
+      {l:'chips',  pairs:[[1,16],[2,15],[3,14],[4,13],[5,12],[6,11],[7,10],[8,9]], keys:['c_r64_1','c_r64_2','c_r64_3','c_r64_4','c_r64_5','c_r64_6','c_r64_7','c_r64_8']},
+      {l:'nonchip',pairs:[[1,16],[2,15],[3,14],[4,13],[5,12],[6,11],[7,10],[8,9]], keys:['n_r64_1','n_r64_2','n_r64_3','n_r64_4','n_r64_5','n_r64_6','n_r64_7','n_r64_8']},
+      {l:'choc',   pairs:[[1,16],[2,15],[3,14],[4,13],[5,12],[6,11],[7,10],[8,9]], keys:['ch_r64_1','ch_r64_2','ch_r64_3','ch_r64_4','ch_r64_5','ch_r64_6','ch_r64_7','ch_r64_8']},
+      {l:'candy',  pairs:[[1,16],[2,15],[3,14],[4,13],[5,12],[6,11],[7,10],[8,9]], keys:['ca_r64_1','ca_r64_2','ca_r64_3','ca_r64_4','ca_r64_5','ca_r64_6','ca_r64_7','ca_r64_8']}
+    ]
+  },
+  { id:'r32', label:'Round of 32', dates:'Mar 13–18', pts:2,
+    matchups:[
+      {l:'chips',  pairs:[[0,0],[0,0],[0,0],[0,0]], keys:['c_r32_1','c_r32_2','c_r32_3','c_r32_4']},
+      {l:'nonchip',pairs:[[0,0],[0,0],[0,0],[0,0]], keys:['n_r32_1','n_r32_2','n_r32_3','n_r32_4']},
+      {l:'choc',   pairs:[[0,0],[0,0],[0,0],[0,0]], keys:['ch_r32_1','ch_r32_2','ch_r32_3','ch_r32_4']},
+      {l:'candy',  pairs:[[0,0],[0,0],[0,0],[0,0]], keys:['ca_r32_1','ca_r32_2','ca_r32_3','ca_r32_4']}
+    ]
+  },
+  { id:'s16', label:'Sweet Sixteen', dates:'Mar 19–23', pts:4,
+    matchups:[
+      {l:'chips',  pairs:[[0,0],[0,0]], keys:['c_s16_1','c_s16_2']},
+      {l:'nonchip',pairs:[[0,0],[0,0]], keys:['n_s16_1','n_s16_2']},
+      {l:'choc',   pairs:[[0,0],[0,0]], keys:['ch_s16_1','ch_s16_2']},
+      {l:'candy',  pairs:[[0,0],[0,0]], keys:['ca_s16_1','ca_s16_2']}
+    ]
+  },
+  { id:'e8', label:'Elite Ate', dates:'Mar 23–27', pts:8,
+    matchups:[
+      {l:'chips',  pairs:[[0,0]], keys:['c_e8_1']},
+      {l:'nonchip',pairs:[[0,0]], keys:['n_e8_1']},
+      {l:'choc',   pairs:[[0,0]], keys:['ch_e8_1']},
+      {l:'candy',  pairs:[[0,0]], keys:['ca_e8_1']}
+    ]
+  },
+  { id:'ff', label:'Final Four', dates:'Mar 28–Apr 1', pts:4,
+    matchups:[{l:'ff', pairs:[[0,0],[0,0]], keys:['ff_savory','ff_sweet']}]
+  },
+  { id:'champ', label:'Championship', dates:'Apr 1–6', pts:16,
+    matchups:[{l:'champ', pairs:[[0,0]], keys:['champ_1']}]
+  }
+];
+
+const SNACKS_JS = {
+  chips:   {1:'Cool Ranch Doritos',2:'SunChips',3:'Kettle Chips - Jalapeño',4:'Salt & Vinegar Chips',5:'Nacho Cheese Doritos',6:'Kettle Chips - Plain',7:'Tortilla Chips',8:"Flamin\u2019 Hot Cheetos",9:'Sour Cream & Onion Chips',10:'Cheetos - Plain',11:'Lays Potato Chips',12:'Lays BBQ Potato Chips',13:'Pringles - Plain',14:'Pita Chips',15:'Fritos',16:'Takis'},
+  nonchip: {1:'Smartfood White Cheddar',2:'PB-filled Pretzel Bites',3:'Goldfish',4:'Wheat Thins',5:'Cheez-Its',6:'Classic Pretzels',7:'Beef Jerky',8:"Pirate\u2019s Booty",9:'Choc. Covered Almonds',10:'Skinny Pop',11:'Ritz Crackers',12:'Kettlecorn',13:'Salted Roasted Peanuts',14:'String Cheese',15:'Triscuits',16:'Wasabi Peas'},
+  choc:    {1:'Peanut M&Ms',2:"TJ\u2019s Dark Choc PB Cups",3:'Snickers',4:'Dark Chocolate',5:'Heath Bar',6:'Twix',7:'Butterfinger',8:"Reese\u2019s Cups",9:'Kit Kat',10:'Oreos',11:"Hershey\u2019s Cookies & Cream",12:'100 Grand',13:'Peppermint Patty',14:'Milky Way',15:'Three Musketeers',16:'M&Ms'},
+  candy:   {1:'Sour Patch Kids',2:'Swedish Fish',3:'Hi-Chew',4:'Sour Worms',5:'Peach Rings',6:'Nerds',7:'Starbursts',8:'Skittles',9:'Airheads',10:'Fruit Leather',11:'Haribo Gummy Bears',12:'Fruit Snacks',13:'Twizzlers',14:'Fruit Roll-Up',15:'Laffy Taffy',16:'Jelly Beans'}
+};
+
+function lcInfo(l) {
+  if (l==='chips')   return {emoji:'🥔', label:'Savory — Chips',     bg:'#D6E8F5', color:'#1B4F8A'};
+  if (l==='nonchip') return {emoji:'🥨', label:'Savory — Non-Chips', bg:'#D6F0E0', color:'#1A6B3A'};
+  if (l==='choc')    return {emoji:'🍫', label:'Chocolate',           bg:'#F5E0D0', color:'#5C2A0A'};
+  if (l==='candy')   return {emoji:'🍬', label:'Candy',               bg:'#EAD6F5', color:'#6B1A8A'};
+  return {emoji:'🏆', label:'Finals', bg:'#FDE8D5', color:'#E87722'};
+}
+
+function snackName(l, s) {
+  return (SNACKS_JS[l] && SNACKS_JS[l][s]) ? SNACKS_JS[l][s] : '?';
+}
+
+function getR64Winner(league, slot) {
+  const px = {chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[league];
+  return results[px+'_r64_'+slot];
+}
+
+function renderResultsTab() {
+  let html = '';
+
+  // ── BRACKET TOGGLE HEADER ──
+  html += `<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+    <button onclick="setResultsView('bracket')" id="btn-bracket"
+      style="padding:7px 18px;border-radius:4px;border:2px solid var(--orange);background:var(--orange);color:white;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">
+      🏆 Bracket View
+    </button>
+    <button onclick="setResultsView('list')" id="btn-list"
+      style="padding:7px 18px;border-radius:4px;border:2px solid var(--line);background:white;color:var(--mid);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">
+      📋 List View
+    </button>
+  </div>
+  <div id="results-bracket-view"></div>
+  <div id="results-list-view" style="display:none"></div>`;
+
+  document.getElementById('results-content').innerHTML = html;
+  renderBracketView();
+  renderListView();
+}
+
+function setResultsView(view) {
+  document.getElementById('results-bracket-view').style.display = view === 'bracket' ? 'block' : 'none';
+  document.getElementById('results-list-view').style.display   = view === 'list'    ? 'block' : 'none';
+  document.getElementById('btn-bracket').style.background    = view === 'bracket' ? 'var(--orange)' : 'white';
+  document.getElementById('btn-bracket').style.color         = view === 'bracket' ? 'white' : 'var(--mid)';
+  document.getElementById('btn-bracket').style.borderColor   = view === 'bracket' ? 'var(--orange)' : 'var(--line)';
+  document.getElementById('btn-list').style.background       = view === 'list'    ? 'var(--orange)' : 'white';
+  document.getElementById('btn-list').style.color            = view === 'list'    ? 'white' : 'var(--mid)';
+  document.getElementById('btn-list').style.borderColor      = view === 'list'    ? 'var(--orange)' : 'var(--line)';
+}
+
+// ── Derive seeds advancing through rounds ──
+function getWinnerOf(roundKey) { return results[roundKey]; }
+
+function r64seeds(league) {
+  const px = {chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[league];
+  return [1,2,3,4,5,6,7,8].map(i => ({a: [1,2,3,4,5,6,7,8][i-1]*0+[1,2,3,4,5,6,7,8][i-1], b:[16,15,14,13,12,11,10,9][i-1], winner: results[px+'_r64_'+i]}));
+}
+// Returns the seed that advanced into slot for a given round, or null if not yet played
+function advancer(league, round, slot) {
+  const px = {chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[league];
+  if (round === 'r64') {
+    const pairs = [[1,16],[2,15],[3,14],[4,13],[5,12],[6,11],[7,10],[8,9]];
+    return {a: pairs[slot-1][0], b: pairs[slot-1][1], winner: results[px+'_r64_'+slot]};
+  }
+  if (round === 'r32') {
+    const w1 = results[px+'_r64_'+(slot*2-1)];
+    const w2 = results[px+'_r64_'+(slot*2)];
+    return {a: w1||null, b: w2||null, winner: results[px+'_r32_'+slot]};
+  }
+  if (round === 's16') {
+    const w1 = results[px+'_r32_'+(slot*2-1)];
+    const w2 = results[px+'_r32_'+(slot*2)];
+    return {a: w1||null, b: w2||null, winner: results[px+'_s16_'+slot]};
+  }
+  if (round === 'e8') {
+    const w1 = results[px+'_s16_1'];
+    const w2 = results[px+'_s16_2'];
+    return {a: w1||null, b: w2||null, winner: results[px+'_e8_1']};
+  }
+  return {a:null,b:null,winner:null};
+}
+
+function seedSlot(league, seed, isWinner, isLoser) {
+  if (!seed) return `<div class="bracket-seed tbd"><span class="seed-num">-</span> TBD</div>`;
+  const loser = !isWinner && isLoser;
+  const upsetMin = seed > 8;
+  const cls = loser ? 'loser' : (isWinner && upsetMin ? 'upset-winner' : (isWinner ? 'winner' : ''));
+  const upsetPip = (isWinner && upsetMin) ? `<span class="upset-pip">!</span>` : '';
+  return `<div class="bracket-seed ${cls}"><span class="seed-num">${seed}</span>${snackName(league, seed)}${upsetPip}</div>`;
+}
+
+function renderLeagueBracket(league) {
+  const lc = lcInfo(league);
+  const px = {chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[league];
+
+  // Each round: how many matchups
+  const roundDefs = [
+    {id:'r64', label:'R64',       slots:8, pts:'1pt'},
+    {id:'r32', label:'R32',       slots:4, pts:'2pts'},
+    {id:'s16', label:'Sweet 16',  slots:2, pts:'4pts'},
+    {id:'e8',  label:'Elite Ate', slots:1, pts:'8pts'},
+  ];
+
+  // Fixed layout constants
+  const SLOT_H = 52;    // height per matchup (2 seeds × ~24px + gap)
+  const SEED_H = 24;    // height of each seed row
+  const COL_W  = 165;   // width of each round column
+  const CONN_W = 28;    // width of connector column
+  const LABEL_H = 28;   // height of round label row
+  const CHAMP_W = 170;  // width of league champ column
+  const TOTAL_COLS = roundDefs.length; // 4 round cols
+
+  // Total canvas height = 8 matchups in R64 × SLOT_H
+  const CANVAS_H = 8 * SLOT_H;
+
+  // Build HTML: label row + matchup rows using absolute positioning in a relative container
+  let html = `<div class="bracket-section">
+    <div class="bracket-section-title" style="background:${lc.bg};color:${lc.color};">
+      <span style="font-size:16px;">${lc.emoji}</span> ${lc.label}
+    </div>
+    <div style="background:white;border:1px solid ${lc.color}33;border-top:none;border-radius:0 0 6px 6px;overflow-x:auto;padding-bottom:8px;">
+    <div style="position:relative;min-width:${TOTAL_COLS*(COL_W+CONN_W)+CHAMP_W}px;height:${CANVAS_H+LABEL_H}px;">`;
+
+  // Draw round label headers
+  roundDefs.forEach((rd, ci) => {
+    const x = ci * (COL_W + CONN_W);
+    html += `<div style="position:absolute;left:${x}px;top:0;width:${COL_W}px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#999;text-align:center;padding:6px 4px;border-bottom:1px solid #eee;">${rd.label} <span style="color:#ccc;">· ${rd.pts}</span></div>`;
+  });
+  // Champ label
+  const champX = TOTAL_COLS * (COL_W + CONN_W);
+  html += `<div style="position:absolute;left:${champX}px;top:0;width:${CHAMP_W}px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:${lc.color};text-align:center;padding:6px 4px;border-bottom:1px solid #eee;font-weight:700;">League Champ</div>`;
+
+  // For each round, place matchups
+  // Matchup center Y positions: evenly spaced within CANVAS_H
+  function matchupCenterY(roundIdx, slotIdx) {
+    const slots = roundDefs[roundIdx].slots;
+    const groupH = CANVAS_H / slots;
+    return LABEL_H + slotIdx * groupH + groupH / 2;
+  }
+
+  roundDefs.forEach((rd, ci) => {
+    const colX = ci * (COL_W + CONN_W);
+    for (let s = 1; s <= rd.slots; s++) {
+      const {a, b, winner} = advancer(league, rd.id, s);
+      const roundPlayed = winner !== null && winner !== undefined;
+      const aIsWinner = roundPlayed && winner === a;
+      const bIsWinner = roundPlayed && winner === b;
+
+      const centerY = matchupCenterY(ci, s-1);
+      const topY    = centerY - SEED_H;
+      const botY    = centerY;
+
+      // Seed A (top)
+      const aLoser = roundPlayed && !aIsWinner;
+      const aUpset = aIsWinner && a > 8;
+      const aCls   = aLoser ? 'loser' : (aIsWinner ? (aUpset ? 'upset-winner' : 'winner') : '');
+      const aBg    = aIsWinner ? (aUpset ? '#FDF0E4' : '#f0faf4') : ((!a) ? '#fafafa' : 'white');
+      const aBorder= aIsWinner ? (aUpset ? 'var(--orange)' : '#1A6B3A') : '#e8ddd0';
+      const aText  = (!a) ? `<span style="color:#bbb;font-style:italic">TBD</span>` : `<span style="font-family:monospace;font-size:8px;color:#aaa;min-width:14px;text-align:right;margin-right:4px">${a}</span>${aLoser ? '<s style="color:#bbb">'+snackName(league,a)+'</s>' : snackName(league,a)}${aUpset?'<span style="font-size:7px;color:var(--orange);margin-left:4px;font-weight:900">!</span>':''}`;
+
+      // Seed B (bottom)
+      const bLoser = roundPlayed && !bIsWinner;
+      const bUpset = bIsWinner && b > 8;
+      const bCls   = bLoser ? 'loser' : (bIsWinner ? (bUpset ? 'upset-winner' : 'winner') : '');
+      const bBg    = bIsWinner ? (bUpset ? '#FDF0E4' : '#f0faf4') : ((!b) ? '#fafafa' : 'white');
+      const bBorder= bIsWinner ? (bUpset ? 'var(--orange)' : '#1A6B3A') : '#e8ddd0';
+      const bText  = (!b) ? `<span style="color:#bbb;font-style:italic">TBD</span>` : `<span style="font-family:monospace;font-size:8px;color:#aaa;min-width:14px;text-align:right;margin-right:4px">${b}</span>${bLoser ? '<s style="color:#bbb">'+snackName(league,b)+'</s>' : snackName(league,b)}${bUpset?'<span style="font-size:7px;color:var(--orange);margin-left:4px;font-weight:900">!</span>':''}`;
+
+      html += `
+        <div style="position:absolute;left:${colX+4}px;top:${topY}px;width:${COL_W-8}px;height:${SEED_H-1}px;
+          display:flex;align-items:center;gap:0;padding:0 7px;
+          background:${aBg};border:1px solid ${aBorder};border-radius:3px 3px 0 0;
+          font-size:10px;overflow:hidden;white-space:nowrap;opacity:${aLoser?0.45:1};">
+          ${aText}
+        </div>
+        <div style="position:absolute;left:${colX+4}px;top:${botY}px;width:${COL_W-8}px;height:${SEED_H-1}px;
+          display:flex;align-items:center;padding:0 7px;
+          background:${bBg};border:1px solid ${bBorder};border-top:1px dashed #eee;border-radius:0 0 3px 3px;
+          font-size:10px;overflow:hidden;white-space:nowrap;opacity:${bLoser?0.45:1};">
+          ${bText}
+        </div>`;
+    }
+  });
+
+  // Draw SVG connectors between each round
+  // The connector flows from the SEAM between the two seeds in the source matchup
+  // up to the SEAM between the two seeds in the destination matchup.
+  // Seam Y = top of matchup + SEED_H (exactly between seed A and seed B rows)
+  function seamY(roundIdx, slotIdx) {
+    const slots = roundDefs[roundIdx].slots;
+    const groupH = CANVAS_H / slots;
+    const centerY = LABEL_H + slotIdx * groupH + groupH / 2;
+    // seam is at centerY - SEED_H + SEED_H = centerY (top of bottom seed = bottom of top seed)
+    return centerY; // centerY is already topY + SEED_H since topY = centerY - SEED_H
+  }
+
+  roundDefs.forEach((rd, ci) => {
+    if (ci >= roundDefs.length - 1) return;
+    const connX = ci * (COL_W + CONN_W) + COL_W;
+    const nextSlots = roundDefs[ci+1].slots;
+    const xm = CONN_W / 2;
+
+    // One big SVG per connector column
+    html += `<svg style="position:absolute;left:${connX}px;top:0;width:${CONN_W}px;height:${CANVAS_H+LABEL_H}px;overflow:visible;pointer-events:none;">`;
+
+    for (let g = 0; g < nextSlots; g++) {
+      const topSlot  = g * 2;
+      const botSlot  = g * 2 + 1;
+      const nextSlot = g;
+
+      const y1 = seamY(ci,   topSlot);   // seam of upper feeder matchup
+      const y2 = seamY(ci,   botSlot);   // seam of lower feeder matchup
+      const y3 = seamY(ci+1, nextSlot);  // seam of destination matchup
+
+      // Horizontal stub from upper feeder seam to midpoint
+      html += `<line x1="0" y1="${y1}" x2="${xm}" y2="${y1}" stroke="#ccc" stroke-width="1"/>`;
+      // Horizontal stub from lower feeder seam to midpoint
+      html += `<line x1="0" y1="${y2}" x2="${xm}" y2="${y2}" stroke="#ccc" stroke-width="1"/>`;
+      // Vertical bar connecting the two stubs
+      html += `<line x1="${xm}" y1="${y1}" x2="${xm}" y2="${y2}" stroke="#ccc" stroke-width="1"/>`;
+      // Horizontal line from midpoint to destination seam
+      html += `<line x1="${xm}" y1="${y3}" x2="${CONN_W}" y2="${y3}" stroke="#ccc" stroke-width="1"/>`;
+    }
+
+    html += `</svg>`;
+  });
+
+  // Simple horizontal connector from E8 to League Champ
+  const lastConnX = (roundDefs.length - 1) * (COL_W + CONN_W) + COL_W;
+  const e8SeamY = seamY(roundDefs.length - 1, 0);
+  html += `<svg style="position:absolute;left:${lastConnX}px;top:0;width:${CONN_W}px;height:${CANVAS_H+LABEL_H}px;overflow:visible;pointer-events:none;">
+    <line x1="0" y1="${e8SeamY}" x2="${CONN_W}" y2="${e8SeamY}" stroke="#ccc" stroke-width="1.5"/>
+  </svg>`;
+
+  // League champ box
+  const champSeed = results[px+'_e8_1'];
+  const champCenterY = LABEL_H + CANVAS_H / 2;
+  html += `<div style="position:absolute;left:${champX+4}px;top:${champCenterY - 20}px;width:${CHAMP_W-8}px;">
+    ${champSeed
+      ? `<div style="padding:8px 10px;border:2px solid ${lc.color};border-radius:5px;background:${lc.bg};text-align:center;">
+          <div style="font-size:9px;font-family:monospace;color:${lc.color};margin-bottom:2px;opacity:0.7;">#${champSeed}</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:${lc.color};letter-spacing:1px;line-height:1.1;">${snackName(league,champSeed)}</div>
+         </div>`
+      : `<div style="padding:8px 10px;border:1.5px dashed #ddd;border-radius:5px;background:#fafafa;text-align:center;color:#bbb;font-size:11px;font-style:italic;">TBD</div>`}
+  </div>`;
+
+  html += `</div></div></div>`;
+  return html;
+}
+
+
+function renderFinalFourBracket() {
+  const e8chips   = results['c_e8_1'];
+  const e8nonchip = results['n_e8_1'];
+  const e8choc    = results['ch_e8_1'];
+  const e8candy   = results['ca_e8_1'];
+  const ffSavory  = results['ff_savory'];  // 'chips' or 'nonchip'
+  const ffSweet   = results['ff_sweet'];   // 'choc' or 'candy'
+  const champWinner = results['champ_1'];  // league key
+
+  function ffSlot(league, seed, advancing) {
+    const lc = lcInfo(league);
+    const notAdvancing = (ffSavory || ffSweet) && !advancing;
+    const cls = advancing ? 'winner' : (notAdvancing && seed ? 'loser' : '');
+    const name = seed ? snackName(league, seed) : 'TBD';
+    return `<div class="bracket-seed ${cls}" style="${advancing ? 'border-color:'+lc.color+';background:'+lc.bg+';' : ''}">
+      <span style="font-size:8px;font-family:monospace;background:${lc.bg};color:${lc.color};padding:1px 5px;border-radius:2px;margin-right:4px;">${lc.emoji}</span>
+      <span class="seed-num">${seed||'-'}</span>${name}
+    </div>`;
+  }
+
+  function champSlot(league, seed, isChamp) {
+    const lc = lcInfo(league);
+    const name = seed ? snackName(league, seed) : 'TBD';
+    const notChamp = champWinner && !isChamp;
+    return `<div class="bracket-seed ${isChamp?'winner':(notChamp&&seed?'loser':'')}" style="${isChamp?'border-color:'+lc.color+';background:'+lc.bg+';':''}">
+      <span class="seed-num">${seed||'-'}</span>${name}
+    </div>`;
+  }
+
+  // Savory matchup
+  const savoryWinLeague = ffSavory;
+  const savoryLoseLeague = ffSavory === 'chips' ? 'nonchip' : (ffSavory === 'nonchip' ? 'chips' : null);
+  const sweetWinLeague = ffSweet;
+  const sweetLoseLeague = ffSweet === 'choc' ? 'candy' : (ffSweet === 'candy' ? 'choc' : null);
+
+  // Finals participants
+  const finalist1League = ffSavory;
+  const finalist2League = ffSweet;
+  const f1seed = finalist1League ? results[{chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[finalist1League]+'_e8_1'] : null;
+  const f2seed = finalist2League ? results[{chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[finalist2League]+'_e8_1'] : null;
+  const f1IsChamp = champWinner === finalist1League;
+  const f2IsChamp = champWinner === finalist2League;
+
+  let html = `<div class="ff-bracket">
+    <div class="ff-bracket-head">
+      <span>🏆 Final Four &amp; Championship</span>
+      <span style="font-family:'DM Mono',monospace;font-size:9px;opacity:0.8;">Mar 28 – Apr 6, 2026</span>
+    </div>
+    <div style="padding:16px;background:white;">
+      <div style="display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;gap:0;align-items:center;">
+
+        <!-- FF matchups -->
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:8px;color:#999;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Matchup 1 — Savory</div>
+          <div class="bracket-matchup" style="margin:0 0 16px;">
+            ${ffSlot('chips',   e8chips,   savoryWinLeague==='chips')}
+            ${ffSlot('nonchip', e8nonchip, savoryWinLeague==='nonchip')}
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:8px;color:#999;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Matchup 2 — Sweet</div>
+          <div class="bracket-matchup" style="margin:0;">
+            ${ffSlot('choc',  e8choc,  sweetWinLeague==='choc')}
+            ${ffSlot('candy', e8candy, sweetWinLeague==='candy')}
+          </div>
+        </div>
+
+        <!-- Arrow -->
+        <div style="text-align:center;font-size:18px;color:#D4B896;">→</div>
+
+        <!-- Championship -->
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:8px;color:#999;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Championship</div>
+          <div class="bracket-matchup" style="margin:0;">
+            ${f1seed || finalist1League
+              ? champSlot(finalist1League||'chips', f1seed, f1IsChamp)
+              : `<div class="bracket-seed tbd"><span class="seed-num">-</span>Savory finalist TBD</div>`}
+            ${f2seed || finalist2League
+              ? champSlot(finalist2League||'candy', f2seed, f2IsChamp)
+              : `<div class="bracket-seed tbd"><span class="seed-num">-</span>Sweet finalist TBD</div>`}
+          </div>
+        </div>
+
+        <!-- Arrow -->
+        <div style="text-align:center;font-size:18px;color:#D4B896;">→</div>
+
+        <!-- Champion -->
+        <div>
+          ${champWinner && f1IsChamp
+            ? `<div style="border:3px solid var(--gold);border-radius:8px;padding:12px 10px;background:linear-gradient(135deg,var(--gold-lt),#FDECC0);text-align:center;">
+                <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;color:#8A6000;margin-bottom:4px;">🏆 CHAMPION</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#5A3800;letter-spacing:1px;">${snackName(champWinner, results[{chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[champWinner]+'_e8_1'])}</div>
+                <div style="font-size:9px;font-family:monospace;color:var(--gold);margin-top:4px;">#${results[{chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[champWinner]+'_e8_1']} · ${lcInfo(champWinner).label}</div>
+              </div>`
+            : champWinner && f2IsChamp
+            ? `<div style="border:3px solid var(--gold);border-radius:8px;padding:12px 10px;background:linear-gradient(135deg,var(--gold-lt),#FDECC0);text-align:center;">
+                <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;color:#8A6000;margin-bottom:4px;">🏆 CHAMPION</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#5A3800;letter-spacing:1px;">${snackName(champWinner, results[{chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[champWinner]+'_e8_1'])}</div>
+                <div style="font-size:9px;font-family:monospace;color:var(--gold);margin-top:4px;">#${results[{chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[champWinner]+'_e8_1']} · ${lcInfo(champWinner).label}</div>
+              </div>`
+            : `<div style="border:3px dashed #ddd;border-radius:8px;padding:12px 10px;background:#fafafa;text-align:center;">
+                <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;color:#ccc;margin-bottom:4px;">🏆 CHAMPION</div>
+                <div style="font-size:11px;color:#ccc;font-style:italic;">TBD · Apr 6, 2026</div>
+              </div>`
+          }
+        </div>
+
+      </div>
+    </div>
+  </div>`;
+  return html;
+}
+
+function renderBracketView() {
+  let html = '';
+  html += renderLeagueBracket('chips');
+  html += renderLeagueBracket('nonchip');
+  html += renderLeagueBracket('choc');
+  html += renderLeagueBracket('candy');
+  html += renderFinalFourBracket();
+  document.getElementById('results-bracket-view').innerHTML = html;
+}
+
+function renderListView() {
+  let html = '';
+  ROUND_DEFS.forEach(round => {
+    const hasAny = round.matchups.some(m => m.keys.some(k => results[k] !== undefined));
+    if (!hasAny) {
+      html += `<div style="border:1px solid var(--line);border-radius:8px;padding:16px 20px;margin-bottom:16px;background:white;opacity:0.5;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--mid)">${round.label}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:#bbb;letter-spacing:2px;text-transform:uppercase;">${round.dates} · ${round.pts} pt${round.pts>1?'s':''}/pick · UPCOMING</div>
+        </div>
+      </div>`;
+      return;
+    }
+    html += `<div style="border:2px solid var(--orange);border-radius:8px;overflow:hidden;margin-bottom:20px;">
+      <div style="background:var(--dark);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--orange)">${round.label}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#888;letter-spacing:2px;text-transform:uppercase;">${round.dates} &nbsp;·&nbsp; ${round.pts} pt${round.pts>1?'s':''}/pick</div>
+      </div>`;
+    let upsets = [];
+    round.matchups.forEach(m => {
+      if (m.l === 'ff' || m.l === 'champ') return;
+      const lc = lcInfo(m.l);
+      html += `<div style="padding:12px 18px;border-bottom:1px solid #f0e8de;">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;font-weight:700;color:${lc.color};letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">${lc.emoji} ${lc.label}</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px;">`;
+      m.keys.forEach((key, i) => {
+        const winner = results[key];
+        if (winner === undefined) return;
+        const pair = m.pairs[i];
+        let seedA = pair[0], seedB = pair[1];
+        if (round.id === 'r32') { const px={chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[m.l]; seedA=results[px+'_r64_'+(i*2+1)]; seedB=results[px+'_r64_'+(i*2+2)]; }
+        else if (round.id === 's16') { const px={chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[m.l]; seedA=results[px+'_r32_'+(i*2+1)]; seedB=results[px+'_r32_'+(i*2+2)]; }
+        else if (round.id === 'e8') { const px={chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[m.l]; seedA=results[px+'_s16_1']; seedB=results[px+'_s16_2']; }
+        const loser = winner === seedA ? seedB : seedA;
+        const isUpset = winner > Math.min(seedA||99, seedB||99);
+        if (isUpset) upsets.push({l:m.l, winner, loser});
+        const upsetBadge = isUpset ? `<span style="font-size:8px;background:#E87722;color:white;padding:1px 5px;border-radius:2px;font-family:monospace;margin-left:6px;font-weight:700;">UPSET</span>` : '';
+        html += `<div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:${isUpset?'#FDF0E4':'#f9f5f1'};border-radius:4px;border:1px solid ${isUpset?'var(--orange)':'#ece4d8'};">
+          <span style="font-size:8px;font-family:monospace;background:${lc.bg};color:${lc.color};padding:1px 5px;border-radius:2px;min-width:20px;text-align:center;">#${winner}</span>
+          <span style="font-size:11px;font-weight:700;flex:1;">${snackName(m.l,winner)}</span>
+          ${upsetBadge}
+          <span style="font-size:10px;color:#bbb;text-decoration:line-through;">${snackName(m.l,loser)}</span>
+        </div>`;
+      });
+      html += `</div></div>`;
+    });
+    if (upsets.length > 0) {
+      html += `<div style="background:#FDF0E4;padding:8px 18px;border-top:1px solid #f0d8c0;"><span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:700;color:var(--orange-dk);letter-spacing:1px;">🚨 UPSETS: </span>`;
+      upsets.forEach(u => { html += `<span style="font-size:10px;color:var(--mid);margin-right:12px;">#${u.winner} ${snackName(u.l,u.winner)} over #${u.loser} ${snackName(u.l,u.loser)}</span>`; });
+      html += `</div>`;
+    }
+    html += `</div>`;
+  });
+  document.getElementById('results-list-view').innerHTML = html;
+}
+
+// ─── PAGE NAV ───
+function showPage(id, tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  tab.classList.add('active');
+  if (id === 'results') renderResultsTab();
+}
+
+// ─── INIT ───
+renderLeaderboard();
+renderBracketCards();
+renderResultsTab();
+</script>
+</body>
+</html>
