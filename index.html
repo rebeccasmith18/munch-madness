@@ -509,8 +509,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
       <span class="key-item">R32 = 2pts</span>
       <span class="key-item">Sweet 16 = 4pts</span>
       <span class="key-item">Elite Ate = 8pts</span>
-      <span class="key-item">Final Four = 4pts</span>
-      <span class="key-item">Champion = 16pts 🏆</span>
+      <span class="key-item">Final Four = 16pts</span>
+      <span class="key-item">Champion = 32pts 🏆</span>
     </div>
 
     <div id="standings-chart" class="standings-viz">
@@ -521,11 +521,16 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
     <div class="lb-table-wrap">
       <table class="lb-table">
         <thead>
-          <tr>
+          <tr id="lb-thead-row">
             <th style="width:48px">#</th>
             <th>PARTICIPANT</th>
             <th>CHAMPION PICK</th>
-            <th class="right">SCORE</th>
+            <th class="right" onclick="setSortMode('score')" id="th-score" style="cursor:pointer;user-select:none;white-space:nowrap;">
+              SCORE <span id="sort-arrow-score" style="color:var(--orange);">▼</span>
+            </th>
+            <th class="right" onclick="setSortMode('max')" id="th-max" style="cursor:pointer;user-select:none;white-space:nowrap;">
+              MAX <span id="sort-arrow-max" style="color:#ccc;">▼</span>
+            </th>
             <th>ROUND BREAKDOWN</th>
           </tr>
         </thead>
@@ -1276,8 +1281,8 @@ function calculateScore(p) {
   // Final Four
   const ffSavoryWinner = results['ff_savory']; // league key
   const ffSweetWinner = results['ff_sweet'];
-  if (ffSavoryWinner && p.ff.savory === ffSavoryWinner) { score += 4; breakdown.ff += 4; }
-  if (ffSweetWinner && p.ff.sweet === ffSweetWinner) { score += 4; breakdown.ff += 4; }
+  if (ffSavoryWinner && p.ff.savory === ffSavoryWinner) { score += 16; breakdown.ff += 16; }
+  if (ffSweetWinner && p.ff.sweet === ffSweetWinner) { score += 16; breakdown.ff += 16; }
 
   // Championship
   const champWinner = results['champ_1']; // league key of winner
@@ -1285,39 +1290,202 @@ function calculateScore(p) {
     // Also need to verify correct seed
     const winnerSeed = getE8WinnerSeed(champWinner);
     if (winnerSeed && winnerSeed === p.champ.seed) {
-      score += 16; breakdown.champ += 16;
+      score += 32; breakdown.champ += 32;
     }
   }
 
   return {score, breakdown};
 }
 
-// Max possible points remaining
+// ─── MAX POSSIBLE SCORE ───
+// For each unplayed pick, add points only if the pick is still alive
+// (i.e. hasn't been eliminated by a completed result).
 function maxPossible(p) {
-  // Simple: just return base max if nothing is entered
-  return 128 + 8 + 16; // 128 from league rounds + 8 from ff + 16 from champ
+  const leagues = ['chips','nonchip','choc','candy'];
+  const prefixes = ['c','n','ch','ca'];
+  const {score} = calculateScore(p);
+  let remaining = 0;
+
+  leagues.forEach((league, li) => {
+    const px = prefixes[li];
+    const picks = p.picks[league];
+
+    // For each future round, a pick is still possible only if:
+    // 1. That round hasn't been played yet (no result), AND
+    // 2. The seed they picked wasn't already eliminated in a prior round.
+
+    // Track which seeds are still alive in this league after completed rounds
+    // A seed is eliminated if it lost in any completed round.
+    // Build the set of eliminated seeds from completed results.
+    const eliminated = new Set();
+
+    // R64: check who lost
+    for (let m = 1; m <= 8; m++) {
+      const winner = results[`${px}_r64_${m}`];
+      if (winner !== undefined) {
+        // The two competitors: derive from matchup index
+        const pairs = [[1,16],[2,15],[3,14],[4,13],[5,12],[6,11],[7,10],[8,9]];
+        const [a, b] = pairs[m-1];
+        eliminated.add(winner === a ? b : a);
+      }
+    }
+
+    // R32: check who lost
+    for (let m = 1; m <= 4; m++) {
+      const winner = results[`${px}_r32_${m}`];
+      if (winner !== undefined) {
+        const feeder1 = results[`${px}_r64_${m*2-1}`];
+        const feeder2 = results[`${px}_r64_${m*2}`];
+        if (feeder1 !== undefined && feeder2 !== undefined) {
+          eliminated.add(winner === feeder1 ? feeder2 : feeder1);
+        }
+      }
+    }
+
+    // S16: check who lost
+    for (let m = 1; m <= 2; m++) {
+      const winner = results[`${px}_s16_${m}`];
+      if (winner !== undefined) {
+        const feeder1 = results[`${px}_r32_${m*2-1}`];
+        const feeder2 = results[`${px}_r32_${m*2}`];
+        if (feeder1 !== undefined && feeder2 !== undefined) {
+          eliminated.add(winner === feeder1 ? feeder2 : feeder1);
+        }
+      }
+    }
+
+    // E8: check who lost
+    const e8winner = results[`${px}_e8_1`];
+    if (e8winner !== undefined) {
+      const feeder1 = results[`${px}_s16_1`];
+      const feeder2 = results[`${px}_s16_2`];
+      if (feeder1 !== undefined && feeder2 !== undefined) {
+        eliminated.add(e8winner === feeder1 ? feeder2 : feeder1);
+      }
+    }
+
+    // R32: add 2pts per pick if still alive and round not yet played
+    for (let m = 1; m <= 4; m++) {
+      if (results[`${px}_r32_${m}`] === undefined) {
+        // Round not played — check if their pick is still alive
+        if (!eliminated.has(picks.r32[m-1])) remaining += 2;
+      }
+    }
+
+    // S16: add 4pts if still alive and round not played
+    for (let m = 1; m <= 2; m++) {
+      if (results[`${px}_s16_${m}`] === undefined) {
+        if (!eliminated.has(picks.s16[m-1])) remaining += 4;
+      }
+    }
+
+    // E8: add 8pts if still alive and not played
+    if (results[`${px}_e8_1`] === undefined) {
+      if (!eliminated.has(picks.e8[0])) remaining += 8;
+    }
+  });
+
+  // Final Four — league champ must still be alive (not eliminated in E8)
+  // Savory
+  if (results['ff_savory'] === undefined) {
+    // Their FF savory pick: which league did they pick to win savory?
+    const savLeague = p.ff.savory;
+    const savPx = {chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[savLeague];
+    const savE8winner = results[`${savPx}_e8_1`];
+    // The league champ must be decided (or not eliminated) for FF pick to be possible
+    // If E8 not played yet, champ still possible; if played and it's their pick's league champ → possible
+    if (savE8winner === undefined || savE8winner !== undefined) {
+      // Always add if FF not played (the league itself just needs to have survived)
+      // A league "survives" to FF automatically — we just need the league to not be knocked out
+      // Since leagues don't get eliminated, FF pick is still possible if FF not played
+      remaining += 16;
+    }
+  }
+  if (results['ff_sweet'] === undefined) {
+    remaining += 16;
+  }
+
+  // Championship — check if their champion pick's seed is still alive
+  if (results['champ_1'] === undefined) {
+    const cLeague = p.champ.league;
+    const cPx = {chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[cLeague];
+    const cSeed = p.champ.seed;
+    // Build eliminated set for their league
+    const elim = new Set();
+    // R64
+    const pairs = [[1,16],[2,15],[3,14],[4,13],[5,12],[6,11],[7,10],[8,9]];
+    for (let m = 1; m <= 8; m++) {
+      const w = results[`${cPx}_r64_${m}`];
+      if (w !== undefined) { const [a,b] = pairs[m-1]; elim.add(w===a?b:a); }
+    }
+    // R32
+    for (let m = 1; m <= 4; m++) {
+      const w = results[`${cPx}_r32_${m}`];
+      if (w !== undefined) {
+        const f1 = results[`${cPx}_r64_${m*2-1}`], f2 = results[`${cPx}_r64_${m*2}`];
+        if (f1!==undefined && f2!==undefined) elim.add(w===f1?f2:f1);
+      }
+    }
+    // S16
+    for (let m = 1; m <= 2; m++) {
+      const w = results[`${cPx}_s16_${m}`];
+      if (w !== undefined) {
+        const f1 = results[`${cPx}_r32_${m*2-1}`], f2 = results[`${cPx}_r32_${m*2}`];
+        if (f1!==undefined && f2!==undefined) elim.add(w===f1?f2:f1);
+      }
+    }
+    // E8
+    const e8w = results[`${cPx}_e8_1`];
+    if (e8w !== undefined) {
+      const f1 = results[`${cPx}_s16_1`], f2 = results[`${cPx}_s16_2`];
+      if (f1!==undefined && f2!==undefined) elim.add(e8w===f1?f2:f1);
+    }
+    // FF — if savory/sweet result known, check league survived
+    const ffResult = results['ff_savory'] || results['ff_sweet'];
+    // Check if their champ seed is still alive
+    if (!elim.has(cSeed)) remaining += 32;
+  }
+
+  return score + remaining;
 }
 
 // ─── RENDER LEADERBOARD ───
+let lbSortMode = 'score'; // 'score' | 'max'
+
+function setSortMode(mode) {
+  lbSortMode = mode;
+  renderLeaderboard();
+}
+
 function renderLeaderboard() {
   const scored = PARTICIPANTS.map(p => {
     const {score, breakdown} = calculateScore(p);
-    return {...p, score, breakdown};
-  }).sort((a,b) => b.score - a.score);
+    const maxPts = maxPossible(p);
+    return {...p, score, breakdown, maxPts};
+  }).sort((a,b) => {
+    if (lbSortMode === 'max') return b.maxPts - a.maxPts || b.score - a.score;
+    return b.score - a.score || b.maxPts - a.maxPts;
+  });
 
   // Chart
   const maxScore = Math.max(...scored.map(s => s.score), 1);
-  const maxPts = 152; // theoretical max
+  const maxPts = 192; // theoretical max
+  const THEORETICAL_MAX = 192;
   document.getElementById('chart-bars').innerHTML = scored.map(p => {
-    const pct = maxPts > 0 ? (p.score / maxPts * 100) : 0;
+    const scorePct = (p.score / THEORETICAL_MAX * 100).toFixed(1);
+    const maxPct   = (p.maxPts / THEORETICAL_MAX * 100).toFixed(1);
     return `<div class="bar-row">
       <div class="bar-name">${p.name}</div>
-      <div class="bar-wrap">
-        <div class="bar-fill" style="width:${pct}%">
+      <div class="bar-wrap" style="position:relative;">
+        <div style="position:absolute;left:0;top:0;height:100%;width:${maxPct}%;background:#f0e0cc;border-radius:3px;"></div>
+        <div class="bar-fill" style="width:${scorePct}%;position:relative;z-index:1;">
           ${p.score > 8 ? `<span class="bar-fill-pts">${p.score}</span>` : ''}
         </div>
       </div>
-      <div class="bar-pts">${p.score}</div>
+      <div class="bar-pts" style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+        <span>${p.score}</span>
+        <span style="font-size:8px;color:#aaa;">/${p.maxPts}</span>
+      </div>
     </div>`;
   }).join('');
 
@@ -1336,13 +1504,15 @@ function renderLeaderboard() {
       {label:'R32', val:bd.r32, max:32},
       {label:'S16', val:bd.s16, max:32},
       {label:'E8',  val:bd.e8,  max:32},
-      {label:'FF',  val:bd.ff,  max:8},
-      {label:'🏆',  val:bd.champ, max:16, bonus:true},
+      {label:'FF',  val:bd.ff,  max:32},
+      {label:'🏆',  val:bd.champ, max:32, bonus:true},
     ].map(b => {
       const cls = b.val === 0 ? 'r-badge' : (b.bonus ? 'r-badge bonus' : 'r-badge has-score');
       return `<span class="${cls}">${b.label} ${b.val}</span>`;
     }).join('');
 
+    const eliminated = p.maxPts === p.score && p.score > 0;
+    const maxColor = eliminated ? '#ccc' : (p.maxPts >= 120 ? 'var(--nonchip)' : (p.maxPts >= 80 ? 'var(--mid)' : '#C45A0A'));
     return `<tr onclick="openModal(${PARTICIPANTS.indexOf(p)})" style="cursor:pointer">
       <td class="rank-cell ${rankClass}">${rank}</td>
       <td class="name-cell">${p.name}</td>
@@ -1351,9 +1521,21 @@ function renderLeaderboard() {
         ${champName}
       </td>
       <td class="score-cell">${p.score}</td>
+      <td style="text-align:right;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:${maxColor};line-height:1;">${p.maxPts}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:8px;color:#bbb;">max</div>
+      </td>
       <td><div class="round-scores">${badges}</div></td>
     </tr>`;
   }).join('');
+
+  // Update sort arrow indicators
+  const scoreArrow = document.getElementById('sort-arrow-score');
+  const maxArrow   = document.getElementById('sort-arrow-max');
+  if (scoreArrow && maxArrow) {
+    scoreArrow.style.color = lbSortMode === 'score' ? 'var(--orange)' : '#ccc';
+    maxArrow.style.color   = lbSortMode === 'max'   ? 'var(--orange)' : '#ccc';
+  }
 }
 
 // ─── RENDER BRACKET CARDS ───
@@ -1477,17 +1659,17 @@ function openModal(idx) {
       <div class="modal-pick-row">
         <span class="modal-round-tag">FF Savory</span>
         <span class="modal-pick-name">${leagueColor(p.ff.savory).label} wins</span>
-        ${ffSavoryCorrect === null ? '<span class="modal-pick-pts pts-pending">+4</span>' : (ffSavoryCorrect ? '<span class="modal-pick-pts pts-correct">+4</span>' : '<span class="modal-pick-pts pts-wrong">+4</span>')}
+        ${ffSavoryCorrect === null ? '<span class="modal-pick-pts pts-pending">+16</span>' : (ffSavoryCorrect ? '<span class="modal-pick-pts pts-correct">+16</span>' : '<span class="modal-pick-pts pts-wrong">+16</span>')}
       </div>
       <div class="modal-pick-row">
         <span class="modal-round-tag">FF Sweet</span>
         <span class="modal-pick-name">${leagueColor(p.ff.sweet).label} wins</span>
-        ${ffSweetCorrect === null ? '<span class="modal-pick-pts pts-pending">+4</span>' : (ffSweetCorrect ? '<span class="modal-pick-pts pts-correct">+4</span>' : '<span class="modal-pick-pts pts-wrong">+4</span>')}
+        ${ffSweetCorrect === null ? '<span class="modal-pick-pts pts-pending">+16</span>' : (ffSweetCorrect ? '<span class="modal-pick-pts pts-correct">+16</span>' : '<span class="modal-pick-pts pts-wrong">+16</span>')}
       </div>
       <div class="modal-pick-row">
         <span class="modal-round-tag">Champion</span>
         <span class="modal-pick-name">#${p.champ.seed} ${getSeedName(p.champ.league, p.champ.seed)}</span>
-        ${champCorrect === null ? '<span class="modal-pick-pts pts-pending">+16</span>' : (champCorrect ? '<span class="modal-pick-pts pts-correct">+16</span>' : '<span class="modal-pick-pts pts-wrong">+16</span>')}
+        ${champCorrect === null ? '<span class="modal-pick-pts pts-pending">+32</span>' : (champCorrect ? '<span class="modal-pick-pts pts-correct">+32</span>' : '<span class="modal-pick-pts pts-wrong">+32</span>')}
       </div>
     </div>
   </div>`;
@@ -1685,10 +1867,10 @@ const ROUND_DEFS = [
       {l:'candy',  pairs:[[0,0]], keys:['ca_e8_1']}
     ]
   },
-  { id:'ff', label:'Final Four', dates:'Mar 28–Apr 1', pts:4,
+  { id:'ff', label:'Final Four', dates:'Mar 28–Apr 1', pts:16,
     matchups:[{l:'ff', pairs:[[0,0],[0,0]], keys:['ff_savory','ff_sweet']}]
   },
-  { id:'champ', label:'Championship', dates:'Apr 1–6', pts:16,
+  { id:'champ', label:'Championship', dates:'Apr 1–6', pts:32,
     matchups:[{l:'champ', pairs:[[0,0]], keys:['champ_1']}]
   }
 ];
