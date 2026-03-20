@@ -485,7 +485,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 <div class="hdr">
   <div class="hdr-left">
     <div class="hdr-title">MUNCH MADNESS</div>
-    <div class="hdr-sub">2026 · 33 Participants</div>
+    <div class="hdr-sub">2026 · 34 Participants</div>
   </div>
 </div>
 
@@ -1080,6 +1080,32 @@ const PARTICIPANTS = [
     ff: { savory: 'chips', sweet: 'choc' },
     finalist: ['chips','choc'],
     champ: {league:'choc', seed:2}
+  },
+  {
+    // Todd Wille — from submitted bracket PDF
+    // Chips R64: CRD,SunChips,PitaChips,S&V,NachoCheese,LaysPotato,CheetosPlain,FlaminHot
+    //   R32: SunChips def CRD, Pringles(13) def PitaChips(14), Nacho def LaysPotato, Cheetos def FlaminHot
+    //   S16: Pringles def SunChips, Nacho def Cheetos → E8: Nacho → LC: 5
+    // NonChip R64: SWC,PBPretzel,Goldfish,SaltedRP,Cheezits,ClassicPret,SkinnyPop,Pirate
+    //   R32: PBPretzel def SWC, Goldfish def SaltedRP, ClassicPret def Cheezits, Pirate def SkinnyPop
+    //   S16: PBPretzel def Goldfish, Pirate def ClassicPret → E8: PBPretzel → LC: 2
+    // Choc R64: M&Ms(16),ThreeMusk(15),Snickers,PeppermintP,HeathBar,HersheysCookies,Oreos,Reese's
+    //   R32: M&Ms(16) def ThreeMusk(15), Snickers def PeppermintP, HeathBar def HersheysCookies, Oreos def Reese's
+    //   S16: M&Ms def Snickers, Oreos def HeathBar → E8: Oreos(10) → LC: 10
+    // Candy R64: JellyBeans(16),LaffyTaffy(15),FruitRollUp(14),Twizzlers(13),FruitSnacks(12),HariboGB(11),Starbursts,Skittles
+    //   R32: LaffyTaffy def JellyBeans, Twizzlers def FruitRollUp, HariboGB def FruitSnacks, Skittles def Starbursts
+    //   S16: Twizzlers def LaffyTaffy, Skittles def HariboGB → E8: Skittles(8) → LC: 8
+    // FF: NonChip wins savory, Choc wins sweet → Champ: PB-filled Pretzel Bites (nonchip, seed 2)
+    name: 'Todd Wille',
+    picks: {
+      chips: { r64:[1,2,14,4,5,11,10,8], r32:[2,13,5,10], s16:[13,5], e8:[5], lc:5 },
+      nonchip: { r64:[1,2,3,13,5,6,10,8], r32:[2,3,6,8], s16:[2,8], e8:[2], lc:2 },
+      choc: { r64:[16,15,3,13,5,11,10,8], r32:[16,3,5,10], s16:[16,10], e8:[10], lc:10 },
+      candy: { r64:[16,15,14,13,12,11,7,8], r32:[15,13,11,8], s16:[13,8], e8:[8], lc:8 }
+    },
+    ff: { savory: 'nonchip', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'nonchip', seed:2}
   }
 ];
 
