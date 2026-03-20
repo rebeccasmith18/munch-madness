@@ -1080,18 +1080,6 @@ const PARTICIPANTS = [
     ff: { savory: 'chips', sweet: 'choc' },
     finalist: ['chips','choc'],
     champ: {league:'choc', seed:2}
-  },
-  {
-    name: 'Todd Wille',
-    picks: {
-      chips:   { r64:[1,2,14,13,5,11,10,8], r32:[2,13,5,10], s16:[13,5], e8:[5], lc:5 },
-      nonchip: { r64:[1,2,3,13,5,6,10,8],   r32:[2,3,6,8],   s16:[2,6],  e8:[2], lc:2 },
-      choc:    { r64:[16,15,3,13,5,11,10,8], r32:[16,3,5,10], s16:[16,10],e8:[10],lc:10 },
-      candy:   { r64:[16,15,14,13,12,11,7,8],r32:[15,13,12,7],s16:[13,8], e8:[8], lc:8 }
-    },
-    ff: { savory: 'nonchip', sweet: 'choc' },
-    finalist: ['nonchip','choc'],
-    champ: {league:'nonchip', seed:2}
   }
 ];
 
@@ -1207,7 +1195,17 @@ const results = {
   // Chocolate: 1vPeanutMMs, 2vTJsDark, 3vSnickers, 4vDarkChoc, 5v12→100Grand, 6vTwix, 7v10→Oreos, 8vReeses
   ch_r64_1:1, ch_r64_2:2, ch_r64_3:3, ch_r64_4:4, ch_r64_5:12, ch_r64_6:6, ch_r64_7:10, ch_r64_8:8,
   // Candy: 1vSPK, 2vSwedFish, 3v14→FruitRollUp, 4vSourWorms, 5v12→FruitSnacks, 6v11→HariboGB, 7vStarbursts, 8vSkittles
-  ca_r64_1:1, ca_r64_2:2, ca_r64_3:14, ca_r64_4:4, ca_r64_5:12, ca_r64_6:11, ca_r64_7:7, ca_r64_8:8
+  ca_r64_1:1, ca_r64_2:2, ca_r64_3:14, ca_r64_4:4, ca_r64_5:12, ca_r64_6:11, ca_r64_7:7, ca_r64_8:8,
+
+  // ROUND OF 32
+  // Chips: 1vCRD def SunChips, 4vS&V def KettleJal, 5vNachoCheese def KettlePlain, 10vCheetos def SourCream
+  c_r32_1:1, c_r32_2:4, c_r32_3:5, c_r32_4:10,
+  // Non-Chips: 1vSmarfood def PBPretzel, 3vGoldfish def SaltedRP, 5vCheezIts def Ritz, 8vPirate def BeefJerky
+  n_r32_1:1, n_r32_2:3, n_r32_3:5, n_r32_4:8,
+  // Chocolate: 1vPeanutMMs def TJsDark, 4vDarkChoc def Snickers, 6vTwix def 100Grand, 8vReeses def Oreos
+  ch_r32_1:1, ch_r32_2:4, ch_r32_3:6, ch_r32_4:8,
+  // Candy: 1vSPK def SwedFish, 4vSourWorms def FruitRollUp, 12vFruitSnacks def HariboGB, 7vStarbursts def Skittles
+  ca_r32_1:1, ca_r32_2:4, ca_r32_3:12, ca_r32_4:7
 };
 
 // Future rounds will be added here as they complete
