@@ -2010,12 +2010,12 @@ function advancer(league, round, slot) {
   return {a:null,b:null,winner:null};
 }
 
-function seedSlot(league, seed, isWinner, isLoser) {
+function seedSlot(league, seed, isWinner, isLoser, opponentSeed) {
   if (!seed) return `<div class="bracket-seed tbd"><span class="seed-num">-</span> TBD</div>`;
   const loser = !isWinner && isLoser;
-  const upsetMin = seed > 8;
-  const cls = loser ? 'loser' : (isWinner && upsetMin ? 'upset-winner' : (isWinner ? 'winner' : ''));
-  const upsetPip = (isWinner && upsetMin) ? `<span class="upset-pip">!</span>` : '';
+  const isUpset = isWinner && opponentSeed && seed > opponentSeed;
+  const cls = loser ? 'loser' : (isWinner && isUpset ? 'upset-winner' : (isWinner ? 'winner' : ''));
+  const upsetPip = (isWinner && isUpset) ? `<span class="upset-pip">!</span>` : '';
   return `<div class="bracket-seed ${cls}"><span class="seed-num">${seed}</span>${snackName(league, seed)}${upsetPip}</div>`;
 }
 
@@ -2082,7 +2082,7 @@ function renderLeagueBracket(league) {
 
       // Seed A (top)
       const aLoser = roundPlayed && !aIsWinner;
-      const aUpset = aIsWinner && a > 8;
+      const aUpset = aIsWinner && a > b;
       const aCls   = aLoser ? 'loser' : (aIsWinner ? (aUpset ? 'upset-winner' : 'winner') : '');
       const aBg    = aIsWinner ? (aUpset ? '#FDF0E4' : '#f0faf4') : ((!a) ? '#fafafa' : 'white');
       const aBorder= aIsWinner ? (aUpset ? 'var(--orange)' : '#1A6B3A') : '#e8ddd0';
@@ -2090,7 +2090,7 @@ function renderLeagueBracket(league) {
 
       // Seed B (bottom)
       const bLoser = roundPlayed && !bIsWinner;
-      const bUpset = bIsWinner && b > 8;
+      const bUpset = bIsWinner && b > a;
       const bCls   = bLoser ? 'loser' : (bIsWinner ? (bUpset ? 'upset-winner' : 'winner') : '');
       const bBg    = bIsWinner ? (bUpset ? '#FDF0E4' : '#f0faf4') : ((!b) ? '#fafafa' : 'white');
       const bBorder= bIsWinner ? (bUpset ? 'var(--orange)' : '#1A6B3A') : '#e8ddd0';
