@@ -575,7 +575,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 
 <script>
 // ═══════════════════════════════════════════════════════
-// BRACKET DATA — All 33 participants
+// BRACKET DATA — All 34 participants
 // Structure: each participant has picks per league per round
 // Rounds: r64 (8 picks), r32 (4 picks), s16 (2 picks), e8 (1 pick), leagueChamp, ff (finalist), champ
 // ═══════════════════════════════════════════════════════
@@ -1065,6 +1065,23 @@ const PARTICIPANTS = [
     champ: {league:'choc', seed:10}
   },
   {
+    // Todd Wille — Chips: CRD,SunChips,PitaChips,Pringles,NachoCheese,LaysPotato,CheetosPlain,FlaminHot; R32:SunChips,Pringles,NachoCheese,CheetosPlain; S16:Pringles,NachoCheese; E8:NachoCheese; LC=5
+    // NonChip: SWC,PBPretzel,Goldfish,SaltedRP,CheezIts,ClassicPret,SkinnyPop,Pirate; R32:PBPretzel,Goldfish,ClassicPret,Pirate; S16:PBPretzel,ClassicPret; E8:PBPretzel; LC=2
+    // Choc: M&Ms,ThreeMusk,Snickers,PeppPatty,HeathBar,HershCream,Oreos,Reeses; R32:M&Ms,Snickers,HeathBar,Oreos; S16:M&Ms,Oreos(10 beats Heath); E8:Oreos; LC=10
+    // Candy: JellyBeans,LaffyTaffy,FruitRollUp,Twizzlers,FruitSnacks,HariboGB,Starbursts,Skittles; R32:JellyBeans,Twizzlers,HariboGB,Skittles; S16:Twizzlers,Skittles; E8:Skittles; LC=8
+    // FF: NonChip wins savory; Choc wins sweet; Champ=PBPretzel(nonchip, seed 2)
+    name: 'Todd Wille',
+    picks: {
+      chips:   { r64:[1,2,14,13,5,11,10,8], r32:[2,13,5,10], s16:[13,5], e8:[5],  lc:5  },
+      nonchip: { r64:[1,2,3,13,5,6,10,8],   r32:[2,3,6,8],   s16:[2,6],  e8:[2],  lc:2  },
+      choc:    { r64:[16,15,3,13,5,11,10,8], r32:[16,3,5,10], s16:[16,10],e8:[10], lc:10 },
+      candy:   { r64:[16,15,14,13,12,11,7,8],r32:[16,13,11,8],s16:[13,8], e8:[8],  lc:8  }
+    },
+    ff: { savory: 'nonchip', sweet: 'choc' },
+    finalist: ['nonchip','choc'],
+    champ: {league:'nonchip', seed:2}
+  },
+  {
     // Ben C — Chips: CRD,SunChips,KettleJal,S&V,LaysBBQ,LaysPotato,CheetosPlain,FlaminHot; s16:CRD/S&V; E8:FlaminHot; LC=8
     // NonChip: SWC,PBPretzel,Goldfish,SaltedRP,Cheezits,ClassicPret,BeefJerky,Pirate; s16:SWC/Cheezits; E8:Pirate; LC=8
     // Choc: PeanutMMs,TJsDark,DarkChoc,100Grand,Twix,Oreos,Reese's; s16:TJsDark/Reese's; E8:TJsDark; LC=2
@@ -1080,32 +1097,6 @@ const PARTICIPANTS = [
     ff: { savory: 'chips', sweet: 'choc' },
     finalist: ['chips','choc'],
     champ: {league:'choc', seed:2}
-  },
-  {
-    // Todd Wille — from submitted bracket PDF
-    // Chips R64: CRD,SunChips,PitaChips,S&V,NachoCheese,LaysPotato,CheetosPlain,FlaminHot
-    //   R32: SunChips def CRD, Pringles(13) def PitaChips(14), Nacho def LaysPotato, Cheetos def FlaminHot
-    //   S16: Pringles def SunChips, Nacho def Cheetos → E8: Nacho → LC: 5
-    // NonChip R64: SWC,PBPretzel,Goldfish,SaltedRP,Cheezits,ClassicPret,SkinnyPop,Pirate
-    //   R32: PBPretzel def SWC, Goldfish def SaltedRP, ClassicPret def Cheezits, Pirate def SkinnyPop
-    //   S16: PBPretzel def Goldfish, Pirate def ClassicPret → E8: PBPretzel → LC: 2
-    // Choc R64: M&Ms(16),ThreeMusk(15),Snickers,PeppermintP,HeathBar,HersheysCookies,Oreos,Reese's
-    //   R32: M&Ms(16) def ThreeMusk(15), Snickers def PeppermintP, HeathBar def HersheysCookies, Oreos def Reese's
-    //   S16: M&Ms def Snickers, Oreos def HeathBar → E8: Oreos(10) → LC: 10
-    // Candy R64: JellyBeans(16),LaffyTaffy(15),FruitRollUp(14),Twizzlers(13),FruitSnacks(12),HariboGB(11),Starbursts,Skittles
-    //   R32: LaffyTaffy def JellyBeans, Twizzlers def FruitRollUp, HariboGB def FruitSnacks, Skittles def Starbursts
-    //   S16: Twizzlers def LaffyTaffy, Skittles def HariboGB → E8: Skittles(8) → LC: 8
-    // FF: NonChip wins savory, Choc wins sweet → Champ: PB-filled Pretzel Bites (nonchip, seed 2)
-    name: 'Todd Wille',
-    picks: {
-      chips: { r64:[1,2,14,4,5,11,10,8], r32:[2,13,5,10], s16:[13,5], e8:[5], lc:5 },
-      nonchip: { r64:[1,2,3,13,5,6,10,8], r32:[2,3,6,8], s16:[2,8], e8:[2], lc:2 },
-      choc: { r64:[16,15,3,13,5,11,10,8], r32:[16,3,5,10], s16:[16,10], e8:[10], lc:10 },
-      candy: { r64:[16,15,14,13,12,11,7,8], r32:[15,13,11,8], s16:[13,8], e8:[8], lc:8 }
-    },
-    ff: { savory: 'nonchip', sweet: 'choc' },
-    finalist: ['nonchip','choc'],
-    champ: {league:'nonchip', seed:2}
   }
 ];
 
@@ -1224,24 +1215,28 @@ const results = {
   ca_r64_1:1, ca_r64_2:2, ca_r64_3:14, ca_r64_4:4, ca_r64_5:12, ca_r64_6:11, ca_r64_7:7, ca_r64_8:8,
 
   // ROUND OF 32
-  // Chips: 1vCRD def SunChips, 4vS&V def KettleJal, 5vNachoCheese def KettlePlain, 10vCheetos def SourCream
+  // Chips: M1→CoolRanchDoritos(1), M2→Salt&Vinegar(4), M3→NachoCheeseDoritos(5), M4→CheetosPlain(10)
   c_r32_1:1, c_r32_2:4, c_r32_3:5, c_r32_4:10,
-  // Non-Chips: 1vSmarfood def PBPretzel, 3vGoldfish def SaltedRP, 5vCheezIts def Ritz, 8vPirate def BeefJerky
+  // Non-Chips: M1→Smartfood(1), M2→Goldfish(3), M3→CheezIts(5), M4→PiratesBooty(8)
   n_r32_1:1, n_r32_2:3, n_r32_3:5, n_r32_4:8,
-  // Chocolate: 1vPeanutMMs def TJsDark, 4vDarkChoc def Snickers, 6vTwix def 100Grand, 8vReeses def Oreos
+  // Chocolate: M1→PeanutMMs(1), M2→DarkChoc(4), M3→Twix(6), M4→ReesesCups(8)
   ch_r32_1:1, ch_r32_2:4, ch_r32_3:6, ch_r32_4:8,
-  // Candy: 1vSPK def SwedFish, 4vSourWorms def FruitRollUp, 12vFruitSnacks def HariboGB, 7vStarbursts def Skittles
+  // Candy: M1→SourPatchKids(1), M2→SourWorms(4), M3→FruitSnacks(12), M4→Starbursts(7)
   ca_r32_1:1, ca_r32_2:4, ca_r32_3:12, ca_r32_4:7,
 
   // SWEET SIXTEEN
-  // Chips: 1vCRD def S&V, 5vNacho def Cheetos
+  // Chips: S1→CoolRanchDoritos(1), S2→NachoCheeseDoritos(5)
   c_s16_1:1, c_s16_2:5,
-  // Non-Chips: 3vGoldfish def Smartfood (upset!), 5vCheezIts def Pirate's Booty
+  // Non-Chips: S1→Goldfish(3), S2→CheezIts(5)
   n_s16_1:3, n_s16_2:5,
-  // Chocolate: 1vPeanutMMs def DarkChoc, 8vReeses def Twix (upset!)
+  // Chocolate: S1→PeanutMMs(1), S2→ReesesCups(8)
   ch_s16_1:1, ch_s16_2:8,
-  // Candy: 1vSPK def SourWorms, 7vStarbursts def FruitSnacks (upset!)
-  ca_s16_1:1, ca_s16_2:7
+  // Candy: S1→SourPatchKids(1), S2→Starbursts(7)
+  ca_s16_1:1, ca_s16_2:7,
+
+  // ELITE ATE
+  // Chips→NachoCheeseDoritos(5), NonChips→CheezIts(5), Choc→ReesesCups(8), Candy→SourPatchKids(1)
+  c_e8_1:5, n_e8_1:5, ch_e8_1:8, ca_e8_1:1
 };
 
 // Future rounds will be added here as they complete
@@ -2013,9 +2008,9 @@ function advancer(league, round, slot) {
 function seedSlot(league, seed, isWinner, isLoser, opponentSeed) {
   if (!seed) return `<div class="bracket-seed tbd"><span class="seed-num">-</span> TBD</div>`;
   const loser = !isWinner && isLoser;
-  const isUpset = isWinner && opponentSeed && seed > opponentSeed;
-  const cls = loser ? 'loser' : (isWinner && isUpset ? 'upset-winner' : (isWinner ? 'winner' : ''));
-  const upsetPip = (isWinner && isUpset) ? `<span class="upset-pip">!</span>` : '';
+  const upsetMin = isWinner && opponentSeed !== undefined && seed > opponentSeed;
+  const cls = loser ? 'loser' : (isWinner && upsetMin ? 'upset-winner' : (isWinner ? 'winner' : ''));
+  const upsetPip = (isWinner && upsetMin) ? `<span class="upset-pip">!</span>` : '';
   return `<div class="bracket-seed ${cls}"><span class="seed-num">${seed}</span>${snackName(league, seed)}${upsetPip}</div>`;
 }
 
@@ -2080,9 +2075,12 @@ function renderLeagueBracket(league) {
       const topY    = centerY - SEED_H;
       const botY    = centerY;
 
+      // Upset = winner has a higher seed number (worse rank) than their opponent
+      const aUpset = aIsWinner && a !== null && b !== null && a > b;
+      const bUpset = bIsWinner && a !== null && b !== null && b > a;
+
       // Seed A (top)
       const aLoser = roundPlayed && !aIsWinner;
-      const aUpset = aIsWinner && a > b;
       const aCls   = aLoser ? 'loser' : (aIsWinner ? (aUpset ? 'upset-winner' : 'winner') : '');
       const aBg    = aIsWinner ? (aUpset ? '#FDF0E4' : '#f0faf4') : ((!a) ? '#fafafa' : 'white');
       const aBorder= aIsWinner ? (aUpset ? 'var(--orange)' : '#1A6B3A') : '#e8ddd0';
@@ -2090,7 +2088,6 @@ function renderLeagueBracket(league) {
 
       // Seed B (bottom)
       const bLoser = roundPlayed && !bIsWinner;
-      const bUpset = bIsWinner && b > a;
       const bCls   = bLoser ? 'loser' : (bIsWinner ? (bUpset ? 'upset-winner' : 'winner') : '');
       const bBg    = bIsWinner ? (bUpset ? '#FDF0E4' : '#f0faf4') : ((!b) ? '#fafafa' : 'white');
       const bBorder= bIsWinner ? (bUpset ? 'var(--orange)' : '#1A6B3A') : '#e8ddd0';
