@@ -29,7 +29,7 @@
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--dark); min-height: 100vh; }
-
+ 
 /* HEADER */
 .hdr {
   background: var(--dark);
@@ -46,7 +46,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 .hdr-left { display: flex; align-items: baseline; gap: 12px; flex-shrink: 0; }
 .hdr-title { font-family: 'Bebas Neue', sans-serif; font-size: 34px; color: var(--orange); letter-spacing: 3px; line-height: 1; }
 .hdr-sub { font-family: 'DM Mono', monospace; font-size: 9px; color: #666; letter-spacing: 2px; text-transform: uppercase; }
-
+ 
 /* TABS */
 .tabs {
   display: flex;
@@ -73,19 +73,19 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 }
 .tab:hover { color: #aaa; }
 .tab.active { color: white; border-color: var(--orange); color: var(--orange); }
-
+ 
 /* PAGES */
 .page { display: none; }
 .page.active { display: block; }
-
+ 
 /* MAIN LAYOUT */
 .content { padding: 28px 36px; max-width: 1100px; margin: 0 auto; }
-
+ 
 /* SECTION HEADER */
 .section-head { margin-bottom: 20px; }
 .section-head h2 { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--orange); letter-spacing: 3px; line-height: 1; }
 .section-head p { font-size: 13px; color: var(--mid); margin-top: 5px; }
-
+ 
 /* SCORING KEY */
 .scoring-key {
   display: flex;
@@ -100,7 +100,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 }
 .scoring-key-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #999; margin-right: 4px; }
 .key-item { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid); background: var(--cream); padding: 3px 8px; border-radius: 3px; }
-
+ 
 /* ADMIN PANEL */
 .admin-panel {
   background: white;
@@ -158,7 +158,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
   cursor: pointer;
 }
 .btn-update:hover { background: var(--orange-dk); }
-
+ 
 /* LEADERBOARD TABLE */
 .lb-table-wrap { overflow-x: auto; }
 .lb-table {
@@ -186,19 +186,19 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 .lb-table tr:last-child td { border-bottom: none; }
 .lb-table tr:hover td { background: #fdf5ee; }
 .lb-table tr.me td { background: var(--orange-lt); }
-
+ 
 .rank-cell { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--mid); text-align: center; width: 48px; }
 .rank-1 { color: var(--gold); }
 .rank-2 { color: var(--silver); }
 .rank-3 { color: var(--bronze); }
-
+ 
 .name-cell { font-weight: 700; font-size: 14px; }
 .pick-cell { font-size: 11px; color: var(--mid); font-style: italic; }
-
+ 
 .score-cell { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--dark); text-align: right; }
 .score-possible { font-family: 'DM Mono', monospace; font-size: 9px; color: #aaa; text-align: right; }
 .max-pts { display: block; }
-
+ 
 .round-scores { display: flex; gap: 4px; flex-wrap: wrap; }
 .r-badge {
   font-family: 'DM Mono', monospace;
@@ -213,7 +213,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 .r-badge.has-score { background: var(--orange-lt); color: var(--orange-dk); font-weight: 600; }
 .r-badge.perfect { background: var(--gold-lt); color: #7A5A00; font-weight: 900; }
 .r-badge.bonus { background: #EAD6F5; color: #6B1A8A; }
-
+ 
 /* INDIVIDUAL VIEW */
 .participant-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
 .p-card {
@@ -256,7 +256,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 .p-league-snack { color: var(--dark); font-weight: 500; }
 .p-league-check { color: #bbb; font-size: 10px; margin-left: auto; }
 .p-league-check.correct { color: var(--nonchip); font-weight: 700; }
-
+ 
 /* MODAL */
 .modal-overlay {
   display: none;
@@ -329,7 +329,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 .pts-correct { color: var(--nonchip); font-weight: 700; }
 .pts-wrong { color: #ccc; text-decoration: line-through; }
 .pts-pending { color: #bbb; }
-
+ 
 /* STANDINGS CHART */
 .standings-viz { background: white; border: 1px solid var(--line); border-radius: 8px; padding: 20px; margin-bottom: 24px; }
 .standings-viz h3 { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--dark); margin-bottom: 14px; }
@@ -339,7 +339,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 .bar-fill { height: 100%; background: var(--orange); border-radius: 3px; transition: width 0.6s ease; display: flex; align-items: center; padding-left: 8px; min-width: 2px; }
 .bar-fill-pts { font-family: 'DM Mono', monospace; font-size: 9px; color: white; font-weight: 600; }
 .bar-pts { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid); width: 32px; flex-shrink: 0; }
-
+ 
 /* Notice banner */
 .notice {
   background: var(--gold-lt);
@@ -353,7 +353,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
   align-items: center;
   gap: 10px;
 }
-
+ 
 /* ── BRACKET STYLES ── */
 .bracket-section { margin-bottom: 32px; }
 .bracket-section-title {
@@ -458,7 +458,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
   width: 100%; height: 100%;
   overflow: visible;
 }
-
+ 
 /* Final Four bracket */
 .ff-bracket {
   background: white;
@@ -481,20 +481,20 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 </style>
 </head>
 <body>
-
+ 
 <div class="hdr">
   <div class="hdr-left">
     <div class="hdr-title">MUNCH MADNESS</div>
     <div class="hdr-sub">2026 · 34 Participants</div>
   </div>
 </div>
-
+ 
 <div class="tabs">
   <div class="tab active" onclick="showPage('results', this)">📊 Round Results</div>
   <div class="tab" onclick="showPage('lb', this)">🏆 Leaderboard</div>
   <div class="tab" onclick="showPage('brackets', this)">📋 All Brackets</div>
 </div>
-
+ 
 <!-- LEADERBOARD PAGE -->
 <div id="page-lb" class="page">
   <div class="content">
@@ -502,7 +502,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
       <h2>STANDINGS</h2>
       <p>Scores will update automatically as new results become available.</p>
     </div>
-
+ 
     <div class="scoring-key">
       <span class="scoring-key-label">Scoring:</span>
       <span class="key-item">R64 = 1pt</span>
@@ -512,12 +512,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
       <span class="key-item">Final Four = 16pts</span>
       <span class="key-item">Champion = 32pts 🏆</span>
     </div>
-
+ 
     <div id="standings-chart" class="standings-viz">
       <h3>SCORE OVERVIEW</h3>
       <div id="chart-bars"></div>
     </div>
-
+ 
     <div class="lb-table-wrap">
       <table class="lb-table">
         <thead>
@@ -539,7 +539,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
     </div>
   </div>
 </div>
-
+ 
 <!-- ALL BRACKETS PAGE -->
 <div id="page-brackets" class="page">
   <div class="content">
@@ -550,7 +550,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
     <div id="participant-cards" class="participant-cards"></div>
   </div>
 </div>
-
+ 
 <!-- RESULTS PAGE -->
 <div id="page-results" class="page active">
   <div class="content">
@@ -561,7 +561,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
     <div id="results-content"></div>
   </div>
 </div>
-
+ 
 <!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
   <div class="modal" id="modal">
@@ -572,14 +572,14 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
     <div class="modal-body" id="modal-body"></div>
   </div>
 </div>
-
+ 
 <script>
 // ═══════════════════════════════════════════════════════
 // BRACKET DATA — All 34 participants
 // Structure: each participant has picks per league per round
 // Rounds: r64 (8 picks), r32 (4 picks), s16 (2 picks), e8 (1 pick), leagueChamp, ff (finalist), champ
 // ═══════════════════════════════════════════════════════
-
+ 
 // SNACKS reference with seeds
 const SNACKS = {
   chips: [
@@ -611,18 +611,18 @@ const SNACKS = {
     {s:13,n:'Twizzlers'},{s:14,n:'Fruit Roll-Up'},{s:15,n:'Laffy Taffy'},{s:16,n:'Jelly Beans'}
   ]
 };
-
+ 
 // Helper to get snack by seed+league
 function sn(league, seed) {
   return SNACKS[league].find(x => x.s === seed);
 }
-
+ 
 // ─── PARTICIPANT DATA ───
 // picks[league][round] = array of snack objects (winners picked)
 // Rounds: r64(8), r32(4), s16(2), e8(1), lc(1=league champ), ff(1=finalist), champ(1)
 // ff picks: which league champ they picked to advance to championship match
 // finalff: which finalist they picked as overall champ
-
+ 
 const PARTICIPANTS = [
   {
     name: 'Mike Yurkovic',
@@ -864,9 +864,9 @@ const PARTICIPANTS = [
     finalist: ['nonchip','choc'],
     champ: {league:'nonchip', seed:3}
   },
-
+ 
   // ── BATCH 2: 13 new participants ──
-
+ 
   {
     // Nathan J (Nathaniel Jacobson)
     // Chips: CRD wins R64, Fritos upsets, Pringles advances; LC = Pringles-Plain (seed 13)
@@ -1099,11 +1099,11 @@ const PARTICIPANTS = [
     champ: {league:'choc', seed:2}
   }
 ];
-
+ 
 // ─── TOURNAMENT STRUCTURE ───
 // Define all matchups for each round across all 4 leagues
 // Results: stored as winningSeed per matchup
-
+ 
 const ROUNDS = [
   {
     id: 'r64', label: 'Round of 64', dates: 'Mar 9–12', pts: 1,
@@ -1200,7 +1200,7 @@ const ROUNDS = [
     ]
   }
 ];
-
+ 
 // ─── STATE ───
 // ─── ACTUAL RESULTS (hardcoded as rounds complete) ───
 const results = {
@@ -1213,7 +1213,7 @@ const results = {
   ch_r64_1:1, ch_r64_2:2, ch_r64_3:3, ch_r64_4:4, ch_r64_5:12, ch_r64_6:6, ch_r64_7:10, ch_r64_8:8,
   // Candy: 1vSPK, 2vSwedFish, 3v14→FruitRollUp, 4vSourWorms, 5v12→FruitSnacks, 6v11→HariboGB, 7vStarbursts, 8vSkittles
   ca_r64_1:1, ca_r64_2:2, ca_r64_3:14, ca_r64_4:4, ca_r64_5:12, ca_r64_6:11, ca_r64_7:7, ca_r64_8:8,
-
+ 
   // ROUND OF 32
   // Chips: M1→CoolRanchDoritos(1), M2→Salt&Vinegar(4), M3→NachoCheeseDoritos(5), M4→CheetosPlain(10)
   c_r32_1:1, c_r32_2:4, c_r32_3:5, c_r32_4:10,
@@ -1223,7 +1223,7 @@ const results = {
   ch_r32_1:1, ch_r32_2:4, ch_r32_3:6, ch_r32_4:8,
   // Candy: M1→SourPatchKids(1), M2→SourWorms(4), M3→FruitSnacks(12), M4→Starbursts(7)
   ca_r32_1:1, ca_r32_2:4, ca_r32_3:12, ca_r32_4:7,
-
+ 
   // SWEET SIXTEEN
   // Chips: S1→CoolRanchDoritos(1), S2→NachoCheeseDoritos(5)
   c_s16_1:1, c_s16_2:5,
@@ -1233,103 +1233,103 @@ const results = {
   ch_s16_1:1, ch_s16_2:8,
   // Candy: S1→SourPatchKids(1), S2→Starbursts(7)
   ca_s16_1:1, ca_s16_2:7,
-
+ 
   // ELITE ATE
   // Chips→NachoCheeseDoritos(5), NonChips→CheezIts(5), Choc→ReesesCups(8), Candy→SourPatchKids(1)
   c_e8_1:5, n_e8_1:5, ch_e8_1:8, ca_e8_1:1,
-
+ 
   // FINAL FOUR
   // Savory: Nacho Cheese Doritos (Chips) beat Cheez-Its (Non-Chips)
   // Sweet: Reese's Cups (Chocolate) beat Sour Patch Kids (Candy)
   ff_savory:'chips', ff_sweet:'choc'
 };
-
+ 
 // Future rounds will be added here as they complete
 // e.g. c_r32_1:1, c_r32_2:4, etc.
 // We'll track: for ff_savory: winner = 'chips' or 'nonchip'; for ff_sweet: 'choc' or 'candy'
 // For champ_1: winner = 'chips'|'nonchip'|'choc'|'candy' (the league of the winning finalist)
-
+ 
 function getSeedName(league, seed) {
   const s = SNACKS[league].find(x => x.s === seed);
   return s ? s.n : '?';
 }
-
+ 
 function leagueColor(league) {
   if (league === 'chips') return {bg: '#D6E8F5', color: '#1B4F8A', label:'🥔 Chips'};
   if (league === 'nonchip') return {bg: '#D6F0E0', color: '#1A6B3A', label:'🥨 Non-Chips'};
   if (league === 'choc') return {bg: '#F5E0D0', color: '#5C2A0A', label:'🍫 Chocolate'};
   if (league === 'candy') return {bg: '#EAD6F5', color: '#6B1A8A', label:'🍬 Candy'};
 }
-
+ 
 // ─── SCORING LOGIC ───
 function getR64WinnerSeed(league, slot) {
   return results[['c','n','ch','ca'][['chips','nonchip','choc','candy'].indexOf(league)] + '_r64_' + (slot+1)];
 }
-
+ 
 function getR32WinnerSeed(league, slot) {
   return results[['c','n','ch','ca'][['chips','nonchip','choc','candy'].indexOf(league)] + '_r32_' + (slot+1)];
 }
-
+ 
 function getS16WinnerSeed(league, slot) {
   return results[['c','n','ch','ca'][['chips','nonchip','choc','candy'].indexOf(league)] + '_s16_' + (slot+1)];
 }
-
+ 
 function getE8WinnerSeed(league) {
   return results[['c','n','ch','ca'][['chips','nonchip','choc','candy'].indexOf(league)] + '_e8_1'];
 }
-
+ 
 function getFFWinner(matchup) {
   return results['ff_' + matchup]; // 'savory' or 'sweet' -> league key
 }
-
+ 
 function getChampWinnerLeague() {
   return results['champ_1'];
 }
-
+ 
 function calculateScore(p) {
   let score = 0;
   let breakdown = {r64:0, r32:0, s16:0, e8:0, ff:0, champ:0};
-
+ 
   const leagues = ['chips','nonchip','choc','candy'];
   const prefixes = ['c','n','ch','ca'];
-
+ 
   leagues.forEach((league, li) => {
     const px = prefixes[li];
     const picks = p.picks[league];
-
+ 
     // R64: 8 matchups
     for (let m = 1; m <= 8; m++) {
       const rid = `${px}_r64_${m}`;
       const winner = results[rid];
       if (winner && picks.r64[m-1] === winner) { score += 1; breakdown.r64 += 1; }
     }
-
+ 
     // R32: 4 matchups
     for (let m = 1; m <= 4; m++) {
       const rid = `${px}_r32_${m}`;
       const winner = results[rid];
       if (winner && picks.r32[m-1] === winner) { score += 2; breakdown.r32 += 2; }
     }
-
+ 
     // S16: 2 matchups
     for (let m = 1; m <= 2; m++) {
       const rid = `${px}_s16_${m}`;
       const winner = results[rid];
       if (winner && picks.s16[m-1] === winner) { score += 4; breakdown.s16 += 4; }
     }
-
+ 
     // E8: 1 matchup
     const e8id = `${px}_e8_1`;
     const e8winner = results[e8id];
     if (e8winner && picks.e8[0] === e8winner) { score += 8; breakdown.e8 += 8; }
   });
-
+ 
   // Final Four
   const ffSavoryWinner = results['ff_savory']; // league key
   const ffSweetWinner = results['ff_sweet'];
   if (ffSavoryWinner && p.ff.savory === ffSavoryWinner) { score += 16; breakdown.ff += 16; }
   if (ffSweetWinner && p.ff.sweet === ffSweetWinner) { score += 16; breakdown.ff += 16; }
-
+ 
   // Championship
   const champWinner = results['champ_1']; // league key of winner
   if (champWinner && p.champ.league === champWinner) {
@@ -1339,10 +1339,10 @@ function calculateScore(p) {
       score += 32; breakdown.champ += 32;
     }
   }
-
+ 
   return {score, breakdown};
 }
-
+ 
 // ─── MAX POSSIBLE SCORE ───
 // For each unplayed pick, add points only if the pick is still alive
 // (i.e. hasn't been eliminated by a completed result).
@@ -1351,20 +1351,20 @@ function maxPossible(p) {
   const prefixes = ['c','n','ch','ca'];
   const {score} = calculateScore(p);
   let remaining = 0;
-
+ 
   leagues.forEach((league, li) => {
     const px = prefixes[li];
     const picks = p.picks[league];
-
+ 
     // For each future round, a pick is still possible only if:
     // 1. That round hasn't been played yet (no result), AND
     // 2. The seed they picked wasn't already eliminated in a prior round.
-
+ 
     // Track which seeds are still alive in this league after completed rounds
     // A seed is eliminated if it lost in any completed round.
     // Build the set of eliminated seeds from completed results.
     const eliminated = new Set();
-
+ 
     // R64: check who lost
     for (let m = 1; m <= 8; m++) {
       const winner = results[`${px}_r64_${m}`];
@@ -1375,7 +1375,7 @@ function maxPossible(p) {
         eliminated.add(winner === a ? b : a);
       }
     }
-
+ 
     // R32: check who lost
     for (let m = 1; m <= 4; m++) {
       const winner = results[`${px}_r32_${m}`];
@@ -1387,7 +1387,7 @@ function maxPossible(p) {
         }
       }
     }
-
+ 
     // S16: check who lost
     for (let m = 1; m <= 2; m++) {
       const winner = results[`${px}_s16_${m}`];
@@ -1399,7 +1399,7 @@ function maxPossible(p) {
         }
       }
     }
-
+ 
     // E8: check who lost
     const e8winner = results[`${px}_e8_1`];
     if (e8winner !== undefined) {
@@ -1409,7 +1409,7 @@ function maxPossible(p) {
         eliminated.add(e8winner === feeder1 ? feeder2 : feeder1);
       }
     }
-
+ 
     // R32: add 2pts per pick if still alive and round not yet played
     for (let m = 1; m <= 4; m++) {
       if (results[`${px}_r32_${m}`] === undefined) {
@@ -1417,26 +1417,26 @@ function maxPossible(p) {
         if (!eliminated.has(picks.r32[m-1])) remaining += 2;
       }
     }
-
+ 
     // S16: add 4pts if still alive and round not played
     for (let m = 1; m <= 2; m++) {
       if (results[`${px}_s16_${m}`] === undefined) {
         if (!eliminated.has(picks.s16[m-1])) remaining += 4;
       }
     }
-
+ 
     // E8: add 8pts if still alive and not played
     if (results[`${px}_e8_1`] === undefined) {
       if (!eliminated.has(picks.e8[0])) remaining += 8;
     }
   });
-
+ 
   // Final Four — only add points if FF not yet played AND pick could still be correct
   // ff_savory result: 'chips' or 'nonchip' (or undefined if not yet played)
   // ff_sweet result:  'choc' or 'candy'   (or undefined if not yet played)
   const ffSavoryResult = results['ff_savory'];
   const ffSweetResult  = results['ff_sweet'];
-
+ 
   if (ffSavoryResult === undefined) {
     // Not yet played — pick is still possible
     remaining += 16;
@@ -1447,13 +1447,13 @@ function maxPossible(p) {
     }
     // Wrong pick: 0 additional points (nothing to add)
   }
-
+ 
   if (ffSweetResult === undefined) {
     remaining += 16;
   } else {
     // Already played — already captured in calculateScore if correct
   }
-
+ 
   // Championship — only possible if:
   // 1. champ_1 not yet decided
   // 2. Their champion's league made it through the FF (i.e. is one of the two finalists)
@@ -1462,7 +1462,7 @@ function maxPossible(p) {
     const cLeague = p.champ.league;
     const cPx = {chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[cLeague];
     const cSeed = p.champ.seed;
-
+ 
     // Check if their champion's league is still alive in the championship
     // If FF results are known, the finalist leagues are ffSavoryResult and ffSweetResult
     // If a FF result is known and their league lost, they're out
@@ -1480,7 +1480,7 @@ function maxPossible(p) {
         leagueStillAlive = false;
       }
     }
-
+ 
     if (leagueStillAlive) {
       // Also check the seed is not eliminated within its league
       const elim = new Set();
@@ -1508,22 +1508,22 @@ function maxPossible(p) {
         const f1 = results[`${cPx}_s16_1`], f2 = results[`${cPx}_s16_2`];
         if (f1!==undefined && f2!==undefined) elim.add(e8w===f1?f2:f1);
       }
-
+ 
       if (!elim.has(cSeed)) remaining += 32;
     }
   }
-
+ 
   return score + remaining;
 }
-
+ 
 // ─── RENDER LEADERBOARD ───
 let lbSortMode = 'score'; // 'score' | 'max'
-
+ 
 function setSortMode(mode) {
   lbSortMode = mode;
   renderLeaderboard();
 }
-
+ 
 function renderLeaderboard() {
   const scored = PARTICIPANTS.map(p => {
     const {score, breakdown} = calculateScore(p);
@@ -1533,7 +1533,7 @@ function renderLeaderboard() {
     if (lbSortMode === 'max') return b.maxPts - a.maxPts || b.score - a.score;
     return b.score - a.score || b.maxPts - a.maxPts;
   });
-
+ 
   // Chart
   const maxScore = Math.max(...scored.map(s => s.score), 1);
   const maxPts = 192; // theoretical max
@@ -1555,7 +1555,7 @@ function renderLeaderboard() {
       </div>
     </div>`;
   }).join('');
-
+ 
   // Table
   let rank = 0, prevScore = -1, tiedCount = 0;
   document.getElementById('lb-tbody').innerHTML = scored.map((p, i) => {
@@ -1564,7 +1564,7 @@ function renderLeaderboard() {
     const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
     const champName = getSeedName(p.champ.league, p.champ.seed);
     const lc = leagueColor(p.champ.league);
-
+ 
     const bd = p.breakdown;
     const badges = [
       {label:'R64', val:bd.r64, max:32},
@@ -1577,7 +1577,7 @@ function renderLeaderboard() {
       const cls = b.val === 0 ? 'r-badge' : (b.bonus ? 'r-badge bonus' : 'r-badge has-score');
       return `<span class="${cls}">${b.label} ${b.val}</span>`;
     }).join('');
-
+ 
     const eliminated = p.maxPts === p.score && p.score > 0;
     const maxColor = eliminated ? '#ccc' : (p.maxPts >= 120 ? 'var(--nonchip)' : (p.maxPts >= 80 ? 'var(--mid)' : '#C45A0A'));
     return `<tr onclick="openModal(${PARTICIPANTS.indexOf(p)})" style="cursor:pointer">
@@ -1595,7 +1595,7 @@ function renderLeaderboard() {
       <td><div class="round-scores">${badges}</div></td>
     </tr>`;
   }).join('');
-
+ 
   // Update sort arrow indicators
   const scoreArrow = document.getElementById('sort-arrow-score');
   const maxArrow   = document.getElementById('sort-arrow-max');
@@ -1604,7 +1604,7 @@ function renderLeaderboard() {
     maxArrow.style.color   = lbSortMode === 'max'   ? 'var(--orange)' : '#ccc';
   }
 }
-
+ 
 // ─── RENDER BRACKET CARDS ───
 function renderBracketCards() {
   const leagues = ['chips','nonchip','choc','candy'];
@@ -1612,7 +1612,7 @@ function renderBracketCards() {
     const {score} = calculateScore(p);
     const champName = getSeedName(p.champ.league, p.champ.seed);
     const lc = leagueColor(p.champ.league);
-
+ 
     const leagueRows = leagues.map(league => {
       const lci = leagueColor(league);
       const lcSeed = p.picks[league].lc;
@@ -1627,7 +1627,7 @@ function renderBracketCards() {
         <span class="${checkCls}">${checkTxt}</span>
       </div>`;
     }).join('');
-
+ 
     return `<div class="p-card" onclick="openModal(${idx})">
       <div class="p-card-head">
         <div class="p-card-name">${p.name}</div>
@@ -1643,18 +1643,18 @@ function renderBracketCards() {
     </div>`;
   }).join('');
 }
-
+ 
 // ─── MODAL ───
 function openModal(idx) {
   const p = PARTICIPANTS[idx];
   const {score, breakdown} = calculateScore(p);
   document.getElementById('modal-name').textContent = p.name;
-
+ 
   const leagues = ['chips','nonchip','choc','candy'];
   const prefixes = ['c','n','ch','ca'];
   const roundNames = {r64:'R64', r32:'R32', s16:'S16', e8:'E8'};
   const roundPts = {r64:1, r32:2, s16:4, e8:8};
-
+ 
   let html = `<div class="modal-score-row">
     <div>
       <div class="modal-total">${score}</div>
@@ -1669,12 +1669,12 @@ function openModal(idx) {
       <span class="r-badge ${breakdown.champ>0?'bonus':''}">Champ: ${breakdown.champ}</span>
     </div>
   </div>`;
-
+ 
   leagues.forEach((league, li) => {
     const lc = leagueColor(league);
     const px = prefixes[li];
     const picks = p.picks[league];
-
+ 
     let rows = '';
     const addRow = (roundId, roundLabel, pickSeed, pts) => {
       const winner = results[roundId];
@@ -1696,12 +1696,12 @@ function openModal(idx) {
         ${ptsHtml}
       </div>`;
     };
-
+ 
     for (let m = 1; m <= 8; m++) addRow(`${px}_r64_${m}`, 'R64', picks.r64[m-1], 1);
     for (let m = 1; m <= 4; m++) addRow(`${px}_r32_${m}`, 'R32', picks.r32[m-1], 2);
     for (let m = 1; m <= 2; m++) addRow(`${px}_s16_${m}`, 'S16', picks.s16[m-1], 4);
     addRow(`${px}_e8_1`, 'E8', picks.e8[0], 8);
-
+ 
     html += `<div class="modal-league">
       <div class="modal-league-head" style="background:${lc.bg};color:${lc.color}">
         <span>${lc.label} — League Champ: #${picks.lc} ${getSeedName(league, picks.lc)}</span>
@@ -1709,17 +1709,17 @@ function openModal(idx) {
       <div class="modal-league-body">${rows}</div>
     </div>`;
   });
-
+ 
   // FF picks
   const ffSavory = results['ff_savory'];
   const ffSweet = results['ff_sweet'];
   const champWinner = results['champ_1'];
   const champSeedWinner = champWinner ? getE8WinnerSeed(champWinner) : null;
-
+ 
   const ffSavoryCorrect = ffSavory ? (p.ff.savory === ffSavory) : null;
   const ffSweetCorrect = ffSweet ? (p.ff.sweet === ffSweet) : null;
   const champCorrect = champWinner ? (p.champ.league === champWinner && p.champ.seed === champSeedWinner) : null;
-
+ 
   html += `<div class="modal-league">
     <div class="modal-league-head" style="background:#FDE8D5;color:#C45A0A">🏆 Final Four & Championship</div>
     <div class="modal-league-body">
@@ -1740,11 +1740,11 @@ function openModal(idx) {
       </div>
     </div>
   </div>`;
-
+ 
   document.getElementById('modal-body').innerHTML = html;
   document.getElementById('modal-overlay').classList.add('open');
 }
-
+ 
 function closeModal(e) {
   if (e.target === document.getElementById('modal-overlay')) {
     document.getElementById('modal-overlay').classList.remove('open');
@@ -1753,13 +1753,13 @@ function closeModal(e) {
 function closeModalDirect() {
   document.getElementById('modal-overlay').classList.remove('open');
 }
-
+ 
 // ─── ADMIN PANEL ───
 function buildAdminPanel() {
   const leagues = ['chips','nonchip','choc','candy'];
   const prefixes = ['c','n','ch','ca'];
   let html = '';
-
+ 
   ROUNDS.forEach(round => {
     const completedCount = round.matchups.filter(m => results[m.id] !== undefined).length;
     const isLocked = lockedRounds[round.id];
@@ -1781,13 +1781,13 @@ function buildAdminPanel() {
         </div>
       </div>
       <div class="admin-round-body" id="body-${round.id}">`;
-
+ 
     if (round.id === 'r64' || round.id === 'r32' || round.id === 's16' || round.id === 'e8') {
       html += '<div class="matchups-grid">';
       round.matchups.forEach(m => {
         const lc = leagueColor(m.league);
         let optA_seed, optB_seed, optA_name, optB_name;
-
+ 
         if (round.id === 'r64') {
           optA_seed = m.a; optB_seed = m.b;
           optA_name = getSeedName(m.league, m.a);
@@ -1810,7 +1810,7 @@ function buildAdminPanel() {
           optA_name = optA_seed ? getSeedName(m.league, optA_seed) : 'TBD';
           optB_name = optB_seed ? getSeedName(m.league, optB_seed) : 'TBD';
         }
-
+ 
         const winnerSeed = results[m.id];
         const lockedStyle = isLocked ? 'pointer-events:none;' : '';
         html += `<div class="matchup-entry" style="${isLocked ? 'opacity:0.8;' : ''}">
@@ -1826,7 +1826,7 @@ function buildAdminPanel() {
         </div>`;
       });
       html += '</div>';
-
+ 
     } else if (round.id === 'ff') {
       // Final Four
       html += '<div class="matchups-grid">';
@@ -1836,7 +1836,7 @@ function buildAdminPanel() {
       const sweetCandy = getE8WinnerSeed('candy');
       const savoryWinner = results['ff_savory'];
       const sweetWinner = results['ff_sweet'];
-
+ 
       const ffLockedStyle = isLocked ? 'pointer-events:none;' : '';
       html += `<div class="matchup-entry" style="${isLocked ? 'opacity:0.8;' : ''}">
         <div class="matchup-label">Savory Matchup (Chips vs Non-Chips)</div>
@@ -1865,7 +1865,7 @@ function buildAdminPanel() {
         </div>
       </div>`;
       html += '</div>';
-
+ 
     } else if (round.id === 'champ') {
       html += '<div class="matchups-grid">';
       const finalist1League = results['ff_savory'];
@@ -1873,7 +1873,7 @@ function buildAdminPanel() {
       const f1Seed = finalist1League ? getE8WinnerSeed(finalist1League) : null;
       const f2Seed = finalist2League ? getE8WinnerSeed(finalist2League) : null;
       const champWinner = results['champ_1'];
-
+ 
       html += `<div class="matchup-entry">
         <div class="matchup-label">🏆 Championship Match</div>
         <div class="matchup-options">
@@ -1887,19 +1887,19 @@ function buildAdminPanel() {
       </div>`;
       html += '</div>';
     }
-
+ 
     html += '</div></div>';
   });
-
+ 
   document.getElementById('admin-rounds').innerHTML = html;
 }
-
+ 
 function toggleRound(id) {
   const body = document.getElementById('body-' + id);
   body.classList.toggle('open');
 }
-
-
+ 
+ 
 // ─── RESULTS TAB ───
 const ROUND_DEFS = [
   { id:'r64', label:'Round of 64', dates:'Mar 9–12', pts:1,
@@ -1941,14 +1941,14 @@ const ROUND_DEFS = [
     matchups:[{l:'champ', pairs:[[0,0]], keys:['champ_1']}]
   }
 ];
-
+ 
 const SNACKS_JS = {
   chips:   {1:'Cool Ranch Doritos',2:'SunChips',3:'Kettle Chips - Jalapeño',4:'Salt & Vinegar Chips',5:'Nacho Cheese Doritos',6:'Kettle Chips - Plain',7:'Tortilla Chips',8:"Flamin\u2019 Hot Cheetos",9:'Sour Cream & Onion Chips',10:'Cheetos - Plain',11:'Lays Potato Chips',12:'Lays BBQ Potato Chips',13:'Pringles - Plain',14:'Pita Chips',15:'Fritos',16:'Takis'},
   nonchip: {1:'Smartfood White Cheddar',2:'PB-filled Pretzel Bites',3:'Goldfish',4:'Wheat Thins',5:'Cheez-Its',6:'Classic Pretzels',7:'Beef Jerky',8:"Pirate\u2019s Booty",9:'Choc. Covered Almonds',10:'Skinny Pop',11:'Ritz Crackers',12:'Kettlecorn',13:'Salted Roasted Peanuts',14:'String Cheese',15:'Triscuits',16:'Wasabi Peas'},
   choc:    {1:'Peanut M&Ms',2:"TJ\u2019s Dark Choc PB Cups",3:'Snickers',4:'Dark Chocolate',5:'Heath Bar',6:'Twix',7:'Butterfinger',8:"Reese\u2019s Cups",9:'Kit Kat',10:'Oreos',11:"Hershey\u2019s Cookies & Cream",12:'100 Grand',13:'Peppermint Patty',14:'Milky Way',15:'Three Musketeers',16:'M&Ms'},
   candy:   {1:'Sour Patch Kids',2:'Swedish Fish',3:'Hi-Chew',4:'Sour Worms',5:'Peach Rings',6:'Nerds',7:'Starbursts',8:'Skittles',9:'Airheads',10:'Fruit Leather',11:'Haribo Gummy Bears',12:'Fruit Snacks',13:'Twizzlers',14:'Fruit Roll-Up',15:'Laffy Taffy',16:'Jelly Beans'}
 };
-
+ 
 function lcInfo(l) {
   if (l==='chips')   return {emoji:'🥔', label:'Savory — Chips',     bg:'#D6E8F5', color:'#1B4F8A'};
   if (l==='nonchip') return {emoji:'🥨', label:'Savory — Non-Chips', bg:'#D6F0E0', color:'#1A6B3A'};
@@ -1956,19 +1956,19 @@ function lcInfo(l) {
   if (l==='candy')   return {emoji:'🍬', label:'Candy',               bg:'#EAD6F5', color:'#6B1A8A'};
   return {emoji:'🏆', label:'Finals', bg:'#FDE8D5', color:'#E87722'};
 }
-
+ 
 function snackName(l, s) {
   return (SNACKS_JS[l] && SNACKS_JS[l][s]) ? SNACKS_JS[l][s] : '?';
 }
-
+ 
 function getR64Winner(league, slot) {
   const px = {chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[league];
   return results[px+'_r64_'+slot];
 }
-
+ 
 function renderResultsTab() {
   let html = '';
-
+ 
   // ── BRACKET TOGGLE HEADER ──
   html += `<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
     <button onclick="setResultsView('bracket')" id="btn-bracket"
@@ -1982,12 +1982,12 @@ function renderResultsTab() {
   </div>
   <div id="results-bracket-view"></div>
   <div id="results-list-view" style="display:none"></div>`;
-
+ 
   document.getElementById('results-content').innerHTML = html;
   renderBracketView();
   renderListView();
 }
-
+ 
 function setResultsView(view) {
   document.getElementById('results-bracket-view').style.display = view === 'bracket' ? 'block' : 'none';
   document.getElementById('results-list-view').style.display   = view === 'list'    ? 'block' : 'none';
@@ -1998,10 +1998,10 @@ function setResultsView(view) {
   document.getElementById('btn-list').style.color            = view === 'list'    ? 'white' : 'var(--mid)';
   document.getElementById('btn-list').style.borderColor      = view === 'list'    ? 'var(--orange)' : 'var(--line)';
 }
-
+ 
 // ── Derive seeds advancing through rounds ──
 function getWinnerOf(roundKey) { return results[roundKey]; }
-
+ 
 function r64seeds(league) {
   const px = {chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[league];
   return [1,2,3,4,5,6,7,8].map(i => ({a: [1,2,3,4,5,6,7,8][i-1]*0+[1,2,3,4,5,6,7,8][i-1], b:[16,15,14,13,12,11,10,9][i-1], winner: results[px+'_r64_'+i]}));
@@ -2030,7 +2030,7 @@ function advancer(league, round, slot) {
   }
   return {a:null,b:null,winner:null};
 }
-
+ 
 function seedSlot(league, seed, isWinner, isLoser, opponentSeed) {
   if (!seed) return `<div class="bracket-seed tbd"><span class="seed-num">-</span> TBD</div>`;
   const loser = !isWinner && isLoser;
@@ -2039,11 +2039,11 @@ function seedSlot(league, seed, isWinner, isLoser, opponentSeed) {
   const upsetPip = (isWinner && upsetMin) ? `<span class="upset-pip">!</span>` : '';
   return `<div class="bracket-seed ${cls}"><span class="seed-num">${seed}</span>${snackName(league, seed)}${upsetPip}</div>`;
 }
-
+ 
 function renderLeagueBracket(league) {
   const lc = lcInfo(league);
   const px = {chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[league];
-
+ 
   // Each round: how many matchups
   const roundDefs = [
     {id:'r64', label:'R64',       slots:8, pts:'1pt'},
@@ -2051,7 +2051,7 @@ function renderLeagueBracket(league) {
     {id:'s16', label:'Sweet 16',  slots:2, pts:'4pts'},
     {id:'e8',  label:'Elite Ate', slots:1, pts:'8pts'},
   ];
-
+ 
   // Fixed layout constants
   const SLOT_H = 52;    // height per matchup (2 seeds × ~24px + gap)
   const SEED_H = 24;    // height of each seed row
@@ -2060,10 +2060,10 @@ function renderLeagueBracket(league) {
   const LABEL_H = 28;   // height of round label row
   const CHAMP_W = 170;  // width of league champ column
   const TOTAL_COLS = roundDefs.length; // 4 round cols
-
+ 
   // Total canvas height = 8 matchups in R64 × SLOT_H
   const CANVAS_H = 8 * SLOT_H;
-
+ 
   // Build HTML: label row + matchup rows using absolute positioning in a relative container
   let html = `<div class="bracket-section">
     <div class="bracket-section-title" style="background:${lc.bg};color:${lc.color};">
@@ -2071,7 +2071,7 @@ function renderLeagueBracket(league) {
     </div>
     <div style="background:white;border:1px solid ${lc.color}33;border-top:none;border-radius:0 0 6px 6px;overflow-x:auto;padding-bottom:8px;">
     <div style="position:relative;min-width:${TOTAL_COLS*(COL_W+CONN_W)+CHAMP_W}px;height:${CANVAS_H+LABEL_H}px;">`;
-
+ 
   // Draw round label headers
   roundDefs.forEach((rd, ci) => {
     const x = ci * (COL_W + CONN_W);
@@ -2080,7 +2080,7 @@ function renderLeagueBracket(league) {
   // Champ label
   const champX = TOTAL_COLS * (COL_W + CONN_W);
   html += `<div style="position:absolute;left:${champX}px;top:0;width:${CHAMP_W}px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:${lc.color};text-align:center;padding:6px 4px;border-bottom:1px solid #eee;font-weight:700;">League Champ</div>`;
-
+ 
   // For each round, place matchups
   // Matchup center Y positions: evenly spaced within CANVAS_H
   function matchupCenterY(roundIdx, slotIdx) {
@@ -2088,7 +2088,7 @@ function renderLeagueBracket(league) {
     const groupH = CANVAS_H / slots;
     return LABEL_H + slotIdx * groupH + groupH / 2;
   }
-
+ 
   roundDefs.forEach((rd, ci) => {
     const colX = ci * (COL_W + CONN_W);
     for (let s = 1; s <= rd.slots; s++) {
@@ -2096,29 +2096,29 @@ function renderLeagueBracket(league) {
       const roundPlayed = winner !== null && winner !== undefined;
       const aIsWinner = roundPlayed && winner === a;
       const bIsWinner = roundPlayed && winner === b;
-
+ 
       const centerY = matchupCenterY(ci, s-1);
       const topY    = centerY - SEED_H;
       const botY    = centerY;
-
+ 
       // Upset = winner has a higher seed number (worse rank) than their opponent
       const aUpset = aIsWinner && a !== null && b !== null && a > b;
       const bUpset = bIsWinner && a !== null && b !== null && b > a;
-
+ 
       // Seed A (top)
       const aLoser = roundPlayed && !aIsWinner;
       const aCls   = aLoser ? 'loser' : (aIsWinner ? (aUpset ? 'upset-winner' : 'winner') : '');
       const aBg    = aIsWinner ? (aUpset ? '#FDF0E4' : '#f0faf4') : ((!a) ? '#fafafa' : 'white');
       const aBorder= aIsWinner ? (aUpset ? 'var(--orange)' : '#1A6B3A') : '#e8ddd0';
       const aText  = (!a) ? `<span style="color:#bbb;font-style:italic">TBD</span>` : `<span style="font-family:monospace;font-size:8px;color:#aaa;min-width:14px;text-align:right;margin-right:4px">${a}</span>${aLoser ? '<s style="color:#bbb">'+snackName(league,a)+'</s>' : snackName(league,a)}${aUpset?'<span style="font-size:7px;color:var(--orange);margin-left:4px;font-weight:900">!</span>':''}`;
-
+ 
       // Seed B (bottom)
       const bLoser = roundPlayed && !bIsWinner;
       const bCls   = bLoser ? 'loser' : (bIsWinner ? (bUpset ? 'upset-winner' : 'winner') : '');
       const bBg    = bIsWinner ? (bUpset ? '#FDF0E4' : '#f0faf4') : ((!b) ? '#fafafa' : 'white');
       const bBorder= bIsWinner ? (bUpset ? 'var(--orange)' : '#1A6B3A') : '#e8ddd0';
       const bText  = (!b) ? `<span style="color:#bbb;font-style:italic">TBD</span>` : `<span style="font-family:monospace;font-size:8px;color:#aaa;min-width:14px;text-align:right;margin-right:4px">${b}</span>${bLoser ? '<s style="color:#bbb">'+snackName(league,b)+'</s>' : snackName(league,b)}${bUpset?'<span style="font-size:7px;color:var(--orange);margin-left:4px;font-weight:900">!</span>':''}`;
-
+ 
       html += `
         <div style="position:absolute;left:${colX+4}px;top:${topY}px;width:${COL_W-8}px;height:${SEED_H-1}px;
           display:flex;align-items:center;gap:0;padding:0 7px;
@@ -2134,7 +2134,7 @@ function renderLeagueBracket(league) {
         </div>`;
     }
   });
-
+ 
   // Draw SVG connectors between each round
   // The connector flows from the SEAM between the two seeds in the source matchup
   // up to the SEAM between the two seeds in the destination matchup.
@@ -2146,25 +2146,25 @@ function renderLeagueBracket(league) {
     // seam is at centerY - SEED_H + SEED_H = centerY (top of bottom seed = bottom of top seed)
     return centerY; // centerY is already topY + SEED_H since topY = centerY - SEED_H
   }
-
+ 
   roundDefs.forEach((rd, ci) => {
     if (ci >= roundDefs.length - 1) return;
     const connX = ci * (COL_W + CONN_W) + COL_W;
     const nextSlots = roundDefs[ci+1].slots;
     const xm = CONN_W / 2;
-
+ 
     // One big SVG per connector column
     html += `<svg style="position:absolute;left:${connX}px;top:0;width:${CONN_W}px;height:${CANVAS_H+LABEL_H}px;overflow:visible;pointer-events:none;">`;
-
+ 
     for (let g = 0; g < nextSlots; g++) {
       const topSlot  = g * 2;
       const botSlot  = g * 2 + 1;
       const nextSlot = g;
-
+ 
       const y1 = seamY(ci,   topSlot);   // seam of upper feeder matchup
       const y2 = seamY(ci,   botSlot);   // seam of lower feeder matchup
       const y3 = seamY(ci+1, nextSlot);  // seam of destination matchup
-
+ 
       // Horizontal stub from upper feeder seam to midpoint
       html += `<line x1="0" y1="${y1}" x2="${xm}" y2="${y1}" stroke="#ccc" stroke-width="1"/>`;
       // Horizontal stub from lower feeder seam to midpoint
@@ -2174,17 +2174,17 @@ function renderLeagueBracket(league) {
       // Horizontal line from midpoint to destination seam
       html += `<line x1="${xm}" y1="${y3}" x2="${CONN_W}" y2="${y3}" stroke="#ccc" stroke-width="1"/>`;
     }
-
+ 
     html += `</svg>`;
   });
-
+ 
   // Simple horizontal connector from E8 to League Champ
   const lastConnX = (roundDefs.length - 1) * (COL_W + CONN_W) + COL_W;
   const e8SeamY = seamY(roundDefs.length - 1, 0);
   html += `<svg style="position:absolute;left:${lastConnX}px;top:0;width:${CONN_W}px;height:${CANVAS_H+LABEL_H}px;overflow:visible;pointer-events:none;">
     <line x1="0" y1="${e8SeamY}" x2="${CONN_W}" y2="${e8SeamY}" stroke="#ccc" stroke-width="1.5"/>
   </svg>`;
-
+ 
   // League champ box
   const champSeed = results[px+'_e8_1'];
   const champCenterY = LABEL_H + CANVAS_H / 2;
@@ -2196,12 +2196,12 @@ function renderLeagueBracket(league) {
          </div>`
       : `<div style="padding:8px 10px;border:1.5px dashed #ddd;border-radius:5px;background:#fafafa;text-align:center;color:#bbb;font-size:11px;font-style:italic;">TBD</div>`}
   </div>`;
-
+ 
   html += `</div></div></div>`;
   return html;
 }
-
-
+ 
+ 
 function renderFinalFourBracket() {
   const e8chips   = results['c_e8_1'];
   const e8nonchip = results['n_e8_1'];
@@ -2210,7 +2210,7 @@ function renderFinalFourBracket() {
   const ffSavory  = results['ff_savory'];  // 'chips' or 'nonchip'
   const ffSweet   = results['ff_sweet'];   // 'choc' or 'candy'
   const champWinner = results['champ_1'];  // league key
-
+ 
   function ffSlot(league, seed, advancing) {
     const lc = lcInfo(league);
     const notAdvancing = (ffSavory || ffSweet) && !advancing;
@@ -2221,7 +2221,7 @@ function renderFinalFourBracket() {
       <span class="seed-num">${seed||'-'}</span>${name}
     </div>`;
   }
-
+ 
   function champSlot(league, seed, isChamp) {
     const lc = lcInfo(league);
     const name = seed ? snackName(league, seed) : 'TBD';
@@ -2230,13 +2230,13 @@ function renderFinalFourBracket() {
       <span class="seed-num">${seed||'-'}</span>${name}
     </div>`;
   }
-
+ 
   // Savory matchup
   const savoryWinLeague = ffSavory;
   const savoryLoseLeague = ffSavory === 'chips' ? 'nonchip' : (ffSavory === 'nonchip' ? 'chips' : null);
   const sweetWinLeague = ffSweet;
   const sweetLoseLeague = ffSweet === 'choc' ? 'candy' : (ffSweet === 'candy' ? 'choc' : null);
-
+ 
   // Finals participants
   const finalist1League = ffSavory;
   const finalist2League = ffSweet;
@@ -2244,7 +2244,7 @@ function renderFinalFourBracket() {
   const f2seed = finalist2League ? results[{chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[finalist2League]+'_e8_1'] : null;
   const f1IsChamp = champWinner === finalist1League;
   const f2IsChamp = champWinner === finalist2League;
-
+ 
   let html = `<div class="ff-bracket">
     <div class="ff-bracket-head">
       <span>🏆 Final Four &amp; Championship</span>
@@ -2252,7 +2252,7 @@ function renderFinalFourBracket() {
     </div>
     <div style="padding:16px;background:white;">
       <div style="display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;gap:0;align-items:center;">
-
+ 
         <!-- FF matchups -->
         <div>
           <div style="font-family:'DM Mono',monospace;font-size:8px;color:#999;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Matchup 1 — Savory</div>
@@ -2266,10 +2266,10 @@ function renderFinalFourBracket() {
             ${ffSlot('candy', e8candy, sweetWinLeague==='candy')}
           </div>
         </div>
-
+ 
         <!-- Arrow -->
         <div style="text-align:center;font-size:18px;color:#D4B896;">→</div>
-
+ 
         <!-- Championship -->
         <div>
           <div style="font-family:'DM Mono',monospace;font-size:8px;color:#999;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Championship</div>
@@ -2282,10 +2282,10 @@ function renderFinalFourBracket() {
               : `<div class="bracket-seed tbd"><span class="seed-num">-</span>Sweet finalist TBD</div>`}
           </div>
         </div>
-
+ 
         <!-- Arrow -->
         <div style="text-align:center;font-size:18px;color:#D4B896;">→</div>
-
+ 
         <!-- Champion -->
         <div>
           ${champWinner && f1IsChamp
@@ -2306,13 +2306,13 @@ function renderFinalFourBracket() {
               </div>`
           }
         </div>
-
+ 
       </div>
     </div>
   </div>`;
   return html;
 }
-
+ 
 function renderBracketView() {
   let html = '';
   html += renderLeagueBracket('chips');
@@ -2322,7 +2322,7 @@ function renderBracketView() {
   html += renderFinalFourBracket();
   document.getElementById('results-bracket-view').innerHTML = html;
 }
-
+ 
 function renderListView() {
   let html = '';
   ROUND_DEFS.forEach(round => {
@@ -2378,7 +2378,7 @@ function renderListView() {
   });
   document.getElementById('results-list-view').innerHTML = html;
 }
-
+ 
 // ─── PAGE NAV ───
 function showPage(id, tab) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -2387,7 +2387,7 @@ function showPage(id, tab) {
   tab.classList.add('active');
   if (id === 'results') renderResultsTab();
 }
-
+ 
 // ─── INIT ───
 renderLeaderboard();
 renderBracketCards();
