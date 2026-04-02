@@ -1236,7 +1236,12 @@ const results = {
 
   // ELITE ATE
   // Chips→NachoCheeseDoritos(5), NonChips→CheezIts(5), Choc→ReesesCups(8), Candy→SourPatchKids(1)
-  c_e8_1:5, n_e8_1:5, ch_e8_1:8, ca_e8_1:1
+  c_e8_1:5, n_e8_1:5, ch_e8_1:8, ca_e8_1:1,
+
+  // FINAL FOUR
+  // Savory: Nacho Cheese Doritos (Chips) beat Cheez-Its (Non-Chips)
+  // Sweet: Reese's Cups (Chocolate) beat Sour Patch Kids (Candy)
+  ff_savory:'chips', ff_sweet:'choc'
 };
 
 // Future rounds will be added here as they complete
@@ -1426,65 +1431,86 @@ function maxPossible(p) {
     }
   });
 
-  // Final Four — league champ must still be alive (not eliminated in E8)
-  // Savory
-  if (results['ff_savory'] === undefined) {
-    // Their FF savory pick: which league did they pick to win savory?
-    const savLeague = p.ff.savory;
-    const savPx = {chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[savLeague];
-    const savE8winner = results[`${savPx}_e8_1`];
-    // The league champ must be decided (or not eliminated) for FF pick to be possible
-    // If E8 not played yet, champ still possible; if played and it's their pick's league champ → possible
-    if (savE8winner === undefined || savE8winner !== undefined) {
-      // Always add if FF not played (the league itself just needs to have survived)
-      // A league "survives" to FF automatically — we just need the league to not be knocked out
-      // Since leagues don't get eliminated, FF pick is still possible if FF not played
-      remaining += 16;
-    }
-  }
-  if (results['ff_sweet'] === undefined) {
+  // Final Four — only add points if FF not yet played AND pick could still be correct
+  // ff_savory result: 'chips' or 'nonchip' (or undefined if not yet played)
+  // ff_sweet result:  'choc' or 'candy'   (or undefined if not yet played)
+  const ffSavoryResult = results['ff_savory'];
+  const ffSweetResult  = results['ff_sweet'];
+
+  if (ffSavoryResult === undefined) {
+    // Not yet played — pick is still possible
     remaining += 16;
+  } else {
+    // Already played — only add if they picked the correct league
+    if (p.ff.savory === ffSavoryResult) {
+      // Already scored in calculateScore, don't add again
+    }
+    // Wrong pick: 0 additional points (nothing to add)
   }
 
-  // Championship — check if their champion pick's seed is still alive
+  if (ffSweetResult === undefined) {
+    remaining += 16;
+  } else {
+    // Already played — already captured in calculateScore if correct
+  }
+
+  // Championship — only possible if:
+  // 1. champ_1 not yet decided
+  // 2. Their champion's league made it through the FF (i.e. is one of the two finalists)
+  // 3. Their champion's seed is still alive (not eliminated before E8)
   if (results['champ_1'] === undefined) {
     const cLeague = p.champ.league;
     const cPx = {chips:'c',nonchip:'n',choc:'ch',candy:'ca'}[cLeague];
     const cSeed = p.champ.seed;
-    // Build eliminated set for their league
-    const elim = new Set();
-    // R64
-    const pairs = [[1,16],[2,15],[3,14],[4,13],[5,12],[6,11],[7,10],[8,9]];
-    for (let m = 1; m <= 8; m++) {
-      const w = results[`${cPx}_r64_${m}`];
-      if (w !== undefined) { const [a,b] = pairs[m-1]; elim.add(w===a?b:a); }
-    }
-    // R32
-    for (let m = 1; m <= 4; m++) {
-      const w = results[`${cPx}_r32_${m}`];
-      if (w !== undefined) {
-        const f1 = results[`${cPx}_r64_${m*2-1}`], f2 = results[`${cPx}_r64_${m*2}`];
-        if (f1!==undefined && f2!==undefined) elim.add(w===f1?f2:f1);
+
+    // Check if their champion's league is still alive in the championship
+    // If FF results are known, the finalist leagues are ffSavoryResult and ffSweetResult
+    // If a FF result is known and their league lost, they're out
+    let leagueStillAlive = true;
+    if (ffSavoryResult !== undefined) {
+      // Savory is decided — the loser league is eliminated
+      const savorySide = ['chips','nonchip'];
+      if (savorySide.includes(cLeague) && cLeague !== ffSavoryResult) {
+        leagueStillAlive = false;
       }
     }
-    // S16
-    for (let m = 1; m <= 2; m++) {
-      const w = results[`${cPx}_s16_${m}`];
-      if (w !== undefined) {
-        const f1 = results[`${cPx}_r32_${m*2-1}`], f2 = results[`${cPx}_r32_${m*2}`];
-        if (f1!==undefined && f2!==undefined) elim.add(w===f1?f2:f1);
+    if (ffSweetResult !== undefined) {
+      const sweetSide = ['choc','candy'];
+      if (sweetSide.includes(cLeague) && cLeague !== ffSweetResult) {
+        leagueStillAlive = false;
       }
     }
-    // E8
-    const e8w = results[`${cPx}_e8_1`];
-    if (e8w !== undefined) {
-      const f1 = results[`${cPx}_s16_1`], f2 = results[`${cPx}_s16_2`];
-      if (f1!==undefined && f2!==undefined) elim.add(e8w===f1?f2:f1);
+
+    if (leagueStillAlive) {
+      // Also check the seed is not eliminated within its league
+      const elim = new Set();
+      const pairs = [[1,16],[2,15],[3,14],[4,13],[5,12],[6,11],[7,10],[8,9]];
+      for (let m = 1; m <= 8; m++) {
+        const w = results[`${cPx}_r64_${m}`];
+        if (w !== undefined) { const [a,b] = pairs[m-1]; elim.add(w===a?b:a); }
+      }
+      for (let m = 1; m <= 4; m++) {
+        const w = results[`${cPx}_r32_${m}`];
+        if (w !== undefined) {
+          const f1 = results[`${cPx}_r64_${m*2-1}`], f2 = results[`${cPx}_r64_${m*2}`];
+          if (f1!==undefined && f2!==undefined) elim.add(w===f1?f2:f1);
+        }
+      }
+      for (let m = 1; m <= 2; m++) {
+        const w = results[`${cPx}_s16_${m}`];
+        if (w !== undefined) {
+          const f1 = results[`${cPx}_r32_${m*2-1}`], f2 = results[`${cPx}_r32_${m*2}`];
+          if (f1!==undefined && f2!==undefined) elim.add(w===f1?f2:f1);
+        }
+      }
+      const e8w = results[`${cPx}_e8_1`];
+      if (e8w !== undefined) {
+        const f1 = results[`${cPx}_s16_1`], f2 = results[`${cPx}_s16_2`];
+        if (f1!==undefined && f2!==undefined) elim.add(e8w===f1?f2:f1);
+      }
+
+      if (!elim.has(cSeed)) remaining += 32;
     }
-    // FF — if savory/sweet result known, check league survived
-    const ffResult = results['ff_savory'] || results['ff_sweet'];
-    // Check if their champ seed is still alive
-    if (!elim.has(cSeed)) remaining += 32;
   }
 
   return score + remaining;
